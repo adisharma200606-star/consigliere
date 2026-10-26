@@ -16,7 +16,7 @@
   {"name": "timer", "display": "Timer", "aliases": ["countdown"], "kind": "tool", "target": "timer", "takesWords": true},
   {"name": "note", "display": "New note", "aliases": ["notes", "new note"], "kind": "tool", "target": "note", "takesWords": true},
   {"name": "reminder", "display": "Reminder", "aliases": ["remind", "remind me", "reminders", "todo", "task"], "kind": "tool", "target": "reminder", "takesWords": true},
-  {"name": "settings", "display": "Settings", "aliases": ["preferences", "brochacho"], "kind": "tool", "target": "settings"},
+  {"name": "settings", "display": "Settings", "aliases": ["preferences", "consigliere"], "kind": "tool", "target": "settings"},
   {"name": "bored", "display": "Something I saved", "aliases": ["im bored", "i am bored", "surprise me"], "kind": "tool", "target": "pull"},
   {"name": "flip", "display": "Flip the screen", "aliases": ["one eighty", "180", "rotate", "flip screen", "upside down"], "kind": "tool", "target": "flip"},
   {"name": "help", "display": "How it works", "aliases": ["tutorial", "guide"], "kind": "tool", "target": "help"},

@@ -1,6 +1,6 @@
-# Brochacho — the guide
+# Consigliere — the guide
 
-Everything Brochacho does, how to use it, and how to change it. Written for you, not for programmers.
+Everything Consigliere does, how to use it, and how to change it. Written for you, not for programmers.
 
 **Read this first:** this guide describes how each feature *will* behave, and it is also the checklist the app is being built against. Each section starts with a **Status** line so you always know what is real today:
 
@@ -43,7 +43,7 @@ When the app runs on your Mac, every Status line gets updated and anything that 
 
 ## 1. What it is
 
-Brochacho lives in the notch at the top of your MacBook screen. Most of the time you cannot see it. You call it, it does one thing fast, an Italian voice says a short line, and it disappears.
+Consigliere lives in the notch at the top of your MacBook screen. Most of the time you cannot see it. You call it, it does one thing fast, an Italian voice says a short line, and it disappears.
 
 It follows five rules. They explain most of the choices below.
 
@@ -94,7 +94,7 @@ This works for any site that has a *search address* set (see [Adding your own th
 
 ### Sites open in the right Brave profile
 
-Every site entry says which Brave profile it belongs to, `personal` or `work`. Brochacho launches Brave with that profile directly, so your personal YouTube never opens in your work window.
+Every site entry says which Brave profile it belongs to, `personal` or `work`. Consigliere launches Brave with that profile directly, so your personal YouTube never opens in your work window.
 
 ### If he does not know it
 
@@ -109,7 +109,7 @@ If it is a single word he does not know, he shows `?`, says something like "Neve
 **Hold** the talk key, say the name, **let go**. Letting go is what tells it you have finished, which is why it is faster than a button you tap.
 
 - Speech is recognised on the Mac itself. Nothing is sent anywhere.
-- You do not say "Brochacho". Just say the thing: "YouTube", "open Steam", "timer ten minutes".
+- You do not say "Consigliere". Just say the thing: "YouTube", "open Steam", "timer ten minutes".
 - Mishearings are handled: "you to", "get hub", "what's app", "linked in" all land correctly.
 - **If he is not sure, he does not guess.** He shows his best guess with a `?` and waits for Enter. Opening the wrong thing is worse than opening nothing.
 
@@ -137,7 +137,7 @@ Saving the same thing twice does not make a duplicate. It just counts as freshly
 
 **Status:** brain tested · Swift written · Mac app builds, never run
 
-This is the half that other "save for later" tools get wrong. They make you go and look. Brochacho hands things back at the moment you were about to go looking for a distraction anyway.
+This is the half that other "save for later" tools get wrong. They make you go and look. Consigliere hands things back at the moment you were about to go looking for a distraction anyway.
 
 **Click the notch**, or type `bored`. He opens **one** thing you saved.
 
@@ -304,11 +304,11 @@ Before it closes, the notch shows what it understood (**call mom · Tomorrow 17:
 - `reminders` shows up to six reminders that are not done yet, soonest first, from every list: ones you typed here, and ones made on your phone. **Click the circle** to tick one off (click again to undo). Click the words to open Reminders.
 - The glance closes by itself after ten seconds, or press Escape.
 
-Brochacho keeps its own short list of what you captured in `~/.brochacho/captures.json` (the last 50). The notes and reminders themselves live in Apple's apps, as always.
+Consigliere keeps its own short list of what you captured in `~/.consigliere/captures.json` (the last 50). The notes and reminders themselves live in Apple's apps, as always.
 
 **Not yet:** calendar dates like "25 September" or "the 3rd". Say `in 4 days`, or open Reminders and set it there.
 
-The first time, macOS will ask whether Brochacho may add to your Reminders and control Notes. Say yes once.
+The first time, macOS will ask whether Consigliere may add to your Reminders and control Notes. Say yes once.
 
 ---
 
@@ -320,17 +320,17 @@ Type `one eighty` (or `180`, `flip`, `rotate`, `upside down`). The screen turns 
 
 It turns the laptop's own screen whenever the lid is open, even with an HDMI screen plugged in; with the lid closed it turns the external screen. There is no "are you sure?" step: if you did not mean it, say it again.
 
-**With an HDMI screen plugged in.** There are several ways to ask macOS to rotate a screen, and one that works with the laptop alone can be quietly ignored once a second screen is connected. So Brochacho asks one way, watches whether the screen actually turned, and if not, asks the next way, up to three. It can take a second or two longer than usual. Only then does he speak. If you are *mirroring* (the same picture on both screens), macOS treats the pair as one screen; Brochacho tries that too, and if macOS still refuses he tells you to switch the HDMI screen to **Extended display** in System Settings → Displays.
+**With an HDMI screen plugged in.** There are several ways to ask macOS to rotate a screen, and one that works with the laptop alone can be quietly ignored once a second screen is connected. So Consigliere asks one way, watches whether the screen actually turned, and if not, asks the next way, up to three. It can take a second or two longer than usual. Only then does he speak. If you are *mirroring* (the same picture on both screens), macOS treats the pair as one screen; Consigliere tries that too, and if macOS still refuses he tells you to switch the HDMI screen to **Extended display** in System Settings → Displays.
 
-If it ever fails, the notch says why, and the full story of the last attempt is in `~/.brochacho/flip.log`. To see it, paste this into Terminal on its own:
+If it ever fails, the notch says why, and the full story of the last attempt is in `~/.consigliere/flip.log`. To see it, paste this into Terminal on its own:
 
 ```
-cat ~/.brochacho/flip.log
+cat ~/.consigliere/flip.log
 ```
 
-**How it works, and the catch.** macOS has no public way to rotate a screen. System Settings uses a private part of macOS (a framework called MonitorPanel), and Brochacho calls the same thing, the same way the open-source app Rotator does. Private means Apple can change it in any update: if `one eighty` stops working after a macOS update, that is why, and `App/Brochacho/ScreenRotator.swift` is the file to fix. If it fails, he tells you in the notch what went wrong.
+**How it works, and the catch.** macOS has no public way to rotate a screen. System Settings uses a private part of macOS (a framework called MonitorPanel), and Consigliere calls the same thing, the same way the open-source app Rotator does. Private means Apple can change it in any update: if `one eighty` stops working after a macOS update, that is why, and `App/Consigliere/ScreenRotator.swift` is the file to fix. If it fails, he tells you in the notch what went wrong.
 
-While the screen is upside down the notch is at the bottom, so Brochacho appears as a small floating pill at the top of the laptop screen instead (it stays on the laptop even with an HDMI screen connected), and dragging onto the notch and clicking it do not work until you flip back. Everything you type still works, including `bored`.
+While the screen is upside down the notch is at the bottom, so Consigliere appears as a small floating pill at the top of the laptop screen instead (it stays on the laptop even with an HDMI screen connected), and dragging onto the notch and clicking it do not work until you flip back. Everything you type still works, including `bored`.
 
 ---
 
@@ -449,7 +449,7 @@ An entry has:
 
 **Apps.** You do not need an entry for an app at all: every app installed on this Mac (in Applications, Utilities, Apple's own apps, and `~/Applications`) opens by typing its name. `prime` finds Prime Video, `calc` finds Calculator. Your own entries always come first, and the things you open most rise to the top. To switch this off, untick **Every app on this Mac opens by name too** in settings.
 
-Make an entry for an app when you want a nickname (`wa` for WhatsApp) or to fix which app a name opens. **Add an app** opens the usual file picker on your Applications folder: pick the app and Brochacho fills in everything, icon included. On an existing app entry, **Choose app…** swaps the app. You never need to know a "bundle identifier" again; if one in the config is wrong, Brochacho still finds the app by its name.
+Make an entry for an app when you want a nickname (`wa` for WhatsApp) or to fix which app a name opens. **Add an app** opens the usual file picker on your Applications folder: pick the app and Consigliere fills in everything, icon included. On an existing app entry, **Choose app…** swaps the app. You never need to know a "bundle identifier" again; if one in the config is wrong, Consigliere still finds the app by its name.
 
 If a new name is exactly the same as one you already have, it warns you.
 
@@ -507,13 +507,13 @@ Inside the open notch: **Enter** runs the highlighted row, **↑ ↓** move the 
 
 **Right-click the notch** for a small menu: Settings, Mute him, Cancel the timer (when one is running), Quit.
 
-**The tutorial.** Three slides that cover everything: they show once the first time Brochacho starts, and after that whenever you type `help`, or press the **?** at the bottom of the settings window. The hotkeys on the slides are whatever yours are set to.
+**The tutorial.** Three slides that cover everything: they show once the first time Consigliere starts, and after that whenever you type `help`, or press the **?** at the bottom of the settings window. The hotkeys on the slides are whatever yours are set to.
 
 ---
 
 ## 16. The config file, key by key
 
-`~/.brochacho/config.json`. It is created with sensible defaults the first time the app runs. **Every key is optional**: leave one out and the default is used. If you make a typo that breaks the file, the app uses defaults for that run and **leaves your file alone**, so a mistake never wipes your settings.
+`~/.consigliere/config.json`. It is created with sensible defaults the first time the app runs. **Every key is optional**: leave one out and the default is used. If you make a typo that breaks the file, the app uses defaults for that run and **leaves your file alone**, so a mistake never wipes your settings.
 
 ```json
 {
@@ -535,7 +535,7 @@ Inside the open notch: **Enter** runs the highlighted row, **↑ ↓** move the 
   "feedback": { "sounds": true, "volume": 0.5, "haptics": true },
   "includeInstalledApps": true,
   "jobs": { "dayStart": "09:00", "bedtime": "00:30", "cooldownMinutes": 45, "laterMinutes": 30, "maxLevel": 3, "roamMinutes": 3, "openListAt": "10:00", "bindings": {} },
-  "character": { "folder": "~/.brochacho/character", "size": 64, "roam": false, "facesLeft": false },
+  "character": { "folder": "~/.consigliere/character", "size": 64, "roam": false, "facesLeft": false },
   "music": { "player": "spotify" },
   "catalog": [ ]
 }
@@ -580,14 +580,14 @@ Inside the open notch: **Enter** runs the highlighted row, **↑ ↓** move the 
 
 | File | What it holds |
 |---|---|
-| `~/.brochacho/config.json` | every setting and every entry |
-| `~/.brochacho/usage.json` | how often you open each thing, for tie-breaking |
-| `~/.brochacho/line-state.json` | which lines he used recently, so he does not repeat |
-| `~/.brochacho/captures.json` | the last 50 notes and reminders made from the notch, for the glance |
-| `~/.brochacho/jobs.json` | today's jobs: what is done, skipped, still owed, and when he last came out |
-| `~/.brochacho/character/` | your own pictures for the character, if you have any (section 21) |
-| iCloud Drive `/Brochacho/stash.json` | the stash. If iCloud Drive is off, it lives in `~/.brochacho/` instead. |
-| iCloud Drive `/Shortcuts/Brochacho/` | the three small text files the iPhone shortcuts and the Mac pass back and forth (`docs/IPHONE.md`) |
+| `~/.consigliere/config.json` | every setting and every entry |
+| `~/.consigliere/usage.json` | how often you open each thing, for tie-breaking |
+| `~/.consigliere/line-state.json` | which lines he used recently, so he does not repeat |
+| `~/.consigliere/captures.json` | the last 50 notes and reminders made from the notch, for the glance |
+| `~/.consigliere/jobs.json` | today's jobs: what is done, skipped, still owed, and when he last came out |
+| `~/.consigliere/character/` | your own pictures for the character, if you have any (section 21) |
+| iCloud Drive `/Consigliere/stash.json` | the stash. If iCloud Drive is off, it lives in `~/.consigliere/` instead. |
+| iCloud Drive `/Shortcuts/Consigliere/` | the three small text files the iPhone shortcuts and the Mac pass back and forth (`docs/IPHONE.md`) |
 
 All plain text. You can open, read and back up any of them. If the stash file is ever damaged (a half-finished sync, say), the app moves it aside under a new name and starts a fresh one. **It never deletes it.**
 
@@ -601,7 +601,7 @@ This section will grow once the app has actually run. What can already be predic
 |---|---|---|
 | A site opens in the wrong Brave profile | the profile folder names in the config are wrong | find the real names (DAY_ONE.md) and set `brave.personalProfileDir` / `workProfileDir` |
 | Hold-to-talk does nothing | microphone or speech permission was refused | System Settings → Privacy & Security → Microphone, and Speech Recognition |
-| Save hotkey does nothing | macOS blocked Brochacho from asking Brave for its tab | System Settings → Privacy & Security → Automation → allow Brochacho to control Brave |
+| Save hotkey does nothing | macOS blocked Consigliere from asking Brave for its tab | System Settings → Privacy & Security → Automation → allow Consigliere to control Brave |
 | The voice is not Italian | no Italian voice installed | System Settings → Accessibility → Spoken Content → System Voice → Manage Voices → Italian |
 | Settings seem ignored after you edited the file | a typo broke the file, so defaults are in use | fix the typo. Your file was not touched. |
 | The tuner is jumpy on the lowest string in Drop B or Drop A | laptop microphones are weak at those pitches | pluck closer to the laptop, or tune that string by ear from the one above |
@@ -674,7 +674,7 @@ He lives in the notch: he sits beside his lines when the notch opens. **He does 
 - **He gets bolder when ignored.** If nobody clicks him for three minutes he flies home, and next time he comes out bolder: first he bobs under the notch, then drifts along the top, then wanders the upper third bigger, then loops round the middle of the screen twice the size. Any click resets him.
 - **He never speaks first.** The voice only comes once you click.
 - **He leaves you alone** before `jobs.dayStart` (09:00), when nobody has touched the Mac for five minutes, for 45 minutes after each visit (10 for jobs with a time), during `quiet`, and in Focus modes you choose:
-  **System Settings → Focus → (say, Study) → Focus filters → Add filter → Brochacho → switch on "Stay in the notch".** In those Focus modes a small head peeks out beside the notch instead; click it for the list.
+  **System Settings → Focus → (say, Study) → Focus filters → Add filter → Consigliere → switch on "Stay in the notch".** In those Focus modes a small head peeks out beside the notch instead; click it for the list.
 - **Bedtime.** After `jobs.bedtime` (00:30) he comes out about one job only: bed. **going** closes the books (section 22) and he stops; **10 more** gives you ten minutes.
 - **Mouse clicks go through.** He is in a window exactly his size, so a click anywhere else lands on whatever is underneath.
 
@@ -691,15 +691,15 @@ He lives in the notch: he sits beside his lines when the notch opens. **He does 
 
 He never lingers: left alone for 12 seconds he flies home by himself, and after 45 seconds out he goes home whatever he is doing. Typing `pet` while he is out brings him over to the cursor. `go home` works when he is out about a job too: it means "not now", like closing his card, and does not count as ignoring him. He talks only right after something you did to him. You can drag and pet him when he is out about a job too; a click then opens the job card as usual.
 
-**Your own character.** Put pictures in `~/.brochacho/character/`: an **animated GIF** called `idle.gif` (plus `fly.gif` if flying should look different), or numbered PNGs `idle_0.png`, `idle_1.png`… and `fly_0.png`…. Any one GIF, or any PNGs, in the folder also work. A GIF plays at its own speed. Most game sprites face left: tick **The pictures face left** in settings (`character.facesLeft`) so he turns the right way when he flies. Pixel art stays sharp. Press **Save** in settings (or restart) to load them.
+**Your own character.** Put pictures in `~/.consigliere/character/`: an **animated GIF** called `idle.gif` (plus `fly.gif` if flying should look different), or numbered PNGs `idle_0.png`, `idle_1.png`… and `fly_0.png`…. Any one GIF, or any PNGs, in the folder also work. A GIF plays at its own speed. Most game sprites face left: tick **The pictures face left** in settings (`character.facesLeft`) so he turns the right way when he flies. Pixel art stays sharp. Press **Save** in settings (or restart) to load them.
 
 On Adi's Mac the folder holds **Gengar in a mafia fedora**: Gengar's animated sprite from Pokémon Black and White (Pokémon Showdown's sprite collection, `play.pokemonshowdown.com/sprites/gen5ani/gengar.gif`), with a pixel fedora put on every frame by `scripts/hat.py`:
 
 ```
-python3 scripts/hat.py gengar.gif ~/.brochacho/character/idle.gif
+python3 scripts/hat.py gengar.gif ~/.consigliere/character/idle.gif
 ```
 
-The script finds the top of his head in each frame, so the hat follows him as he moves; it works on other characters too (tweak `SINK` if it sits too high or low). Dragonite, the one before, is kept in `~/.brochacho/characters-retired/`. Without a folder he is the little orange dragon that ships with the app. Art that belongs to someone else (a Dragonite) stays in that folder and never goes into the repo.
+The script finds the top of his head in each frame, so the hat follows him as he moves; it works on other characters too (tweak `SINK` if it sits too high or low). Dragonite, the one before, is kept in `~/.consigliere/characters-retired/`. Without a folder he is the little orange dragon that ships with the app. Art that belongs to someone else (a Dragonite) stays in that folder and never goes into the repo.
 
 Settings: **settings → Jobs and music**, or `character.size`, `character.roam` (off, the default: he never leaves the notch for a job; a waiting job only shows his head), `jobs.maxLevel` (0 to 3: how bold he may get), `jobs.roamMinutes`.
 
@@ -707,7 +707,7 @@ Settings: **settings → Jobs and music**, or `character.size`, `character.roam`
 
 **Status:** Mac app builds, never run
 
-- `diary long day, good one` adds a line, with the time, to **one Apple Notes note per day** ("Brochacho diary · 11 Oct 2026").
+- `diary long day, good one` adds a line, with the time, to **one Apple Notes note per day** ("Consigliere diary · 11 Oct 2026").
 - `diary` on its own opens today's.
 - When you tell him **going** at bedtime, the day's jobs (done, skipped, still owed) are written into the same note. That is the whole record: no charts.
 
@@ -729,18 +729,18 @@ Settings: **settings → Jobs and music**, or `character.size`, `character.roam`
 
 **Apple Music**: set **Music plays in** to Apple Music. It searches your library and plays the first match. No key needed.
 
-The first time, macOS asks whether Brochacho may control Spotify (or Music). Say yes once.
+The first time, macOS asks whether Consigliere may control Spotify (or Music). Say yes once.
 
-**If it does not play**, the notch says why, and `cat ~/.brochacho/music.log` shows every step of the last try (never the keys). "Invalid client secret" there means the secret in settings is wrong: copy it again from the dashboard (**View client secret**) and paste it into an empty box.
+**If it does not play**, the notch says why, and `cat ~/.consigliere/music.log` shows every step of the last try (never the keys). "Invalid client secret" there means the secret in settings is wrong: copy it again from the dashboard (**View client secret**) and paste it into an empty box.
 
 ---
 
 ## Updating to a new version
 
-When new code is ready, one command does everything: gets it, builds it, signs it, replaces the app in Applications and starts it. New built-in commands (like `flip`, `settings`, `help` and `bored`, all added after the first release) are added to your config automatically the next time Brochacho starts after an update. If you had deliberately deleted one of them in Settings, it stays deleted; only genuinely new commands get added.
+When new code is ready, one command does everything: gets it, builds it, signs it, replaces the app in Applications and starts it. New built-in commands (like `flip`, `settings`, `help` and `bored`, all added after the first release) are added to your config automatically the next time Consigliere starts after an update. If you had deliberately deleted one of them in Settings, it stays deleted; only genuinely new commands get added.
 
 ```
-~/Code/brochacho/scripts/install.sh
+~/Code/consigliere/scripts/install.sh
 ```
 
 The first time takes a few minutes; after that about a minute. If you added your Apple ID in Xcode (Settings → Accounts), the app is signed the same way every time and macOS keeps its permissions between updates. Without it, macOS may ask for the microphone and the other permissions again after an update.

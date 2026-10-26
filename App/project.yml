@@ -1,7 +1,7 @@
 # The Xcode project is generated from this file, so the project itself is never edited or committed.
 #   brew install xcodegen
-#   cd App && xcodegen generate && open Brochacho.xcodeproj
-name: Brochacho
+#   cd App && xcodegen generate && open Consigliere.xcodeproj
+name: Consigliere
 
 options:
   bundleIdPrefix: com.adi
@@ -11,7 +11,7 @@ options:
 
 packages:
   # The brain: matching, stash, lines, tuner maths, timer, reminders, asking. Lives at the repo root.
-  BrochachoCore:
+  ConsigliereCore:
     path: ..
   # The notch window. A copy of DynamicNotchKit 1.1.0 with two small edits: see Vendor/DynamicNotchKit/PATCHES.md.
   DynamicNotchKit:
@@ -25,31 +25,33 @@ packages:
     path: RotationBridge
 
 targets:
-  Brochacho:
+  Consigliere:
     type: application
     platform: macOS
     sources:
-      - path: Brochacho
+      - path: Consigliere
     dependencies:
-      - package: BrochachoCore
+      - package: ConsigliereCore
       - package: DynamicNotchKit
       - package: HotKey
       - package: RotationBridge
     info:
-      path: Brochacho/Info.plist
+      path: Consigliere/Info.plist
       properties:
-        CFBundleDisplayName: Brochacho
+        CFBundleDisplayName: Consigliere
         CFBundleShortVersionString: "0.1"
         CFBundleVersion: "1"
         # No Dock icon and no menu bar of its own. It lives in the notch.
         LSUIElement: true
-        NSMicrophoneUsageDescription: "Brochacho listens while you hold the talk key, and while the tuner is open."
-        NSSpeechRecognitionUsageDescription: "Brochacho turns what you say into the name of the thing to open. It happens on this Mac."
-        NSAppleEventsUsageDescription: "Brochacho asks your browser which page is in front so it can save it, and asks Notes to make a note."
-        NSRemindersUsageDescription: "Brochacho adds the reminders you type into the notch."
-        NSRemindersFullAccessUsageDescription: "Brochacho adds the reminders you type into the notch."
+        NSMicrophoneUsageDescription: "Consigliere listens while you hold the talk key, and while the tuner is open."
+        NSSpeechRecognitionUsageDescription: "Consigliere turns what you say into the name of the thing to open. It happens on this Mac."
+        NSAppleEventsUsageDescription: "Consigliere asks your browser which page is in front so it can save it, and asks Notes to make a note."
+        NSRemindersUsageDescription: "Consigliere adds the reminders you type into the notch."
+        NSRemindersFullAccessUsageDescription: "Consigliere adds the reminders you type into the notch."
     settings:
       base:
+        # Still the app's old name on purpose. macOS files the permissions (microphone, Reminders, Automation)
+        # and the saved settings under this identifier, so changing it would make the Mac forget them all.
         PRODUCT_BUNDLE_IDENTIFIER: com.adi.brochacho
         SWIFT_VERSION: "5.0"
         MACOSX_DEPLOYMENT_TARGET: "13.0"

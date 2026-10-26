@@ -1,4 +1,4 @@
-"""Writes Sources/BrochachoCore/DefaultCatalog.swift from defaults/catalog.json,
+"""Writes Sources/ConsigliereCore/DefaultCatalog.swift from defaults/catalog.json,
 so the Swift defaults and the JS reference can never drift apart."""
 import json, pathlib
 root = pathlib.Path(__file__).resolve().parent.parent
@@ -24,5 +24,5 @@ public enum DefaultCatalog {
     ]
 }
 ''' % ',\n'.join(rows)
-(root / 'Sources' / 'BrochachoCore' / 'DefaultCatalog.swift').write_text(out)
+(root / 'Sources' / 'ConsigliereCore' / 'DefaultCatalog.swift').write_text(out)
 print('wrote DefaultCatalog.swift with', len(rows), 'entries')

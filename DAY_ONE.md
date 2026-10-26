@@ -1,4 +1,4 @@
-# Day one: from a fresh Mac to Brochacho running
+# Day one: from a fresh Mac to Consigliere running
 
 Set aside an afternoon. Most of it is waiting for Xcode to download. The code already **compiles and passes its tests on GitHub's cloud Mac**, so the build should go through; what has never happened is *running* it, and that is where today's surprises will be.
 
@@ -21,16 +21,16 @@ Claude Code can run the builds, read the errors and fix the files itself. A norm
 No Terminal needed.
 
 1. Open Xcode. On the welcome screen choose **Clone Git Repository…** (or Source Control → Clone… from the menu).
-2. Paste `https://github.com/adisharma200606-star/brochacho.git` and press Clone.
+2. Paste `https://github.com/adisharma200606-star/consigliere.git` and press Clone.
 3. It will ask you to sign in to GitHub. Choose **Sign in with your GitHub account** (or Xcode → Settings → Accounts → + → GitHub). A personal access token works as the password if it asks for one.
 4. Pick a folder to keep it in, such as `~/Code`.
 
-Xcode may open the folder as a Swift package (the brain). That is fine, but it is not the app. Close it and instead open **`App/Brochacho.xcodeproj`** from the cloned folder (File → Open…). The project file is generated on GitHub's cloud Mac and kept up to date there.
+Xcode may open the folder as a Swift package (the brain). That is fine, but it is not the app. Close it and instead open **`App/Consigliere.xcodeproj`** from the cloned folder (File → Open…). The project file is generated on GitHub's cloud Mac and kept up to date there.
 
 ## 3. Check the brain (optional, needs Terminal)
 
 ```
-cd ~/Code/brochacho
+cd ~/Code/consigliere
 swift test        # 41 tests. These pass on the cloud Mac.
 ```
 
@@ -38,9 +38,9 @@ If it fails on your Mac, tell Claude. One rule: **never edit anything in `fixtur
 
 ## 4. Build the app
 
-With `App/Brochacho.xcodeproj` open in Xcode:
+With `App/Consigliere.xcodeproj` open in Xcode:
 
-1. Click the blue **Brochacho** project at the top of the left sidebar, then the **Brochacho** target, then **Signing & Capabilities**.
+1. Click the blue **Consigliere** project at the top of the left sidebar, then the **Consigliere** target, then **Signing & Capabilities**.
 2. Under **Team**, choose your name ("Personal Team"). If it is not there, add your Apple ID under Xcode → Settings → Accounts. It is free.
    *Why this matters:* macOS remembers permissions (microphone, controlling Brave) per signed app. Without a team, every rebuild looks like a new app and macOS asks again, every time.
 3. Press **⌘R** to build and run. It builds cleanly on the cloud Mac, so it should here too. If not, give the errors to Claude.
@@ -74,7 +74,7 @@ System Settings → Accessibility → Spoken Content → System Voice → **Mana
 
 ## 8. Bring your tuned look over
 
-In the phone prototype open **Settings to copy** and copy. Then `settings` → **Hotkeys and files** → **Show the config file in Finder**, open `config.json` in a text editor, and paste the `theme` and `feedback` blocks over the ones there. Quit and reopen Brochacho.
+In the phone prototype open **Settings to copy** and copy. Then `settings` → **Hotkeys and files** → **Show the config file in Finder**, open `config.json` in a text editor, and paste the `theme` and `feedback` blocks over the ones there. Quit and reopen Consigliere.
 
 ## 9. The API key, for Ask
 
@@ -109,7 +109,7 @@ Tick these off. When one fails, look it up in `BLIND_SPOTS.md` before anything e
 - [ ] `jobs stretch in 1 minute`: a minute later he flies out of the notch without a sound (give it up to 30 seconds more)
 - [ ] click him: the card opens beside him; **start it**: the starter opens first, then he speaks
 - [ ] ignore him for three minutes: he flies home, and the next visit is bolder
-- [ ] add the Brochacho Focus filter to a Focus mode with "Stay in the notch" on, turn that Focus on: he stays home and only his head shows beside the notch
+- [ ] add the Consigliere Focus filter to a Focus mode with "Stay in the notch" on, turn that Focus on: he stays home and only his head shows beside the notch
 - [ ] `play beabadoobee` (with the Spotify keys in settings) plays; `pause` and `next` work
 - [ ] `diary testing` makes today's diary note in Notes
 - [ ] `yt` still opens YouTube in under 1.5 seconds
@@ -118,7 +118,7 @@ If something here misbehaves, `BLIND_SPOTS.md` section E is where the guesses ar
 
 ## 11. Make it start by itself
 
-In Xcode: Product → Show Build Folder in Finder → `Products/Debug/Brochacho.app`. Drag it to Applications. Then System Settings → General → Login Items → **+** → Brochacho.
+In Xcode: Product → Show Build Folder in Finder → `Products/Debug/Consigliere.app`. Drag it to Applications. Then System Settings → General → Login Items → **+** → Consigliere.
 
 ## Afterwards
 
@@ -129,7 +129,7 @@ In Xcode: Product → Show Build Folder in Finder → `Products/Debug/Brochacho.
 ## Updating, from now on
 
 ```
-~/Code/brochacho/scripts/install.sh
+~/Code/consigliere/scripts/install.sh
 ```
 
 It gets the newest code, builds it, signs it, replaces the app in Applications and starts it. No Xcode window needed. See "Updating to a new version" at the end of `docs/GUIDE.md`.

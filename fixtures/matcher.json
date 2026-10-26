@@ -172,7 +172,7 @@
       "display": "Settings",
       "aliases": [
         "preferences",
-        "brochacho"
+        "consigliere"
       ],
       "kind": "tool",
       "target": "settings"
@@ -922,6 +922,10 @@
         {
           "name": "claude",
           "band": "prefix"
+        },
+        {
+          "name": "settings",
+          "band": "subsequence"
         }
       ],
       "plan": {
@@ -2771,7 +2775,7 @@
       }
     },
     {
-      "input": "brochacho open steam",
+      "input": "consigliere open steam",
       "usage": {},
       "mode": "open",
       "confident": true,

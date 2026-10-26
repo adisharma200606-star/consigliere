@@ -1,11 +1,11 @@
 #!/bin/bash
-# Updates Brochacho on this Mac in one go:
+# Updates Consigliere on this Mac in one go:
 #   1. gets the newest code from GitHub
 #   2. builds the app (a Release build, so it runs fast)
 #   3. signs it the same way every time, so macOS keeps its permissions
 #   4. puts it in /Applications and starts it
 #
-# Run it from anywhere:   ~/Code/brochacho/scripts/install.sh
+# Run it from anywhere:   ~/Code/consigliere/scripts/install.sh
 # It needs Xcode. It does not need Homebrew or xcodegen: the Xcode project is kept in the repo.
 set -euo pipefail
 
@@ -17,13 +17,13 @@ if [ "${SKIP_PULL:-0}" != "1" ]; then
   say "1/4  Getting the newest code"
   # Xcode rewrites the project file whenever a setting is touched, which would block the update.
   # That file is generated anyway, so local changes to it are thrown away.
-  git checkout -- App/Brochacho.xcodeproj 2>/dev/null || true
+  git checkout -- App/Consigliere.xcodeproj 2>/dev/null || true
   git pull --ff-only
 fi
 
 say "2/4  Building (the first time takes a few minutes)"
 BUILD="$REPO/App/build"
-xcodebuild -project App/Brochacho.xcodeproj -scheme Brochacho -configuration Release \
+xcodebuild -project App/Consigliere.xcodeproj -scheme Consigliere -configuration Release \
   -derivedDataPath "$BUILD" -destination 'platform=macOS' \
   CODE_SIGN_IDENTITY="-" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO \
   build > "$BUILD.log" 2>&1 || {
@@ -31,7 +31,7 @@ xcodebuild -project App/Brochacho.xcodeproj -scheme Brochacho -configuration Rel
     echo "The build failed. The full log is in App/build.log. Paste the lines above to Claude."
     exit 1
   }
-APP="$BUILD/Build/Products/Release/Brochacho.app"
+APP="$BUILD/Build/Products/Release/Consigliere.app"
 
 say "3/4  Signing"
 # macOS remembers permissions (microphone, Reminders, controlling Brave) per signature. Signing with the
@@ -53,9 +53,11 @@ if [ "${SKIP_INSTALL:-0}" = "1" ]; then
 fi
 
 say "4/4  Installing"
+pkill -x Consigliere 2>/dev/null || true
+# The app was called Brochacho until 26 October 2026. Stop and remove that copy too, so only one lives in the notch.
 pkill -x Brochacho 2>/dev/null || true
 sleep 0.5
-rm -rf /Applications/Brochacho.app
+rm -rf /Applications/Consigliere.app /Applications/Brochacho.app
 cp -R "$APP" /Applications/
-open /Applications/Brochacho.app
-say "Done. Brochacho is running from /Applications."
+open /Applications/Consigliere.app
+say "Done. Consigliere is running from /Applications."

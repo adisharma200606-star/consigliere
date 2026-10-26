@@ -1,8 +1,8 @@
 /*
- * Brochacho reference core.
+ * Consigliere reference core.
  *
  * This file is the source of truth for HOW the brain behaves. The Swift
- * package BrochachoCore is a port of this file and must reproduce the golden
+ * package ConsigliereCore is a port of this file and must reproduce the golden
  * fixtures in /fixtures exactly. Keep it dependency-free and deterministic:
  * time and randomness are always injected.
  */
@@ -195,7 +195,7 @@
   // "play me some youtube" and "open the downloads folder" work without
   // there being any command language to learn.
   var FILLER = ['open', 'launch', 'start', 'run', 'go', 'goto', 'to', 'play', 'me', 'some', 'the',
-    'my', 'show', 'please', 'hey', 'yo', 'brochacho', 'up', 'a', 'set'];
+    'my', 'show', 'please', 'hey', 'yo', 'consigliere', 'up', 'a', 'set'];
 
   // Asking. The box works like a browser's address bar: a name opens the thing, anything that reads
   // like a question gets asked. There is still no command to learn.
@@ -542,5 +542,5 @@
     ASK_RULES: ASK_RULES, wantsClipboard: wantsClipboard, buildAsk: buildAsk, shapeAnswer: shapeAnswer
   };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
-  else root.BrochachoCore = api;
+  else root.ConsigliereCore = api;
 })(typeof self !== 'undefined' ? self : this);

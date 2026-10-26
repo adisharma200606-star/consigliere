@@ -61,7 +61,7 @@ struct NotchView<Expanded, CompactLeading, CompactTrailing>: View where Expanded
                     .foregroundStyle(.black)
                     .padding(-50) // The opening/closing animation can overshoot, so this makes sure that it's still black
             }
-            // BROCHACHO PATCH 3 of 3 (drawing): the grain and the rim line, only while expanded. Both sit inside
+            // CONSIGLIERE PATCH 3 of 3 (drawing): the grain and the rim line, only while expanded. Both sit inside
             // the mask, so they follow the notch's shape exactly.
             .overlay {
                 if dynamicNotch.state == .expanded, let grain = dynamicNotch.grainImage {

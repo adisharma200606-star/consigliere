@@ -3,7 +3,7 @@
 | What | Where | Licence | How it is used |
 |---|---|---|---|
 | DynamicNotchKit 1.1.0, by Kai Azim | `App/Vendor/DynamicNotchKit` (a copy) | MIT, see `App/Vendor/DynamicNotchKit/LICENSE` | The window that grows out of the notch. Copied in rather than downloaded because two small edits were needed for the glow; they are listed in `App/Vendor/DynamicNotchKit/PATCHES.md`. |
-| IBM Plex Mono, by IBM | `App/Brochacho/Resources/fonts` | SIL Open Font License 1.1, see `IBMPlexMono-OFL.txt` beside the fonts | The small monospaced labels in the Nocturne look. |
+| IBM Plex Mono, by IBM | `App/Consigliere/Resources/fonts` | SIL Open Font License 1.1, see `IBMPlexMono-OFL.txt` beside the fonts | The small monospaced labels in the Nocturne look. |
 | HotKey 0.2.1, by Sam Soffes | fetched by Xcode from github.com/soffes/HotKey | MIT | Global hotkeys, including key-up for hold-to-talk. |
 
 Read for ideas only, no code taken: [Boring Notch](https://github.com/TheBoredTeam/boring.notch) and NotchDrop, which both put a file shelf in the notch.

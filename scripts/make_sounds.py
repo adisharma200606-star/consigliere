@@ -1,13 +1,13 @@
-"""Synthesises Brochacho's interface sounds as small WAV files. No samples, no downloads: every sound is
+"""Synthesises Consigliere's interface sounds as small WAV files. No samples, no downloads: every sound is
 a few sine waves with a soft attack and a natural decay, so they are glassy and quiet rather than beepy.
 
-Writes App/Brochacho/Resources/sounds/<name>.wav. The phone prototype plays these same files, so what you
+Writes App/Consigliere/Resources/sounds/<name>.wav. The phone prototype plays these same files, so what you
 hear on the phone is exactly what ships on the Mac.
 """
 import math, pathlib, struct, wave
 
 RATE = 44100
-OUT = pathlib.Path(__file__).resolve().parent.parent / 'App' / 'Brochacho' / 'Resources' / 'sounds'
+OUT = pathlib.Path(__file__).resolve().parent.parent / 'App' / 'Consigliere' / 'Resources' / 'sounds'
 
 def voice(length, start, f0, f1, tau, amp, partials=((1, 1.0),), glide=None):
     """One decaying tone. f0 -> f1 is a pitch glide over `glide` seconds (default: the whole tone)."""

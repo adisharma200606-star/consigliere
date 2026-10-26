@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Brochacho notch — feel test</title>
+<title>Consigliere notch — feel test</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;800&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
 <style>
@@ -177,7 +177,7 @@
 </head>
 <body>
 <div class="wrap">
-  <h1>Brochacho, in the notch</h1>
+  <h1>Consigliere, in the notch</h1>
   <p class="lede">This is the top of your Mac screen, zoomed in. Try the three gestures, then tune the feel. The numbers you settle on go straight into the Mac app.</p>
 
   <div class="stage-holder">
@@ -307,12 +307,12 @@
 <script>
 (function () {
   'use strict';
-  var core = self.BrochachoCore;
+  var core = self.ConsigliereCore;
   var CATALOG = /*__CATALOG__*/[];
   var BANK = /*__LINES__*/{};
   var SOUNDS = /*__SOUNDS__*/{};
-  var capture = self.BrochachoCapture;
-  var tunerCore = self.BrochachoTuner;
+  var capture = self.ConsigliereCapture;
+  var tunerCore = self.ConsigliereTuner;
   var TUNINGS = /*__TUNINGS__*/[];
 
   var DEFAULTS = {
@@ -327,7 +327,7 @@
     mint:   { colors: ['#30D158', '#64D2FF', '#0A84FF'], tint: '#D4F7E6' },
     mono:   { colors: ['#FFFFFF', '#FFFFFF', '#FFFFFF'], tint: '#FFFFFF' }
   };
-  var STORE = 'brochacho.feel.v2';
+  var STORE = 'consigliere.feel.v2';
   function rgba(hex, alpha) {
     var v = parseInt(hex.slice(1), 16);
     return 'rgba(' + ((v >> 16) & 255) + ',' + ((v >> 8) & 255) + ',' + (v & 255) + ',' + alpha.toFixed(3) + ')';
@@ -797,7 +797,7 @@
   }
 
   // ---------------------------------------------------------------- timer
-  var extras = self.BrochachoExtras, countdown = null, countdownTick = null;
+  var extras = self.ConsigliereExtras, countdown = null, countdownTick = null;
   function startCountdown(argument) {
     var seconds = argument ? extras.parseDuration(argument) : null;
     if (!seconds) {
@@ -923,7 +923,7 @@
   if (canSpeak) speechSynthesis.onvoiceschanged = loadVoices;
   else $('voiceNote').textContent = 'This viewer cannot speak. Open the page in your browser to hear him.';
 
-  window.__brochacho = { openTuner: openTuner, pluckForMe: pluckForMe, run: run, startTyping: startTyping, pull: pull, drop: drop, state: function () { return { mode: mode, open: open.x, log: $('logText').textContent, line: $('lineText').textContent }; } };
+  window.__consigliere = { openTuner: openTuner, pluckForMe: pluckForMe, run: run, startTyping: startTyping, pull: pull, drop: drop, state: function () { return { mode: mode, open: open.x, log: $('logText').textContent, line: $('lineText').textContent }; } };
 })();
 </script>
 </body>

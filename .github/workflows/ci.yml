@@ -1,4 +1,4 @@
-# Compiles and tests Brochacho on a real Mac in the cloud.
+# Compiles and tests Consigliere on a real Mac in the cloud.
 #
 # Why this exists: the code was written on a phone, with no Mac and no Swift compiler to hand.
 # Every push to main runs the tests on a GitHub macOS machine, so "never been compiled" stops being true.
@@ -60,12 +60,12 @@ jobs:
           brew install xcodegen 2>&1 | tail -3 | tee -a app.log
           cd App
           xcodegen generate 2>&1 | tee -a ../app.log
-          xcodebuild -project Brochacho.xcodeproj -scheme Brochacho -configuration Debug \
+          xcodebuild -project Consigliere.xcodeproj -scheme Consigliere -configuration Debug \
             -destination 'platform=macOS' CODE_SIGNING_ALLOWED=NO build 2>&1 | tee ../app-full.log | grep -E "error:|warning: unre|BUILD|\*\*" | tee -a ../app.log
 
       - name: The one-command install script builds too
         id: install
-        if: hashFiles('App/Brochacho.xcodeproj/project.pbxproj') != ''
+        if: hashFiles('App/Consigliere.xcodeproj/project.pbxproj') != ''
         continue-on-error: true
         run: |
           set -o pipefail
@@ -76,9 +76,9 @@ jobs:
       - name: Commit the generated Xcode project
         if: steps.app.outcome == 'success'
         run: |
-          git config user.name "brochacho-ci"
+          git config user.name "consigliere-ci"
           git config user.email "ci@users.noreply.github.com"
-          git add -f App/Brochacho.xcodeproj/project.pbxproj App/Brochacho.xcodeproj/xcshareddata 2>/dev/null || true
+          git add -f App/Consigliere.xcodeproj/project.pbxproj App/Consigliere.xcodeproj/xcshareddata 2>/dev/null || true
           if git diff --cached --quiet; then
             echo "project unchanged"
           else
@@ -99,7 +99,7 @@ jobs:
             echo "app:      ${{ steps.app.outcome }}"
             echo "install:  ${{ steps.install.outcome }}"
           } > /tmp/ci-logs/SUMMARY.txt
-          git config user.name "brochacho-ci"
+          git config user.name "consigliere-ci"
           git config user.email "ci@users.noreply.github.com"
           git checkout --orphan ci-logs-new
           git rm -rf --quiet . || true

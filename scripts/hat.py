@@ -2,9 +2,9 @@
 
     python3 scripts/hat.py in.gif out.gif
 
-Used once to make ~/.brochacho/character/idle.gif (Gengar from Pokemon Showdown's gen5ani sprites, in a hat).
+Used once to make ~/.consigliere/character/idle.gif (Gengar from Pokemon Showdown's gen5ani sprites, in a hat).
 The hat is original pixel art and can live in the repo; the character it goes on stays in
-~/.brochacho/character/ and is never committed. Needs Pillow (`pip3 install pillow`).
+~/.consigliere/character/ and is never committed. Needs Pillow (`pip3 install pillow`).
 
 How it finds his head: in each frame, the topmost opaque row, and the middle of the opaque pixels in the
 fourteen rows below it. The hat sits there, its brim a few pixels down so it rests on the head rather than

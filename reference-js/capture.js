@@ -1,5 +1,5 @@
 /*
- * Brochacho capture: reading "remind me to call mom tomorrow at 5" into a title and a time.
+ * Consigliere capture: reading "remind me to call mom tomorrow at 5" into a title and a time.
  * Pure logic, no clock and no time zone of its own. The Swift package ports this file.
  *
  * Times are "wall-clock milliseconds": the number Date.UTC(y, m, d, h, min) would give for what the clock
@@ -148,5 +148,5 @@
 
   var api = { parseReminder: parseReminder, describeDue: describeDue };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
-  else root.BrochachoCapture = api;
+  else root.ConsigliereCapture = api;
 })(typeof self !== 'undefined' ? self : this);

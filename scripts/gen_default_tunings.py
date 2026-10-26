@@ -1,4 +1,4 @@
-"""Writes Sources/BrochachoCore/DefaultTunings.swift from defaults/tunings.json."""
+"""Writes Sources/ConsigliereCore/DefaultTunings.swift from defaults/tunings.json."""
 import json, pathlib
 root = pathlib.Path(__file__).resolve().parent.parent
 tunings = json.loads((root / 'defaults' / 'tunings.json').read_text())
@@ -14,5 +14,5 @@ public enum DefaultTunings {
     ]
 }
 ''' % ',\n'.join(rows)
-(root / 'Sources' / 'BrochachoCore' / 'DefaultTunings.swift').write_text(out)
+(root / 'Sources' / 'ConsigliereCore' / 'DefaultTunings.swift').write_text(out)
 print('wrote DefaultTunings.swift with', len(rows), 'tunings')

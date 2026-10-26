@@ -1,4 +1,4 @@
-# Brochacho — SPEC
+# Consigliere — SPEC
 
 A voice that lives in the MacBook notch. You type or say the name of a thing and it opens. You drag something onto the notch and it's saved. You click the notch when bored and it hands one saved thing back. After each action, an Italian voice says a short line. Nobody can see where the voice comes from.
 
@@ -53,7 +53,7 @@ Designed for but NOT built in this sprint: **Idle** — the collapsed notch sile
 
 Two parts. The split exists so that as much as possible can be tested **without a Mac**.
 
-### 4.1 `BrochachoCore` — Swift package, Foundation only
+### 4.1 `ConsigliereCore` — Swift package, Foundation only
 
 No AppKit, no SwiftUI, no AVFoundation. Must build and pass `swift test` on Linux.
 
@@ -63,10 +63,10 @@ No AppKit, no SwiftUI, no AVFoundation. Must build and pass `swift test` on Linu
 | `Matcher` | Text in → ranked catalog entries out. |
 | `Stash` | Saved items: add, serve, mark opened, persistence. |
 | `Lines` | Picks which line to say (or none). |
-| `Config` | Reads/writes `~/.brochacho/config.json`. Codable, with defaults. |
+| `Config` | Reads/writes `~/.consigliere/config.json`. Codable, with defaults. |
 | `ActionPlan` | Turns a matched entry into a plain description of what to do (`.openURL(url, browser, profile)`, `.openApp(bundleID)`, `.openPath(path)`). Pure data. The app target executes it. |
 
-### 4.2 `Brochacho` — macOS app target (SwiftUI + AppKit)
+### 4.2 `Consigliere` — macOS app target (SwiftUI + AppKit)
 
 | Module | Job | Notes |
 |---|---|---|
@@ -117,7 +117,7 @@ Must be unit tested with a table of at least 60 cases, including speech-mangled 
 
 ## 6. Stash (`Stash`)
 
-File: `~/Library/Mobile Documents/com~apple~CloudDocs/Brochacho/stash.json` (iCloud Drive, so a phone Shortcut can append to it later). Falls back to `~/.brochacho/stash.json` if iCloud Drive is missing. Inject the path so tests use a temp dir.
+File: `~/Library/Mobile Documents/com~apple~CloudDocs/Consigliere/stash.json` (iCloud Drive, so a phone Shortcut can append to it later). Falls back to `~/.consigliere/stash.json` if iCloud Drive is missing. Inject the path so tests use a temp dir.
 
 Item: `id`, `kind` (url | text | file | image), `payload`, `title?`, `source` (drop | hotkey | phone), `savedAt`, `servedAt?`, `openedAt?`, `skippedCount`.
 
@@ -149,7 +149,7 @@ Writing rules:
 
 ## 8. Config
 
-`~/.brochacho/config.json`. Created with sane defaults on first run. Adding a thing = adding one object to `catalog`:
+`~/.consigliere/config.json`. Created with sane defaults on first run. Adding a thing = adding one object to `catalog`:
 
 ```json
 {
@@ -176,9 +176,9 @@ The whole app target is being written blind. So:
 
 1. **Never guess a third-party API.** Clone DynamicNotchKit and the hotkey library into `/reference`, read their source, and pin exact versions in `Package.swift` / `project.yml`.
 2. Clone `TheBoredTeam/boring.notch` and `Lakr233/NotchDrop` into `/reference` to study how they handle the notch window, hover, and drag-and-drop. **Read for technique; do not paste their code.** Check each LICENSE file first and note it in `REFERENCES.md`.
-3. Keep the app target thin. Any logic that can live in `BrochachoCore` must live there.
+3. Keep the app target thin. Any logic that can live in `ConsigliereCore` must live there.
 4. Every assumption that could not be verified goes in `BLIND_SPOTS.md` with the file and line it affects. This is the debugging map for day one.
-5. Try to install a Swift toolchain in the sandbox and actually run `swift test` for `BrochachoCore`. If the sandbox blocks it, say so clearly in `BLIND_SPOTS.md` — do not claim tests pass.
+5. Try to install a Swift toolchain in the sandbox and actually run `swift test` for `ConsigliereCore`. If the sandbox blocks it, say so clearly in `BLIND_SPOTS.md` — do not claim tests pass.
 6. Tests first for every Core module.
 
 ---
@@ -187,12 +187,12 @@ The whole app target is being written blind. So:
 
 ```
 SPEC.md                      this file
-Package.swift                BrochachoCore + tests
-Sources/BrochachoCore/...
-Tests/BrochachoCoreTests/...
+Package.swift                ConsigliereCore + tests
+Sources/ConsigliereCore/...
+Tests/ConsigliereCoreTests/...
 App/project.yml              XcodeGen
-App/Brochacho/...            the blind app target
-App/Brochacho/Resources/lines.json
+App/Consigliere/...            the blind app target
+App/Consigliere/Resources/lines.json
 BLIND_SPOTS.md               every unverified assumption
 REFERENCES.md                libraries + reference repos + their licences
 DAY_ONE.md                   exact steps for the first hour on the Mac
@@ -208,7 +208,7 @@ IDEAS.md                     parked features
 Spend in this order. Stop adding features after step 5; spend what's left on step 6.
 
 1. Repo skeleton + this spec committed.
-2. `BrochachoCore`: Config → Catalog → Matcher → Stash → Lines → ActionPlan. Tests first.
+2. `ConsigliereCore`: Config → Catalog → Matcher → Stash → Lines → ActionPlan. Tests first.
 3. `lines.json`: generate ~300, cut to the best ~200 against the rules in section 7.
 4. `/reference` clones + `REFERENCES.md`.
 5. App target: NotchController → Hotkeys → Executor → Mouth → DropTarget → TabGrabber → Ears. `project.yml`, Info.plist.
@@ -223,7 +223,7 @@ Spend in this order. Stop adding features after step 5; spend what's left on ste
 > Read SPEC.md fully. Do sprint steps 1 and 2 only. Tests first. Try to install a Swift toolchain and run `swift test`; if you can't, say so and record it in BLIND_SPOTS.md. Commit after each module.
 
 **Session 2**
-> Read SPEC.md section 7. Generate 300 candidate lines, then cut to the best 200 by the rules. Output `App/Brochacho/Resources/lines.json`. Show me 20 samples across categories before committing.
+> Read SPEC.md section 7. Generate 300 candidate lines, then cut to the best 200 by the rules. Output `App/Consigliere/Resources/lines.json`. Show me 20 samples across categories before committing.
 
 **Session 3**
 > Read SPEC.md sections 4, 9, 10. Do sprint step 4, then step 5. Read library source in /reference before using any API. Log every unverified assumption in BLIND_SPOTS.md. Commit per module.

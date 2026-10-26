@@ -173,7 +173,7 @@
       "display": "Settings",
       "aliases": [
         "preferences",
-        "brochacho"
+        "consigliere"
       ],
       "kind": "tool",
       "target": "settings"

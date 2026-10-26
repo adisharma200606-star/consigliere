@@ -1,5 +1,5 @@
 /*
- * Brochacho jobs: the day's list, what starts each job, and when he comes out of the notch about one.
+ * Consigliere jobs: the day's list, what starts each job, and when he comes out of the notch about one.
  * Pure logic, no clock of its own. The Swift package ports this file (Jobs.swift and Nudge.swift).
  *
  * Every time here is in "wall-clock milliseconds", the same idea as capture.js: the number Date.UTC would
@@ -11,9 +11,9 @@
 (function (root) {
   'use strict';
 
-  var core = typeof require === 'function' ? require('./core.js') : root.BrochachoCore;
-  var extras = typeof require === 'function' ? require('./extras.js') : root.BrochachoExtras;
-  var capture = typeof require === 'function' ? require('./capture.js') : root.BrochachoCapture;
+  var core = typeof require === 'function' ? require('./core.js') : root.ConsigliereCore;
+  var extras = typeof require === 'function' ? require('./extras.js') : root.ConsigliereExtras;
+  var capture = typeof require === 'function' ? require('./capture.js') : root.ConsigliereCapture;
 
   var MIN = 60000, HOUR = 3600000, DAY = 86400000;
   /** A job day runs from 04:00 to 04:00, so a job typed at 1 a.m. still belongs to the evening before. */
@@ -366,5 +366,5 @@
     nextNudge: nextNudge, appeared: appeared, ignored: ignored, describeJob: describeJob, ledger: ledger
   };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
-  else root.BrochachoJobs = api;
+  else root.ConsigliereJobs = api;
 })(typeof self !== 'undefined' ? self : this);

@@ -1,4 +1,4 @@
-# Brochacho on the iPhone
+# Consigliere on the iPhone
 
 **Status:** designed, never run. The Mac-side logic that reads these files is built and tested. The two shortcuts below have not been built on a real iPhone yet, and Apple renames Shortcuts actions between iOS versions, so expect one or two steps to be worded differently on your phone. Tell me which and I will fix this page.
 
@@ -6,7 +6,7 @@
 
 Two shortcuts. No app, no App Store, no developer account, nothing to pay for.
 
-1. **Save to Brochacho** sits in the share sheet. Share a link, a page or some text to it, and it is saved. It asks you nothing.
+1. **Save to Consigliere** sits in the share sheet. Share a link, a page or some text to it, and it is saved. It asks you nothing.
 2. **Bored** gives you back one thing you saved, and he says a line in the Italian voice.
 
 They work **with a Mac** (things saved on the phone show up in the Mac's stash, and things saved on the Mac come back on the phone) and **without one**. So someone with only an iPhone gets a complete save-and-get-back tool from these two shortcuts alone. Each person's stash lives in their own iCloud, so yours and hers never mix.
@@ -15,7 +15,7 @@ They work **with a Mac** (things saved on the phone show up in the Mac's stash, 
 
 iCloud gets confused when two devices write to the same file. So no file here is ever written by two devices:
 
-| File (in iCloud Drive → Shortcuts → Brochacho) | Who writes it | What is in it |
+| File (in iCloud Drive → Shortcuts → Consigliere) | Who writes it | What is in it |
 |---|---|---|
 | `phone-inbox.txt` | only the phone | one save per line: date, a space, the link or text |
 | `phone-opened.txt` | only the phone | one line each time Bored opens something |
@@ -25,9 +25,9 @@ The Mac reads the first two and folds them into its stash. It can do this over a
 
 ---
 
-## Shortcut 1: Save to Brochacho
+## Shortcut 1: Save to Consigliere
 
-Open the **Shortcuts** app → **+** → name it `Save to Brochacho`.
+Open the **Shortcuts** app → **+** → name it `Save to Consigliere`.
 
 Tap the **ⓘ** at the bottom → turn on **Show in Share Sheet**. Back in the editor, the first block now says *Receive … input from Share Sheet*. Tap the input types and keep only **URLs**, **Safari web pages**, **Articles** and **Text**. Where it says *If there's no input*, choose **Get Clipboard** (so it also works when you run it from the Home Screen).
 
@@ -46,10 +46,10 @@ Then add these actions in order. Search for each by name.
 | 9 | **Current Date** | |
 | 10 | **Format Date** | Date Format: **ISO 8601**. Turn on **Include ISO 8601 Time**. |
 | 11 | **Text** | *Formatted Date*, one space, then the variable *Thing* |
-| 12 | **Append to Text File** | Append *Text*. Folder: **Shortcuts**. File Path: `Brochacho/phone-inbox.txt`. **Make New Line** on. |
+| 12 | **Append to Text File** | Append *Text*. Folder: **Shortcuts**. File Path: `Consigliere/phone-inbox.txt`. **Make New Line** on. |
 | 13 | **Show Notification** | `Safe with me.` |
 
-Test it: open Safari, tap Share, pick **Save to Brochacho**. Then in the **Files** app look in iCloud Drive → Shortcuts → Brochacho. You should see `phone-inbox.txt` with one line in it that starts with today's date.
+Test it: open Safari, tap Share, pick **Save to Consigliere**. Then in the **Files** app look in iCloud Drive → Shortcuts → Consigliere. You should see `phone-inbox.txt` with one line in it that starts with today's date.
 
 The voice is left out of this one on purpose. Share-sheet shortcuts get very little time to run, and a notification is instant.
 
@@ -61,11 +61,11 @@ The voice is left out of this one on purpose. Share-sheet shortcuts get very lit
 
 | # | Action | Settings |
 |---|---|---|
-| 1 | **Get File from Folder** | Folder: **Shortcuts**. Path `Brochacho/phone-inbox.txt`. Turn **off** *Error If Not Found*. |
+| 1 | **Get File from Folder** | Folder: **Shortcuts**. Path `Consigliere/phone-inbox.txt`. Turn **off** *Error If Not Found*. |
 | 2 | **Set Variable** | Name `Inbox`, to *File* |
-| 3 | **Get File from Folder** | Path `Brochacho/for-phone.txt`. *Error If Not Found* **off**. |
+| 3 | **Get File from Folder** | Path `Consigliere/for-phone.txt`. *Error If Not Found* **off**. |
 | 4 | **Set Variable** | Name `FromMac`, to *File* |
-| 5 | **Get File from Folder** | Path `Brochacho/phone-opened.txt`. *Error If Not Found* **off**. |
+| 5 | **Get File from Folder** | Path `Consigliere/phone-opened.txt`. *Error If Not Found* **off**. |
 | 6 | **Text** | the *File* from step 5, then a space. (The space stops the next steps tripping over an empty file.) |
 | 7 | **Set Variable** | Name `Opened`, to *Text* |
 | 8 | **Text** | variable *Inbox*, a new line, variable *FromMac* |
@@ -83,7 +83,7 @@ The voice is left out of this one on purpose. Share-sheet shortcuts get very lit
 | 20 | &nbsp;&nbsp;**Set Variable** | Name `Pick`, to *Random Item* |
 | 21 | &nbsp;&nbsp;**Current Date** → **Format Date** | ISO 8601 with time, as in the first shortcut |
 | 22 | &nbsp;&nbsp;**Text** | *Formatted Date*, one space, *Pick* |
-| 23 | &nbsp;&nbsp;**Append to Text File** | to `Brochacho/phone-opened.txt`, **Make New Line** on |
+| 23 | &nbsp;&nbsp;**Append to Text File** | to `Consigliere/phone-opened.txt`, **Make New Line** on |
 | 24 | &nbsp;&nbsp;**List** | five or six lines, one per row: `From the vault, for you.` · `This one, you liked.` · `You got good taste, you know.` · `An oldie. A goodie.` · `I kept this warm for you.` · `Tonight's special.` |
 | 25 | &nbsp;&nbsp;**Get Random Item from List** | from *List* |
 | 26 | &nbsp;&nbsp;**Speak Text** | the random line. Tap **Show More**: Language **Italian (Italy)**, pick a voice, **Wait Until Finished** on. |

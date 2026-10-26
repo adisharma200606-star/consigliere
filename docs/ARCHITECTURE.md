@@ -1,11 +1,11 @@
-# How Brochacho fits together
+# How Consigliere fits together
 
 Written so that someone (or a Claude session) who has never seen the code can find their way around in ten minutes.
 
 ## The shape of it
 
 ```
-   you                                   the Mac app (App/Brochacho)                          the brain (BrochachoCore)
+   you                                   the Mac app (App/Consigliere)                          the brain (ConsigliereCore)
  ────────                          ───────────────────────────────────────                  ──────────────────────────────
   hotkey  ───────▶ HotkeyCenter ─┐
   click / drop ──▶ NotchSensor ──┤
@@ -25,10 +25,10 @@ Written so that someone (or a Claude session) who has never seen the code can fi
 
 Two ideas explain most of the design:
 
-1. **The brain decides, the app does.** `BrochachoCore` has no UI, no network, no clock and no randomness of its own; time and random numbers are handed in. That is what lets it be tested completely without a Mac, and checked against the JavaScript reference line by line.
+1. **The brain decides, the app does.** `ConsigliereCore` has no UI, no network, no clock and no randomness of its own; time and random numbers are handed in. That is what lets it be tested completely without a Mac, and checked against the JavaScript reference line by line.
 2. **One class knows everything; nothing else does.** `Brain` is the only place that touches all the parts. Views hold no logic, and the helper classes do one job each and know nothing about one another.
 
-## The brain: `Sources/BrochachoCore`
+## The brain: `Sources/ConsigliereCore`
 
 | File | What it answers |
 |---|---|
@@ -52,11 +52,11 @@ Two ideas explain most of the design:
 
 Each of these is a port of a file in `reference-js/`. The port is kept honest by `fixtures/*.json`: the JavaScript tests write them, and the Swift tests must reproduce them.
 
-## The app: `App/Brochacho`
+## The app: `App/Consigliere`
 
 | File | Job |
 |---|---|
-| `BrochachoApp.swift` | Entry point. No main window. `AppDelegate` creates the `Brain`. |
+| `ConsigliereApp.swift` | Entry point. No main window. `AppDelegate` creates the `Brain`. |
 | `Brain.swift` | **Start here.** Every feature is a short method: `openBox`, `submit`, `run`, `showLine`, `pull`, `saveFrontTab`, `markMyPlace`, `startTalking`, `openTuner`, `startTimer`, `capture`, `ask`. |
 | `NotchModel.swift` | Everything the notch shows, as published properties, plus the closures the views call. |
 | `NotchController.swift` | Wraps DynamicNotchKit. Adds what a launcher needs: the keyboard from the first moment, Escape, arrow keys, click-away. |
@@ -71,11 +71,11 @@ Each of these is a port of a file in `reference-js/`. The port is kept honest by
 | `Ears.swift` | Hold-to-talk speech recognition. |
 | `MicTuner.swift` | Microphone into the pitch detector, about twelve readings a second. |
 | `CaptureWriter.swift` | Makes the note (AppleScript, keeping its id) or the reminder (EventKit); reads upcoming reminders and ticks them off; reopens a note by id; appends to the day's diary note. |
-| `ScreenRotator.swift` | `one eighty`: picks the screen (laptop when the lid is open, else main), asks `RotationBridge` to rotate it one way at a time, checks with `CGDisplayRotation` that it really turned before trying the next way, handles mirroring, and writes `~/.brochacho/flip.log`. |
+| `ScreenRotator.swift` | `one eighty`: picks the screen (laptop when the lid is open, else main), asks `RotationBridge` to rotate it one way at a time, checks with `CGDisplayRotation` that it really turned before trying the next way, handles mirroring, and writes `~/.consigliere/flip.log`. |
 | `AppIndex.swift` | Finds installed apps so any of them opens by name. |
 | `TutorialWindow.swift` | The three slides. |
 | `AskClient.swift` | One HTTPS call to the Claude API. Key in the Keychain (which also holds the Spotify keys). Monthly spending ledger. |
-| `Character/CharacterSprite.swift` | The character's frames (from `~/.brochacho/character/`, else the bundled dragon) and the animated view. |
+| `Character/CharacterSprite.swift` | The character's frames (from `~/.consigliere/character/`, else the bundled dragon) and the animated view. |
 | `Character/Roamer.swift` | The small window he flies around the screen in. The window *is* him, so every other click goes through. Paths per boldness level, flying out from and back into the notch. |
 | `Character/JobCard.swift` | The card beside him when he is clicked: the job, a line, two or three buttons. |
 | `FocusFilter.swift` | A Focus filter (AppIntents) that keeps him in the notch during the Focus modes Adi picks. |
@@ -85,7 +85,7 @@ Each of these is a port of a file in `reference-js/`. The port is kept honest by
 
 ## Why an existing config.json needs a migration
 
-`config.json` is written once, the very first time Brochacho runs, with whichever built-in commands
+`config.json` is written once, the very first time Consigliere runs, with whichever built-in commands
 existed in `DefaultCatalog.entries` at that moment. Every command added in a later update — `flip`,
 `settings`, `help`, `bored`, and whatever comes after them — would otherwise never reach someone who
 already has a config.json, no matter how many times they update: loading a config that already has a
@@ -102,7 +102,7 @@ This is also the actual root cause found for "`180` does nothing": on Adi's Mac,
 
 ## Why rotation is Objective-C, not Swift
 
-Everything else in `App/Brochacho` is Swift. `App/RotationBridge` is a small, separate, all-Objective-C
+Everything else in `App/Consigliere` is Swift. `App/RotationBridge` is a small, separate, all-Objective-C
 Swift Package (like `App/Vendor/DynamicNotchKit`, but original code, not vendored). The reason: rotating the
 screen means calling a private, undocumented macOS class (`MPDisplay`) that has no header anywhere. In
 Objective-C, one line — a category that just *declares* the two method names exist — is enough to let the

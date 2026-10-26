@@ -1,8 +1,8 @@
 /*
- * Brochacho catalog migration: keeping an existing config.json in step with new built-in commands.
+ * Consigliere catalog migration: keeping an existing config.json in step with new built-in commands.
  *
  * The bug this exists to fix: config.json is only written with DefaultCatalog.entries the very first time
- * Brochacho ever runs. Every catalog entry added in a later update (like "flip" or "settings") would
+ * Consigliere ever runs. Every catalog entry added in a later update (like "flip" or "settings") would
  * otherwise never appear for someone who already has a config.json, no matter how many times they update,
  * because loading a config that already HAS a "catalog" array just uses that array as-is.
  *
@@ -42,5 +42,5 @@
 
   var api = { mergeBuiltinCatalog: mergeBuiltinCatalog };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
-  else root.BrochachoMigrate = api;
+  else root.ConsigliereMigrate = api;
 })(typeof self !== 'undefined' ? self : this);

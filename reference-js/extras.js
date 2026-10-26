@@ -1,5 +1,5 @@
 /*
- * Brochacho extras: reference implementation of the timer and of "living" bookmarks.
+ * Consigliere extras: reference implementation of the timer and of "living" bookmarks.
  * Pure logic. The Swift package ports this file.
  */
 (function (root) {
@@ -210,5 +210,5 @@
     urlParts: urlParts, findLivingEntry: findLivingEntry, moveEntry: moveEntry
   };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
-  else root.BrochachoExtras = api;
+  else root.ConsigliereExtras = api;
 })(typeof self !== 'undefined' ? self : this);

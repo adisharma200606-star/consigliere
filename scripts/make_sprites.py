@@ -1,7 +1,7 @@
-"""Draws the little dragon that lives in the notch, as pixel art, into App/Brochacho/Resources/character/.
+"""Draws the little dragon that lives in the notch, as pixel art, into App/Consigliere/Resources/character/.
 
 He is original art, made here, so he can ship in the repo. To use someone else (a Dragonite, say), drop your
-own PNGs into ~/.brochacho/character/ (see docs/GUIDE.md, "The character"); those are never committed.
+own PNGs into ~/.consigliere/character/ (see docs/GUIDE.md, "The character"); those are never committed.
 
 Four frames, all facing right (the app mirrors them when he flies left):
   dragon_idle_0, dragon_idle_1   sitting, bobbing one pixel
@@ -82,7 +82,7 @@ def png(grid, path):
 
 
 root = pathlib.Path(__file__).resolve().parent.parent
-out = root / 'App' / 'Brochacho' / 'Resources' / 'character'
+out = root / 'App' / 'Consigliere' / 'Resources' / 'character'
 out.mkdir(parents=True, exist_ok=True)
 frames = {
     'dragon_idle_0': frame(7),

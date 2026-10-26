@@ -1,5 +1,5 @@
 /*
- * Brochacho tuner: reference implementation.
+ * Consigliere tuner: reference implementation.
  *
  * Pure maths, no microphone. The Swift package ports this file. It has three layers:
  *   1. notes      note names <-> MIDI numbers <-> frequencies
@@ -269,5 +269,5 @@
     newSession: newSession, feed: feed, median: median, synthString: synthString, SESSION: SESSION
   };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
-  else root.BrochachoTuner = api;
+  else root.ConsigliereTuner = api;
 })(typeof self !== 'undefined' ? self : this);

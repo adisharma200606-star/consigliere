@@ -170,7 +170,7 @@ const MATCH_CASES = [
   // filler words and trailing noise, typed or spoken
   ['open youtube', 'open', 'youtube', null, {}, true],
   ['play me some youtube', 'open', 'youtube', null, {}, true],
-  ['brochacho open steam', 'open', 'steam', null, {}, true],
+  ['consigliere open steam', 'open', 'steam', null, {}, true],
   ['go to gmail', 'open', 'gmail', null, {}, true],
   ['gmail inbox', 'open', 'gmail', null, {}, true],
   ['downloads folder', 'open', 'downloads', null, {}, true],
@@ -362,7 +362,7 @@ test('lines: frequency 0 never speaks but still returns the text', () => {
 // produce identical output.
 
 test('feedback: every sound it names exists as a file', () => {
-  const sounds = path.join(__dirname, '..', 'App', 'Brochacho', 'Resources', 'sounds');
+  const sounds = path.join(__dirname, '..', 'App', 'Consigliere', 'Resources', 'sounds');
   for (const [event, spec] of Object.entries(core.FEEDBACK)) {
     if (spec.sound) assert.ok(fs.existsSync(path.join(sounds, spec.sound + '.wav')), event + ' -> ' + spec.sound + '.wav is missing');
     assert.ok([null, 'alignment', 'levelChange', 'generic'].includes(spec.haptic), event + ' haptic');

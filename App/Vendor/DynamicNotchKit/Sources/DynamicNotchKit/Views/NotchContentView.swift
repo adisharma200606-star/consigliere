@@ -57,7 +57,7 @@ struct NotchContentView<Expanded, CompactLeading, CompactTrailing>: View where E
             color: .black.opacity(shadowOpacity),
             radius: shadowRadius
         )
-        // BROCHACHO PATCH 2 of 3: the glow itself. It is tied to `state`, so it fades in and out inside the
+        // CONSIGLIERE PATCH 2 of 3: the glow itself. It is tied to `state`, so it fades in and out inside the
         // same animation that opens and closes the notch, and a bouncy spring makes it flare for a moment.
         .shadow(color: glowColor(0, 0.45), radius: 14)
         .shadow(color: glowColor(1, 0.50), radius: 30, y: 10)

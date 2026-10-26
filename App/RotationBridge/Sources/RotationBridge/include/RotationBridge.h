@@ -1,5 +1,5 @@
-#ifndef BROCHACHO_ROTATION_BRIDGE_H
-#define BROCHACHO_ROTATION_BRIDGE_H
+#ifndef CONSIGLIERE_ROTATION_BRIDGE_H
+#define CONSIGLIERE_ROTATION_BRIDGE_H
 
 #include <stdint.h>
 
@@ -14,9 +14,9 @@
 /// Asks macOS to rotate `displayID` to `degrees` (0, 90, 180 or 270) using one method.
 /// Returns 0 if the request was accepted, non-zero otherwise. On failure `*outError` (if not NULL) is set
 /// to a malloc'd description the caller must free().
-int32_t BrochachoRotate(uint32_t displayID, int32_t degrees, int32_t method, char **outError);
+int32_t ConsigliereRotate(uint32_t displayID, int32_t degrees, int32_t method, char **outError);
 
 /// What MonitorPanel says about rotating this display: 1 it can, 0 it cannot, -1 it would not say.
-int32_t BrochachoCanRotate(uint32_t displayID);
+int32_t ConsigliereCanRotate(uint32_t displayID);
 
 #endif
