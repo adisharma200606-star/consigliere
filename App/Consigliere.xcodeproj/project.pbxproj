@@ -93,7 +93,6 @@
 		8E980A8D08A0236E0CFB31A5 /* TabGrabber.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabGrabber.swift; sourceTree = "<group>"; };
 		95FB2427280C3C4155327CB7 /* ConsigliereApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConsigliereApp.swift; sourceTree = "<group>"; };
 		9F75960668A2FA83C53662BC /* done.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = done.wav; sourceTree = "<group>"; };
-		A106A2796C839609E90678EF /* brochacho */ = {isa = PBXFileReference; lastKnownFileType = folder; name = brochacho; path = ..; sourceTree = SOURCE_ROOT; };
 		A11FFB1FE4DEF9EADBDEDEE3 /* TimerScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerScreen.swift; sourceTree = "<group>"; };
 		A23428899B4252D2828D6BF9 /* answer.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = answer.wav; sourceTree = "<group>"; };
 		A56DC127012607F761C22771 /* IBMPlexMono-OFL.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = "IBMPlexMono-OFL.txt"; sourceTree = "<group>"; };
@@ -111,6 +110,7 @@
 		D19DF932DD4CB8B7C5295E3F /* HotkeyCenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HotkeyCenter.swift; sourceTree = "<group>"; };
 		D3855D626E40F90E271974F1 /* Ears.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Ears.swift; sourceTree = "<group>"; };
 		D763A7E0852DDC5F2915884E /* dragon_idle_1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = dragon_idle_1.png; sourceTree = "<group>"; };
+		D83BD9B9FD566A7839D89F07 /* consigliere */ = {isa = PBXFileReference; lastKnownFileType = folder; name = consigliere; path = ..; sourceTree = SOURCE_ROOT; };
 		DAEA2D3746BC7EDC22CFE3A0 /* InputScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputScreen.swift; sourceTree = "<group>"; };
 		E727E7813A880B7C0A146C9E /* close.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = close.wav; sourceTree = "<group>"; };
 		EB47F0B2C3162F2E3827F16E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
@@ -241,7 +241,7 @@
 		DBC0864EA608488B52508B0E /* Packages */ = {
 			isa = PBXGroup;
 			children = (
-				A106A2796C839609E90678EF /* brochacho */,
+				D83BD9B9FD566A7839D89F07 /* consigliere */,
 				BF7A4248655E13F490AC4FB0 /* DynamicNotchKit */,
 				C4956A4DEAA90654325806ED /* RotationBridge */,
 			);
