@@ -669,14 +669,9 @@ Shortcuts from the box, if you prefer them:
 
 **Status:** in use on Adi's Mac since 12 Oct 2026 (`pet`, the head beside the notch, a custom GIF) · the timing of when he comes out is brain tested
 
-He lives in the notch: he sits beside his lines when the notch opens. **He does not come out about jobs** (Adi turned that off on 13 October 2026: it was annoying). A waiting job shows his head beside the closed notch, always, whatever the fly-out switch says (since 29 October 2026; before that a stray fly-out setting could hide the head completely). Click the head for the list. If `character.roam` is switched back on, he also flies out silently when a job is due, and a click opens a card with **start it · later · skip today**; while he is out, the head is not shown.
+He lives in the notch: he sits beside his lines when the notch opens. **Whenever a job is due, he sits beside the closed notch**, staring out, until it is done, started, skipped or put off. Click him for the list. That is the whole reminder: **he never flies out of the notch for a job** (Adi, 29 October 2026). The old "He may fly out" switch is gone, and `character.roam` in the config is ignored.
 
-- **He gets bolder when ignored.** If nobody clicks him for three minutes he flies home, and next time he comes out bolder: first he bobs under the notch, then drifts along the top, then wanders the upper third bigger, then loops round the middle of the screen twice the size. Any click resets him.
-- **He never speaks first.** The voice only comes once you click.
-- **He leaves you alone** before `jobs.dayStart` (09:00), when nobody has touched the Mac for five minutes, for 45 minutes after each visit (10 for jobs with a time), during `quiet`, and in Focus modes you choose:
-  **System Settings → Focus → (say, Study) → Focus filters → Add filter → Consigliere → switch on "Stay in the notch".** In those Focus modes a small head peeks out beside the notch instead; click it for the list.
-- **Bedtime.** After `jobs.bedtime` (00:30) he comes out about one job only: bed. **going** closes the books (section 22) and he stops; **10 more** gives you ten minutes.
-- **Mouse clicks go through.** He is in a window exactly his size, so a click anywhere else lands on whatever is underneath.
+A job is due when it is not ticked, not started, not put off with **later**, and either has no time or its time has passed (`gym by 7pm` waits until 7pm). He checks every 30 seconds.
 
 **Playing with him.** Type `pet` (or `dragonite`, `come here`, or click him at the top of the jobs list) and he flies out of the notch to wander around the screen. Then:
 
@@ -701,7 +696,7 @@ python3 scripts/hat.py gengar.gif ~/.consigliere/character/idle.gif
 
 The script finds the top of his head in each frame, so the hat follows him as he moves; it works on other characters too (tweak `SINK` if it sits too high or low). Dragonite, the one before, is kept in `~/.consigliere/characters-retired/`. Without a folder he is the little orange dragon that ships with the app. Art that belongs to someone else (a Dragonite) stays in that folder and never goes into the repo.
 
-Settings: **settings → Jobs and music**, or `character.size`, `character.roam` (off, the default: he never leaves the notch for a job; a waiting job only shows his head), `jobs.maxLevel` (0 to 3: how bold he may get), `jobs.roamMinutes`.
+Settings: **settings → Jobs and music**: the character folder, his size, and which way the pictures face (`character.folder`, `character.size`, `character.facesLeft`).
 
 ## 22. The diary
 

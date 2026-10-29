@@ -352,15 +352,8 @@ private struct JobsTab: View {
 
     var body: some View {
         Form {
-            TextField("He comes out from (HH:MM)", text: $state.config.jobs.dayStart)
-            TextField("Bedtime (HH:MM; before 04:00 means after midnight)", text: $state.config.jobs.bedtime)
-            TextField("Minutes between visits", value: $state.config.jobs.cooldownMinutes, format: .number)
             TextField("Minutes \"later\" waits", value: $state.config.jobs.laterMinutes, format: .number)
-            Stepper("How bold he gets when ignored: \(state.config.jobs.maxLevel)", value: $state.config.jobs.maxLevel, in: 0...3)
             TextField("The list opens by itself from (HH:MM; empty: never)", text: $state.config.jobs.openListAt)
-            Toggle("He may fly out of the notch", isOn: $state.config.character.roam)
-            Text("To keep him in during some Focus modes: System Settings → Focus → a Focus → Focus filters → Consigliere.")
-                .font(.caption).foregroundStyle(.secondary)
 
             Divider()
             TextField("Character folder", text: $state.config.character.folder)

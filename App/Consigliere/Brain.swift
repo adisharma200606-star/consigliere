@@ -1193,16 +1193,13 @@ final class Brain {
 
     // MARK: Coming out of the notch
 
-    /// Every 30 seconds: is there a job he should come out about?
+    /// Every 30 seconds: is a job due (then his head sits by the notch), and is it time for the daily list?
     private func checkJobs() {
         rollJobs()
         let now = nowWall
-        let held = FocusQuiet.isOn || !config.character.roam || (jobDay.quietUntil.map { now < $0 } ?? false)
-
-        // His head beside the notch says a job is waiting. That head is the reminder Adi relies on, so it shows
-        // whenever a job is waiting and he is not already out on the screen, whatever the fly-out setting says.
-        // (It used to show only while he was held in. A config saved by the 24 Oct version had the fly-out
-        // switch on, so on that Mac he was never held in and the head never appeared.)
+        // His head beside the notch says a job is due. That is the whole reminder: he never flies out of the
+        // notch for a job (Adi, 29 Oct 2026: "i just want him existing by the notch whenever there's a job
+        // due"). The old fly-out switch, character.roam, is ignored. He only leaves the notch for `pet`.
         let waiting = jobDay.jobs.contains { job in
             job.status == .open && (job.snoozedUntil.map { now >= $0 } ?? true) && (job.dueWall.map { $0 <= now } ?? true)
         }
@@ -1223,18 +1220,7 @@ final class Brain {
             jobDay.markListOpened()
             saveJobs()
             showJobs(byItself: true)
-            return
         }
-
-        guard !held else { return }
-        guard let nudge = Jobs.nextNudge(jobDay, now: now, settings: config.jobs.settings, quiet: false, idleSeconds: idle) else { return }
-
-        outNudge = nudge
-        jobDay.appeared(nudge, now: now)
-        saveJobs()
-        // Out he flies. No sound, no voice: rule 4.
-        roamer.flyOut(level: nudge.level, size: CGFloat(config.character.size), frames: model.character,
-                      roamSeconds: config.jobs.roamMinutes * 60)
     }
 
     /// Someone clicked him: he stops, and his card opens beside him.
