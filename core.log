@@ -1,0 +1,216 @@
+swift-driver version: 1.120.5 Apple Swift version 6.1.2 (swiftlang-6.1.2.1.2 clang-1700.0.13.5)
+Target: arm64-apple-macosx15.0
+Building for debugging...
+[0/7] /Users/runner/work/consigliere/consigliere/.build/arm64-apple-macosx/debug/ConsigliereCorePackageTests.derived/runner.swift
+[0/7] Write sources
+[4/7] Write swift-version--79AA4F9932D1E87A.txt
+[6/20] Emitting module ConsigliereCore
+[7/26] Compiling ConsigliereCore ActionPlan.swift
+[8/26] Compiling ConsigliereCore Ask.swift
+[9/26] Compiling ConsigliereCore Capture.swift
+[10/26] Compiling ConsigliereCore CaptureLog.swift
+[11/26] Compiling ConsigliereCore Catalog.swift
+[12/26] Compiling ConsigliereCore CatalogMigration.swift
+[13/26] Compiling ConsigliereCore Lines.swift
+[14/26] Compiling ConsigliereCore Matcher.swift
+[15/26] Compiling ConsigliereCore Stash.swift
+[16/26] Compiling ConsigliereCore Stores.swift
+[17/26] Compiling ConsigliereCore TextTools.swift
+[18/26] Compiling ConsigliereCore Tuner.swift
+[19/26] Compiling ConsigliereCore Config.swift
+[20/26] Compiling ConsigliereCore DefaultCatalog.swift
+[21/26] Compiling ConsigliereCore DefaultTunings.swift
+[22/26] Compiling ConsigliereCore Extras.swift
+[23/26] Compiling ConsigliereCore Feedback.swift
+[24/26] Compiling ConsigliereCore Jobs.swift
+[25/35] Emitting module ConsigliereCoreTests
+[26/35] Compiling ConsigliereCoreTests CaptureLogTests.swift
+[27/35] Compiling ConsigliereCoreTests CaptureTests.swift
+[28/35] Compiling ConsigliereCoreTests CatalogMigrationTests.swift
+[29/35] Compiling ConsigliereCoreTests ConfigTests.swift
+[30/35] Compiling ConsigliereCoreTests ExtrasTests.swift
+[31/35] Compiling ConsigliereCoreTests JobsTests.swift
+[32/35] Compiling ConsigliereCoreTests LinesTests.swift
+[33/35] Compiling ConsigliereCoreTests MatcherTests.swift
+[34/39] Compiling ConsigliereCoreTests RenameTests.swift
+[35/39] Compiling ConsigliereCoreTests StashTests.swift
+[36/39] Compiling ConsigliereCoreTests Support.swift
+[37/39] Compiling ConsigliereCoreTests TunerTests.swift
+[38/41] Emitting module ConsigliereCorePackageTests
+[39/41] Compiling ConsigliereCorePackageTests runner.swift
+[39/41] Write Objects.LinkFileList
+[40/41] Linking ConsigliereCorePackageTests
+Build complete! (29.52s)
+Test Suite 'All tests' started at 2026-10-29 14:05:38.286.
+Test Suite 'ConsigliereCorePackageTests.xctest' started at 2026-10-29 14:05:38.289.
+Test Suite 'CaptureLogTests' started at 2026-10-29 14:05:38.289.
+Test Case '-[ConsigliereCoreTests.CaptureLogTests testExternalIDIsFilledInLater]' started.
+Test Case '-[ConsigliereCoreTests.CaptureLogTests testExternalIDIsFilledInLater]' passed (0.005 seconds).
+Test Case '-[ConsigliereCoreTests.CaptureLogTests testInstalledAppsSkipWhatTheCatalogAlreadyOpens]' started.
+Test Case '-[ConsigliereCoreTests.CaptureLogTests testInstalledAppsSkipWhatTheCatalogAlreadyOpens]' passed (0.001 seconds).
+Test Case '-[ConsigliereCoreTests.CaptureLogTests testRecentIsNewestFirstAndPerKind]' started.
+Test Case '-[ConsigliereCoreTests.CaptureLogTests testRecentIsNewestFirstAndPerKind]' passed (0.001 seconds).
+Test Case '-[ConsigliereCoreTests.CaptureLogTests testTheOldestFallOff]' started.
+Test Case '-[ConsigliereCoreTests.CaptureLogTests testTheOldestFallOff]' passed (0.000 seconds).
+Test Case '-[ConsigliereCoreTests.CaptureLogTests testTimerStopWords]' started.
+Test Case '-[ConsigliereCoreTests.CaptureLogTests testTimerStopWords]' passed (0.000 seconds).
+Test Suite 'CaptureLogTests' passed at 2026-10-29 14:05:38.298.
+	 Executed 5 tests, with 0 failures (0 unexpected) in 0.008 (0.008) seconds
+Test Suite 'CaptureTests' started at 2026-10-29 14:05:38.298.
+Test Case '-[ConsigliereCoreTests.CaptureTests testEveryGoldenCase]' started.
+Test Case '-[ConsigliereCoreTests.CaptureTests testEveryGoldenCase]' passed (0.004 seconds).
+Test Case '-[ConsigliereCoreTests.CaptureTests testWallClockRoundTripsThroughARealTimeZone]' started.
+Test Case '-[ConsigliereCoreTests.CaptureTests testWallClockRoundTripsThroughARealTimeZone]' passed (0.000 seconds).
+Test Suite 'CaptureTests' passed at 2026-10-29 14:05:38.303.
+	 Executed 2 tests, with 0 failures (0 unexpected) in 0.005 (0.005) seconds
+Test Suite 'CatalogMigrationTests' started at 2026-10-29 14:05:38.303.
+Test Case '-[ConsigliereCoreTests.CatalogMigrationTests testCustomEntriesAreUntouched]' started.
+Test Case '-[ConsigliereCoreTests.CatalogMigrationTests testCustomEntriesAreUntouched]' passed (0.000 seconds).
+Test Case '-[ConsigliereCoreTests.CatalogMigrationTests testDeletingABuiltinOnPurposeIsRespectedForever]' started.
+Test Case '-[ConsigliereCoreTests.CatalogMigrationTests testDeletingABuiltinOnPurposeIsRespectedForever]' passed (0.000 seconds).
+Test Case '-[ConsigliereCoreTests.CatalogMigrationTests testEveryGoldenCase]' started.
+Test Case '-[ConsigliereCoreTests.CatalogMigrationTests testEveryGoldenCase]' passed (0.002 seconds).
+Test Case '-[ConsigliereCoreTests.CatalogMigrationTests testStoreRoundTrips]' started.
+Test Case '-[ConsigliereCoreTests.CatalogMigrationTests testStoreRoundTrips]' passed (0.003 seconds).
+Test Suite 'CatalogMigrationTests' passed at 2026-10-29 14:05:38.308.
+	 Executed 4 tests, with 0 failures (0 unexpected) in 0.005 (0.005) seconds
+Test Suite 'ConfigTests' started at 2026-10-29 14:05:38.308.
+Test Case '-[ConsigliereCoreTests.ConfigTests testABrokenConfigIsLeftAloneAndDefaultsAreUsed]' started.
+Test Case '-[ConsigliereCoreTests.ConfigTests testABrokenConfigIsLeftAloneAndDefaultsAreUsed]' passed (0.003 seconds).
+Test Case '-[ConsigliereCoreTests.ConfigTests testAMissingFileIsCreatedWithDefaults]' started.
+Test Case '-[ConsigliereCoreTests.ConfigTests testAMissingFileIsCreatedWithDefaults]' passed (0.003 seconds).
+Test Case '-[ConsigliereCoreTests.ConfigTests testAnOldAuroraConfigMovesToNocturneButANewOneIsKept]' started.
+Test Case '-[ConsigliereCoreTests.ConfigTests testAnOldAuroraConfigMovesToNocturneButANewOneIsKept]' passed (0.000 seconds).
+Test Case '-[ConsigliereCoreTests.ConfigTests testAPartialConfigKeepsDefaultsForEverythingElse]' started.
+Test Case '-[ConsigliereCoreTests.ConfigTests testAPartialConfigKeepsDefaultsForEverythingElse]' passed (0.001 seconds).
+Test Case '-[ConsigliereCoreTests.ConfigTests testColourParsing]' started.
+Test Case '-[ConsigliereCoreTests.ConfigTests testColourParsing]' passed (0.000 seconds).
+Test Case '-[ConsigliereCoreTests.ConfigTests testFeedbackAgreesWithTheReference]' started.
+Test Case '-[ConsigliereCoreTests.ConfigTests testFeedbackAgreesWithTheReference]' passed (0.001 seconds).
+Test Case '-[ConsigliereCoreTests.ConfigTests testJobsCharacterAndMusicSettings]' started.
+Test Case '-[ConsigliereCoreTests.ConfigTests testJobsCharacterAndMusicSettings]' passed (0.000 seconds).
+Test Case '-[ConsigliereCoreTests.ConfigTests testProfilesAndTilde]' started.
+Test Case '-[ConsigliereCoreTests.ConfigTests testProfilesAndTilde]' passed (0.001 seconds).
+Test Suite 'ConfigTests' passed at 2026-10-29 14:05:38.318.
+	 Executed 8 tests, with 0 failures (0 unexpected) in 0.009 (0.010) seconds
+Test Suite 'ExtrasTests' started at 2026-10-29 14:05:38.318.
+Test Case '-[ConsigliereCoreTests.ExtrasTests testBookmarksAgreeWithTheReference]' started.
+Test Case '-[ConsigliereCoreTests.ExtrasTests testBookmarksAgreeWithTheReference]' passed (0.003 seconds).
+Test Case '-[ConsigliereCoreTests.ExtrasTests testCountdown]' started.
+Test Case '-[ConsigliereCoreTests.ExtrasTests testCountdown]' passed (0.001 seconds).
+Test Case '-[ConsigliereCoreTests.ExtrasTests testDurationsAgreeWithTheReference]' started.
+Test Case '-[ConsigliereCoreTests.ExtrasTests testDurationsAgreeWithTheReference]' passed (0.001 seconds).
+Test Case '-[ConsigliereCoreTests.ExtrasTests testLivingFlagIsOnlyWrittenWhenOn]' started.
+Test Case '-[ConsigliereCoreTests.ExtrasTests testLivingFlagIsOnlyWrittenWhenOn]' passed (0.000 seconds).
+Test Case '-[ConsigliereCoreTests.ExtrasTests testMovingAnEntryKeepsEverythingElse]' started.
+Test Case '-[ConsigliereCoreTests.ExtrasTests testMovingAnEntryKeepsEverythingElse]' passed (0.000 seconds).
+Test Case '-[ConsigliereCoreTests.ExtrasTests testPhoneDates]' started.
+Test Case '-[ConsigliereCoreTests.ExtrasTests testPhoneDates]' passed (0.005 seconds).
+Test Case '-[ConsigliereCoreTests.ExtrasTests testPhoneFilesAgreeWithTheReference]' started.
+Test Case '-[ConsigliereCoreTests.ExtrasTests testPhoneFilesAgreeWithTheReference]' passed (0.007 seconds).
+Test Case '-[ConsigliereCoreTests.ExtrasTests testStoppingAndAddingTimeAgreeWithTheReference]' started.
+Test Case '-[ConsigliereCoreTests.ExtrasTests testStoppingAndAddingTimeAgreeWithTheReference]' passed (0.001 seconds).
+Test Case '-[ConsigliereCoreTests.ExtrasTests testURLParts]' started.
+Test Case '-[ConsigliereCoreTests.ExtrasTests testURLParts]' passed (0.000 seconds).
+Test Suite 'ExtrasTests' passed at 2026-10-29 14:05:38.338.
+	 Executed 9 tests, with 0 failures (0 unexpected) in 0.019 (0.020) seconds
+Test Suite 'JobsTests' started at 2026-10-29 14:05:38.338.
+Test Case '-[ConsigliereCoreTests.JobsTests testAJobDayRoundTripsThroughItsFile]' started.
+Test Case '-[ConsigliereCoreTests.JobsTests testAJobDayRoundTripsThroughItsFile]' passed (0.002 seconds).
+Test Case '-[ConsigliereCoreTests.JobsTests testDayKeys]' started.
+Test Case '-[ConsigliereCoreTests.JobsTests testDayKeys]' passed (0.001 seconds).
+Test Case '-[ConsigliereCoreTests.JobsTests testFindingAJobByName]' started.
+Test Case '-[ConsigliereCoreTests.JobsTests testFindingAJobByName]' passed (0.014 seconds).
+Test Case '-[ConsigliereCoreTests.JobsTests testReadingJobsAgreesWithTheReference]' started.
+Test Case '-[ConsigliereCoreTests.JobsTests testReadingJobsAgreesWithTheReference]' passed (0.161 seconds).
+Test Case '-[ConsigliereCoreTests.JobsTests testTheListOpensByItselfOnceADay]' started.
+Test Case '-[ConsigliereCoreTests.JobsTests testTheListOpensByItselfOnceADay]' passed (0.001 seconds).
+Test Case '-[ConsigliereCoreTests.JobsTests testTheTimelineAgreesWithTheReference]' started.
+Test Case '-[ConsigliereCoreTests.JobsTests testTheTimelineAgreesWithTheReference]' passed (0.017 seconds).
+Test Case '-[ConsigliereCoreTests.JobsTests testUntickingAndDeleting]' started.
+Test Case '-[ConsigliereCoreTests.JobsTests testUntickingAndDeleting]' passed (0.018 seconds).
+Test Suite 'JobsTests' passed at 2026-10-29 14:05:38.552.
+	 Executed 7 tests, with 0 failures (0 unexpected) in 0.214 (0.214) seconds
+Test Suite 'LinesTests' started at 2026-10-29 14:05:38.552.
+Test Case '-[ConsigliereCoreTests.LinesTests testAPoolOfOneStillWorksAndUnknownCategoriesGiveNothing]' started.
+Test Case '-[ConsigliereCoreTests.LinesTests testAPoolOfOneStillWorksAndUnknownCategoriesGiveNothing]' passed (0.000 seconds).
+Test Case '-[ConsigliereCoreTests.LinesTests testFrequencyZeroNeverSpeaks]' started.
+Test Case '-[ConsigliereCoreTests.LinesTests testFrequencyZeroNeverSpeaks]' passed (0.000 seconds).
+Test Case '-[ConsigliereCoreTests.LinesTests testGoldenPicks]' started.
+Test Case '-[ConsigliereCoreTests.LinesTests testGoldenPicks]' passed (0.001 seconds).
+Test Case '-[ConsigliereCoreTests.LinesTests testNeverRepeatsWithinTheLastFive]' started.
+Test Case '-[ConsigliereCoreTests.LinesTests testNeverRepeatsWithinTheLastFive]' passed (0.000 seconds).
+Test Suite 'LinesTests' passed at 2026-10-29 14:05:38.554.
+	 Executed 4 tests, with 0 failures (0 unexpected) in 0.002 (0.002) seconds
+Test Suite 'MatcherTests' started at 2026-10-29 14:05:38.554.
+Test Case '-[ConsigliereCoreTests.MatcherTests testAskAgreesWithTheReference]' started.
+Test Case '-[ConsigliereCoreTests.MatcherTests testAskAgreesWithTheReference]' passed (0.003 seconds).
+Test Case '-[ConsigliereCoreTests.MatcherTests testAskNeverLeaksTheClipboardAndBuildsAValidBody]' started.
+Test Case '-[ConsigliereCoreTests.MatcherTests testAskNeverLeaksTheClipboardAndBuildsAValidBody]' passed (0.001 seconds).
+Test Case '-[ConsigliereCoreTests.MatcherTests testDefaultCatalogMatchesTheSharedJSON]' started.
+Test Case '-[ConsigliereCoreTests.MatcherTests testDefaultCatalogMatchesTheSharedJSON]' passed (0.002 seconds).
+Test Case '-[ConsigliereCoreTests.MatcherTests testEveryGoldenCase]' started.
+Test Case '-[ConsigliereCoreTests.MatcherTests testEveryGoldenCase]' passed (0.670 seconds).
+Test Case '-[ConsigliereCoreTests.MatcherTests testSearchURLs]' started.
+Test Case '-[ConsigliereCoreTests.MatcherTests testSearchURLs]' passed (0.013 seconds).
+Test Case '-[ConsigliereCoreTests.MatcherTests testTappingARowOpensThatRow]' started.
+Test Case '-[ConsigliereCoreTests.MatcherTests testTappingARowOpensThatRow]' passed (0.000 seconds).
+Test Case '-[ConsigliereCoreTests.MatcherTests testTextHelpers]' started.
+Test Case '-[ConsigliereCoreTests.MatcherTests testTextHelpers]' passed (0.000 seconds).
+Test Suite 'MatcherTests' passed at 2026-10-29 14:05:39.244.
+	 Executed 7 tests, with 0 failures (0 unexpected) in 0.689 (0.690) seconds
+Test Suite 'RenameTests' started at 2026-10-29 14:05:39.244.
+Test Case '-[ConsigliereCoreTests.RenameTests testAFreshMacMovesNothing]' started.
+Test Case '-[ConsigliereCoreTests.RenameTests testAFreshMacMovesNothing]' passed (0.000 seconds).
+Test Case '-[ConsigliereCoreTests.RenameTests testANewFolderIsNeverOverwritten]' started.
+Test Case '-[ConsigliereCoreTests.RenameTests testANewFolderIsNeverOverwritten]' passed (0.019 seconds).
+Test Case '-[ConsigliereCoreTests.RenameTests testOldFoldersAreMovedAndALinkIsLeftForTheConfig]' started.
+Test Case '-[ConsigliereCoreTests.RenameTests testOldFoldersAreMovedAndALinkIsLeftForTheConfig]' passed (0.002 seconds).
+Test Case '-[ConsigliereCoreTests.RenameTests testRunningTwiceDoesNothingTheSecondTime]' started.
+Test Case '-[ConsigliereCoreTests.RenameTests testRunningTwiceDoesNothingTheSecondTime]' passed (0.001 seconds).
+Test Case '-[ConsigliereCoreTests.RenameTests testTheOldFolderIsUsedUntilItHasBeenMoved]' started.
+Test Case '-[ConsigliereCoreTests.RenameTests testTheOldFolderIsUsedUntilItHasBeenMoved]' passed (0.000 seconds).
+Test Suite 'RenameTests' passed at 2026-10-29 14:05:39.268.
+	 Executed 5 tests, with 0 failures (0 unexpected) in 0.023 (0.024) seconds
+Test Suite 'StashTests' started at 2026-10-29 14:05:39.268.
+Test Case '-[ConsigliereCoreTests.StashTests testABrokenFileIsMovedAsideNotDeleted]' started.
+Test Case '-[ConsigliereCoreTests.StashTests testABrokenFileIsMovedAsideNotDeleted]' passed (0.002 seconds).
+Test Case '-[ConsigliereCoreTests.StashTests testAlternatesFreshAndOldAndNeverRepeats]' started.
+Test Case '-[ConsigliereCoreTests.StashTests testAlternatesFreshAndOldAndNeverRepeats]' passed (0.000 seconds).
+Test Case '-[ConsigliereCoreTests.StashTests testGoldenSession]' started.
+Test Case '-[ConsigliereCoreTests.StashTests testGoldenSession]' passed (0.001 seconds).
+Test Case '-[ConsigliereCoreTests.StashTests testSavingTheSameThingTwiceRefreshesIt]' started.
+Test Case '-[ConsigliereCoreTests.StashTests testSavingTheSameThingTwiceRefreshesIt]' passed (0.000 seconds).
+Test Suite 'StashTests' passed at 2026-10-29 14:05:39.270.
+	 Executed 4 tests, with 0 failures (0 unexpected) in 0.003 (0.003) seconds
+Test Suite 'TunerTests' started at 2026-10-29 14:05:39.270.
+Test Case '-[ConsigliereCoreTests.TunerTests testASlackStringNeverReadsAsInTune]' started.
+Test Case '-[ConsigliereCoreTests.TunerTests testASlackStringNeverReadsAsInTune]' passed (0.000 seconds).
+Test Case '-[ConsigliereCoreTests.TunerTests testChromaticMode]' started.
+Test Case '-[ConsigliereCoreTests.TunerTests testChromaticMode]' passed (0.000 seconds).
+Test Case '-[ConsigliereCoreTests.TunerTests testCleanPlucksLandWithinOneAndAHalfCents]' started.
+Test Case '-[ConsigliereCoreTests.TunerTests testCleanPlucksLandWithinOneAndAHalfCents]' passed (45.074 seconds).
+Test Case '-[ConsigliereCoreTests.TunerTests testDefaultTuningsMatchTheSharedJSON]' started.
+Test Case '-[ConsigliereCoreTests.TunerTests testDefaultTuningsMatchTheSharedJSON]' passed (0.005 seconds).
+Test Case '-[ConsigliereCoreTests.TunerTests testEveryStringLockingIsAnnouncedExactlyOnce]' started.
+Test Case '-[ConsigliereCoreTests.TunerTests testEveryStringLockingIsAnnouncedExactlyOnce]' passed (0.000 seconds).
+Test Case '-[ConsigliereCoreTests.TunerTests testLaptopMicPlucksAt48kLandWithinThreeCents]' started.
+Test Case '-[ConsigliereCoreTests.TunerTests testLaptopMicPlucksAt48kLandWithinThreeCents]' passed (15.221 seconds).
+Test Case '-[ConsigliereCoreTests.TunerTests testNotes]' started.
+Test Case '-[ConsigliereCoreTests.TunerTests testNotes]' passed (0.003 seconds).
+Test Case '-[ConsigliereCoreTests.TunerTests testSessionAgreesWithTheReference]' started.
+Test Case '-[ConsigliereCoreTests.TunerTests testSessionAgreesWithTheReference]' passed (0.001 seconds).
+Test Case '-[ConsigliereCoreTests.TunerTests testSilenceAndShortBuffersGiveNothing]' started.
+Test Case '-[ConsigliereCoreTests.TunerTests testSilenceAndShortBuffersGiveNothing]' passed (0.469 seconds).
+Test Case '-[ConsigliereCoreTests.TunerTests testStringMatchingAgreesWithTheReference]' started.
+Test Case '-[ConsigliereCoreTests.TunerTests testStringMatchingAgreesWithTheReference]' passed (0.002 seconds).
+Test Suite 'TunerTests' passed at 2026-10-29 14:06:40.048.
+	 Executed 10 tests, with 0 failures (0 unexpected) in 60.776 (60.778) seconds
+Test Suite 'ConsigliereCorePackageTests.xctest' passed at 2026-10-29 14:06:40.048.
+	 Executed 65 tests, with 0 failures (0 unexpected) in 61.754 (61.759) seconds
+Test Suite 'All tests' passed at 2026-10-29 14:06:40.048.
+	 Executed 65 tests, with 0 failures (0 unexpected) in 61.754 (61.762) seconds
+◇ Test run started.
+↳ Testing Library Version: 124.4
+↳ Target Platform: arm64e-apple-macos14.0
+✔ Test run with 0 tests passed after 0.001 seconds.

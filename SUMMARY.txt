@@ -1,0 +1,6 @@
+commit:   a43a3cfbcbfcc875092d8a503b860f20b12ad993
+js:       success
+fixtures: success
+core:     success
+app:      success
+install:  success

@@ -1,0 +1,319 @@
+v22.23.2
+TAP version 13
+# Subtest: reminders: reading what he meant
+ok 1 - reminders: reading what he meant
+  ---
+  duration_ms: 19.857666
+  type: 'test'
+  ...
+# Subtest: reminders: a day that is named wins over "it already passed"
+ok 2 - reminders: a day that is named wins over "it already passed"
+  ---
+  duration_ms: 0.428208
+  type: 'test'
+  ...
+# Subtest: reminders: saying it back
+ok 3 - reminders: saying it back
+  ---
+  duration_ms: 0.583917
+  type: 'test'
+  ...
+# Subtest: write capture fixtures
+ok 4 - write capture fixtures
+  ---
+  duration_ms: 2.405708
+  type: 'test'
+  ...
+# Subtest: matcher: every hand-written case
+ok 5 - matcher: every hand-written case
+  ---
+  duration_ms: 48.372542
+  type: 'test'
+  ...
+# Subtest: matcher: empty input lists the most used things
+ok 6 - matcher: empty input lists the most used things
+  ---
+  duration_ms: 1.028708
+  type: 'test'
+  ...
+# Subtest: plan: sites, apps, paths and searches
+ok 7 - plan: sites, apps, paths and searches
+  ---
+  duration_ms: 2.611334
+  type: 'test'
+  ...
+# Subtest: ask: what gets sent, and how the answer is split
+ok 8 - ask: what gets sent, and how the answer is split
+  ---
+  duration_ms: 1.612
+  type: 'test'
+  ...
+# Subtest: stash: alternates fresh and old, never repeats an opened item
+ok 9 - stash: alternates fresh and old, never repeats an opened item
+  ---
+  duration_ms: 0.829792
+  type: 'test'
+  ...
+# Subtest: stash: rng picks inside the bucket
+ok 10 - stash: rng picks inside the bucket
+  ---
+  duration_ms: 0.221125
+  type: 'test'
+  ...
+# Subtest: stash: "another" un-opens, counts the skip, and moves on
+ok 11 - stash: "another" un-opens, counts the skip, and moves on
+  ---
+  duration_ms: 0.247291
+  type: 'test'
+  ...
+# Subtest: stash: "another" with a single item serves that item again rather than nothing
+ok 12 - stash: "another" with a single item serves that item again rather than nothing
+  ---
+  duration_ms: 0.073958
+  type: 'test'
+  ...
+# Subtest: stash: things skipped three times go to the back
+ok 13 - stash: things skipped three times go to the back
+  ---
+  duration_ms: 0.303292
+  type: 'test'
+  ...
+# Subtest: stash: saving the same thing twice refreshes it
+ok 14 - stash: saving the same thing twice refreshes it
+  ---
+  duration_ms: 0.443042
+  type: 'test'
+  ...
+# Subtest: lines: never repeats within the last five
+ok 15 - lines: never repeats within the last five
+  ---
+  duration_ms: 0.446167
+  type: 'test'
+  ...
+# Subtest: lines: target lines win 60% of the time and rng order is fixed
+ok 16 - lines: target lines win 60% of the time and rng order is fixed
+  ---
+  duration_ms: 0.106708
+  type: 'test'
+  ...
+# Subtest: lines: a pool of one still works, an unknown category gives null
+ok 17 - lines: a pool of one still works, an unknown category gives null
+  ---
+  duration_ms: 0.049916
+  type: 'test'
+  ...
+# Subtest: lines: frequency 0 never speaks but still returns the text
+ok 18 - lines: frequency 0 never speaks but still returns the text
+  ---
+  duration_ms: 0.03725
+  type: 'test'
+  ...
+# Subtest: feedback: every sound it names exists as a file
+ok 19 - feedback: every sound it names exists as a file
+  ---
+  duration_ms: 0.401042
+  type: 'test'
+  ...
+# Subtest: write golden fixtures
+ok 20 - write golden fixtures
+  ---
+  duration_ms: 25.810167
+  type: 'test'
+  ...
+# Subtest: timer: reading durations
+ok 21 - timer: reading durations
+  ---
+  duration_ms: 1.382208
+  type: 'test'
+  ...
+# Subtest: timer: counting down and formatting
+ok 22 - timer: counting down and formatting
+  ---
+  duration_ms: 1.178709
+  type: 'test'
+  ...
+# Subtest: timer: words that mean stop
+ok 23 - timer: words that mean stop
+  ---
+  duration_ms: 0.383375
+  type: 'test'
+  ...
+# Subtest: timer: adding time
+ok 24 - timer: adding time
+  ---
+  duration_ms: 0.117417
+  type: 'test'
+  ...
+# Subtest: bookmarks: only living entries move, and only when it is clear which one
+ok 25 - bookmarks: only living entries move, and only when it is clear which one
+  ---
+  duration_ms: 0.836875
+  type: 'test'
+  ...
+# Subtest: bookmarks: url parts
+ok 26 - bookmarks: url parts
+  ---
+  duration_ms: 0.0965
+  type: 'test'
+  ...
+# Subtest: iphone: reading the phone files
+ok 27 - iphone: reading the phone files
+  ---
+  duration_ms: 0.274292
+  type: 'test'
+  ...
+# Subtest: iphone: folding the phone into the stash, again and again, without duplicates
+ok 28 - iphone: folding the phone into the stash, again and again, without duplicates
+  ---
+  duration_ms: 0.580208
+  type: 'test'
+  ...
+# Subtest: write extras fixtures
+ok 29 - write extras fixtures
+  ---
+  duration_ms: 1.560208
+  type: 'test'
+  ...
+# Subtest: jobs: reading what he typed
+ok 30 - jobs: reading what he typed
+  ---
+  duration_ms: 14.744417
+  type: 'test'
+  ...
+# Subtest: jobs: clock settings and job days
+ok 31 - jobs: clock settings and job days
+  ---
+  duration_ms: 0.265375
+  type: 'test'
+  ...
+# Subtest: jobs: the same job twice is one job, and done read finds it
+ok 32 - jobs: the same job twice is one job, and done read finds it
+  ---
+  duration_ms: 4.479667
+  type: 'test'
+  ...
+# Subtest: jobs: when he comes out, and how bold he is
+ok 33 - jobs: when he comes out, and how bold he is
+  ---
+  duration_ms: 2.366541
+  type: 'test'
+  ...
+# Subtest: jobs: the list opens by itself once a day
+ok 34 - jobs: the list opens by itself once a day
+  ---
+  duration_ms: 0.247
+  type: 'test'
+  ...
+# Subtest: jobs: unticking and deleting
+ok 35 - jobs: unticking and deleting
+  ---
+  duration_ms: 1.552542
+  type: 'test'
+  ...
+# Subtest: write jobs fixtures
+ok 36 - write jobs fixtures
+  ---
+  duration_ms: 8.2695
+  type: 'test'
+  ...
+# Subtest: migrate: a stale config gains every built-in it is missing, exactly once
+ok 37 - migrate: a stale config gains every built-in it is missing, exactly once
+  ---
+  duration_ms: 1.942417
+  type: 'test'
+  ...
+# Subtest: migrate: running it again changes nothing (idempotent)
+ok 38 - migrate: running it again changes nothing (idempotent)
+  ---
+  duration_ms: 0.181666
+  type: 'test'
+  ...
+# Subtest: migrate: deleting a built-in on purpose is respected, forever
+ok 39 - migrate: deleting a built-in on purpose is respected, forever
+  ---
+  duration_ms: 0.172584
+  type: 'test'
+  ...
+# Subtest: migrate: his own custom entries are left completely alone
+ok 40 - migrate: his own custom entries are left completely alone
+  ---
+  duration_ms: 0.084167
+  type: 'test'
+  ...
+# Subtest: migrate: a brand new built-in nobody has ever seen gets added once
+ok 41 - migrate: a brand new built-in nobody has ever seen gets added once
+  ---
+  duration_ms: 0.071083
+  type: 'test'
+  ...
+# Subtest: write migrate fixtures
+ok 42 - write migrate fixtures
+  ---
+  duration_ms: 0.587958
+  type: 'test'
+  ...
+#     worst clean error: 0.225 cents over 32 notes
+#     worst laptop-mic error: 0.172 cents
+# Subtest: notes: names, numbers and frequencies
+ok 43 - notes: names, numbers and frequencies
+  ---
+  duration_ms: 1.87625
+  type: 'test'
+  ...
+# Subtest: tunings: every preset reads cleanly
+ok 44 - tunings: every preset reads cleanly
+  ---
+  duration_ms: 0.39375
+  type: 'test'
+  ...
+# Subtest: detect: clean plucks land within 1.5 cents, for every string of every tuning
+ok 45 - detect: clean plucks land within 1.5 cents, for every string of every tuning
+  ---
+  duration_ms: 929.36975
+  type: 'test'
+  ...
+# Subtest: detect: a laptop-mic pluck (weak fundamental, hiss) still lands within 3 cents
+ok 46 - detect: a laptop-mic pluck (weak fundamental, hiss) still lands within 3 cents
+  ---
+  duration_ms: 288.245083
+  type: 'test'
+  ...
+# Subtest: detect: silence and hiss give nothing
+ok 47 - detect: silence and hiss give nothing
+  ---
+  duration_ms: 4.660333
+  type: 'test'
+  ...
+# Subtest: strings: nearest string, honest about how far off it is
+ok 48 - strings: nearest string, honest about how far off it is
+  ---
+  duration_ms: 0.336792
+  type: 'test'
+  ...
+# Subtest: session: smooths, locks after a steady moment, holds briefly, then idles
+ok 49 - session: smooths, locks after a steady moment, holds briefly, then idles
+  ---
+  duration_ms: 0.627292
+  type: 'test'
+  ...
+# Subtest: session: says so once when every string has locked, and only once
+ok 50 - session: says so once when every string has locked, and only once
+  ---
+  duration_ms: 0.238375
+  type: 'test'
+  ...
+# Subtest: write tuner fixtures
+ok 51 - write tuner fixtures
+  ---
+  duration_ms: 6.861333
+  type: 'test'
+  ...
+1..51
+# tests 51
+# suites 0
+# pass 51
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1709.93675
