@@ -669,7 +669,7 @@ Shortcuts from the box, if you prefer them:
 
 **Status:** in use on Adi's Mac since 12 Oct 2026 (`pet`, the head beside the notch, a custom GIF) · the timing of when he comes out is brain tested
 
-He lives in the notch: he sits beside his lines when the notch opens. **He does not come out about jobs** (Adi turned that off on 13 October 2026: it was annoying). A waiting job only shows his head beside the closed notch. If `character.roam` is switched back on, he flies out silently when a job is due, and a click opens a card with **start it · later · skip today**.
+He lives in the notch: he sits beside his lines when the notch opens. **He does not come out about jobs** (Adi turned that off on 13 October 2026: it was annoying). A waiting job shows his head beside the closed notch, always, whatever the fly-out switch says (since 29 October 2026; before that a stray fly-out setting could hide the head completely). Click the head for the list. If `character.roam` is switched back on, he also flies out silently when a job is due, and a click opens a card with **start it · later · skip today**; while he is out, the head is not shown.
 
 - **He gets bolder when ignored.** If nobody clicks him for three minutes he flies home, and next time he comes out bolder: first he bobs under the notch, then drifts along the top, then wanders the upper third bigger, then loops round the middle of the screen twice the size. Any click resets him.
 - **He never speaks first.** The voice only comes once you click.

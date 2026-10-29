@@ -1199,12 +1199,16 @@ final class Brain {
         let now = nowWall
         let held = FocusQuiet.isOn || !config.character.roam || (jobDay.quietUntil.map { now < $0 } ?? false)
 
-        // While he is kept in, his head beside the notch says a job is waiting.
+        // His head beside the notch says a job is waiting. That head is the reminder Adi relies on, so it shows
+        // whenever a job is waiting and he is not already out on the screen, whatever the fly-out setting says.
+        // (It used to show only while he was held in. A config saved by the 24 Oct version had the fly-out
+        // switch on, so on that Mac he was never held in and the head never appeared.)
         let waiting = jobDay.jobs.contains { job in
             job.status == .open && (job.snoozedUntil.map { now >= $0 } ?? true) && (job.dueWall.map { $0 <= now } ?? true)
         }
-        if model.jobWaiting != (held && waiting) {
-            model.jobWaiting = held && waiting
+        let showHead = waiting && !roamer.isOut
+        if model.jobWaiting != showHead {
+            model.jobWaiting = showHead
             controller.refreshClosed()
         }
 
