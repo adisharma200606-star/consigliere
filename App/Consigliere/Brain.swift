@@ -1255,21 +1255,29 @@ final class Brain {
     /// (and once after launch). If he is missing while a job is due, `cat ~/.consigliere/notch.log` shows which
     /// build is running and what it decided, so the cause never has to be guessed again.
     private var wroteHeadLog = false
-    private func writeHeadLog(showHead: Bool, now: Double) {
+    private func writeHeadLog(showHead: Bool, now: Int) {
         wroteHeadLog = true
         let build = Bundle.main.object(forInfoDictionaryKey: "ConsigliereCommit") as? String ?? "unknown build"
         let due = jobDay.jobs.filter { job in
             job.status == .open && (job.snoozedUntil.map { now >= $0 } ?? true) && (job.dueWall.map { $0 <= now } ?? true)
         }.map(\.title)
-        let line = "\(ISO8601DateFormatter().string(from: Date())) build \(build): head \(showHead ? "SHOWN" : "hidden")"
-            + " · jobs due: \(due.isEmpty ? "none" : due.joined(separator: ", "))"
-            + " · out on screen: \(roamer.isOut) · fly-out setting: \(config.character.roam)"
-            + " · notch on this screen: \(NotchController.preferredScreen.consigliereNotchFrame != nil)\n"
+        // Built in small pieces: one long expression is too much for the Swift compiler to work out quickly.
+        let stamp = ISO8601DateFormatter().string(from: Date())
+        let head: String = showHead ? "SHOWN" : "hidden"
+        let dueText: String = due.isEmpty ? "none" : due.joined(separator: ", ")
+        let out: Bool = roamer.isOut
+        let flyOut: Bool = config.character.roam
+        let hasNotch: Bool = NotchController.preferredScreen.consigliereNotchFrame != nil
+        var line = "\(stamp) build \(build): head \(head)"
+        line += " · jobs due: \(dueText)"
+        line += " · out on screen: \(out) · fly-out setting: \(flyOut)"
+        line += " · notch on this screen: \(hasNotch)\n"
         let url = ConsiglierePaths.configDirectory.appendingPathComponent("notch.log")
         // Keep the last 200 lines so the file never grows without end.
         let old = (try? String(contentsOf: url, encoding: .utf8)) ?? ""
-        let kept = old.split(separator: "\n", omittingEmptySubsequences: true).suffix(199).joined(separator: "\n")
-        try? ((kept.isEmpty ? "" : kept + "\n") + line).write(to: url, atomically: true, encoding: .utf8)
+        let lines: [String] = old.split(separator: "\n", omittingEmptySubsequences: true).suffix(199).map { String($0) }
+        let text: String = (lines + [line.trimmingCharacters(in: .newlines)]).joined(separator: "\n") + "\n"
+        try? text.write(to: url, atomically: true, encoding: .utf8)
     }
 
     /// Someone clicked him: he stops, and his card opens beside him.
