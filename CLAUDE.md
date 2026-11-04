@@ -8,9 +8,9 @@ After pushing a change, wait for the CI run to finish (it commits the regenerate
 
 ## The single most important fact
 
-**Consigliere runs on Adi's MacBook and he uses it every day** (version 1 since 25 September 2026, version 2 since 11 October). Confirmed by use: opening things, the notch and its look, settings, the timer, flip (with and without an HDMI screen), music on Spotify, jobs, and the character. Not yet confirmed one by one: hold-to-talk, the tuner's microphone, Ask, Notes/Reminders/diary, living bookmarks, the Focus filter, Apple Music. `BLIND_SPOTS.md` sections B and E list the runtime guesses behind those.
+**Consigliere runs on Adi's MacBook and he uses it every day** (version 1 since 25 September 2026, version 2 since 11 October). Confirmed by use: opening things, the notch and its look, settings, the timer, flip (with and without an HDMI screen), music on Spotify, jobs, the character (and his head beside the notch when a job is due), and text replacement in Brave (4 November 2026). Not yet confirmed one by one: hold-to-talk, the tuner's microphone, Ask, Notes/Reminders/diary, living bookmarks, the Focus filter, Apple Music. `BLIND_SPOTS.md` sections B and E list the runtime guesses behind those.
 
-Also tested: the JavaScript reference implementation of the brain (`reference-js/`, 51 passing tests) and the phone prototype built on it.
+Also tested: the JavaScript reference implementation of the brain (`reference-js/`, 62 passing tests) and the phone prototype built on it.
 
 ## What to do, in order
 

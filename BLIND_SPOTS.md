@@ -122,7 +122,9 @@ Confirmed on 11 October and removed from the table: music by name. `play arctic 
 | E13 | `Character/Roamer.swift` (`ClickCatcher`) | The window around him is transparent outside his body, so clicks there fall through to the app underneath; mouse-moved events arrive over his body without the window being key (`acceptsMouseMovedEvents`, an `.activeAlways` tracking area), which is what petting needs; `mouseDragged` keeps arriving while he is dragged even though the window moves under the cursor. | If clicks near him are swallowed, shrink the margin in `layout()`. If petting never makes hearts, log in `mouseMoved`. If dragging stutters or drops him, move the window from the drag delta instead of the absolute mouse position. |
 
 
-## F. Text replacement in Brave (4 November 2026): written, not yet compiled on a Mac or tried
+## F. Text replacement in Brave (4 November 2026): works on Adi's Mac
+
+Confirmed working in Brave on 4 November 2026. Kept below in case a macOS or Brave update breaks it.
 
 | # | Where | Assumed | If it is wrong |
 |---|---|---|---|

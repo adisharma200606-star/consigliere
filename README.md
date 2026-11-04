@@ -9,7 +9,7 @@
 Type the name of a thing and it opens. Drop a link on the notch and it is saved. Click the notch when you are bored and it hands one back.
 
 [![ci](https://github.com/adisharma200606-star/consigliere/actions/workflows/ci.yml/badge.svg)](https://github.com/adisharma200606-star/consigliere/actions/workflows/ci.yml)
-&nbsp;macOS 13+ · Swift / SwiftUI / AppKit · Objective-C · JavaScript reference brain · 116 automated tests
+&nbsp;macOS 13+ · Swift / SwiftUI / AppKit · Objective-C · JavaScript reference brain · 130 automated tests
 
 </div>
 
@@ -27,7 +27,7 @@ Type the name of a thing and it opens. Drop a link on the notch and it is saved.
 
 ## In thirty seconds
 
-- **What it is:** a native macOS app that turns the notch into a command bar. `yt` opens YouTube in the right Brave profile, `timer 25` starts a countdown beside the notch, `remind me to call mom at 5` lands in Apple Reminders, `play beabadoobee` starts Spotify, `180` turns the screen upside down. After each action, a dry one-liner in an Italian accent: *"Nobody saw nothing. It's open."*
+- **What it is:** a native macOS app that turns the notch into a command bar. `yt` opens YouTube in the right Brave profile, `timer 25` starts a countdown beside the notch, `remind me to call mom at 5` lands in Apple Reminders, `play beabadoobee` starts Spotify, `180` turns the screen upside down, and the Text Replacements from macOS finally work in Brave. After each action, a dry one-liner in an Italian accent: *"Nobody saw nothing. It's open."*
 - **Why it is interesting:** it has a real product spine. A handful of rules, written into the spec before any code, decided every feature and killed most of the ideas proposed (see [the rules](#the-rules)).
 - **How it was built:** I have no computer science background. I designed it, directed it and debugged it on real hardware; Claude, through **Claude Code**, wrote most of the code under that direction. It was started **without a Mac**: the code was directed from a phone, and a GitHub cloud Mac was the only compiler. When a MacBook arrived, the app built and launched on the first day.
 - **How it stays correct:** the app's brain is written twice, once in plain JavaScript as the specification and once in Swift, and the Swift must reproduce the JavaScript's output exactly, on every push. 139 matcher cases, 17 instrument tunings, the timer, the reminder parser, the jobs ledger: all pinned by golden fixtures.
@@ -72,7 +72,7 @@ Seven rules went into the spec before any code (`SPEC.md`); version 2 revised th
 2. **Fast.** Under 1.5 seconds from Enter to the thing being open.
 3. **Nothing to memorise.** The box matches *names*. There is no command language, no syntax, no `/commands`. If something is not "open a thing", it is a gesture, a hotkey, or a tool that is itself just a name (`timer 10`, `note buy strings`).
 4. **He never speaks first.** Voice and sound only answer something you just did, or something you asked to be told (a timer ending).
-5. **Nothing that watches you.** No streaks, no dashboards, no screen reading, no "I noticed you have been on YouTube for an hour".
+5. **Nothing that watches you.** No streaks, no dashboards, no screen reading, no "I noticed you have been on YouTube for an hour". One deliberate, narrow exception: [text replacement in Brave](#text-replacement-in-brave) has to see keys typed there, and is built to forget them.
 6. **Scope is frozen per version.** New ideas go to a parked list until the current version runs on hardware.
 
 **What the rules killed.** A full mafia character with a face (cut, then brought back in version 2 as one small sprite that only comes out when called). A custom command language ("it looks like a coding project, not a shortcut"). A typed wake phrase. Proactive suggestions. Productivity streaks. A TV-remote visual theme. Selling it. Each was a real proposal, discussed and dropped; the ones that shaped the design are recorded in `SPEC.md`.
@@ -156,6 +156,18 @@ Left alone for 12 seconds he goes home; after 45 seconds he goes home regardless
 - `180` rotates the built-in display upside down through a private macOS framework (see [below](#the-screen-would-not-turn)).
 - A settings window with **Add the page I'm on**, an app picker, a three-slide tutorial, eight generated interface sounds and trackpad haptics.
 
+### Text replacement in Brave
+
+macOS lets you keep shortcuts in System Settings (`omw` → *On my way!*), and they work in Safari and every Apple app. They do nothing in Brave, or any Chromium browser: Chromium handles typing in web pages itself and never goes through macOS's text system, so the substitution never runs. If Brave is your main browser, the feature is effectively missing.
+
+Consigliere puts it back, using the **same list** you already keep in System Settings, so there is nothing new to maintain:
+
+- While Brave is the app in front, a global key monitor feeds each typed character to a small buffer. When a shortcut is followed by a space or punctuation, it sends backspaces over the shortcut and types the phrase, keeping the space or punctuation. Same rules as macOS: the shortcut has to start a word (`now` never fires inside `known`), case does not matter, the longest shortcut wins.
+- **Privacy by construction.** It only listens while Brave is in front, remembers at most the last 64 characters, in memory, and forgets them on any click, arrow key, ⌘ shortcut or app switch. Nothing typed is saved, logged or sent. macOS's secure input keeps password fields away from it entirely.
+- **No feedback loop.** The keys it types itself are stamped with a marker in the event's source data, so it never reacts to its own typing.
+- **Reads the real list.** macOS keeps it in a small SQLite database; Consigliere reads it read-only with the `sqlite3` that ships with macOS, re-reads it within 30 seconds of a change, and merges in any extra shortcuts from its own config.
+- **Same process as the rest of the brain.** The deciding part (`TypingBuffer`) is a pure function written first in JavaScript with 11 tests, which write golden fixtures that the Swift port must reproduce exactly. Only the keyboard plumbing lives in the app.
+
 ### The voice
 
 Over **400 lines across 56 categories**, read in English by a macOS Italian system voice, which gives a thick accent for free. Lines are specific where they can be: open YouTube and you usually get a YouTube line. A tested picker never repeats any of the last five lines in a category, and a dial (default 60%) decides whether a line is also spoken or only shown. The text line always shows.
@@ -191,6 +203,7 @@ flowchart LR
         P[MusicPlayer<br/>Spotify Web API · AppleScript]
         R[ScreenRotator<br/>→ RotationBridge.m]
         Ch[Roamer<br/>the character]
+        X[TextReplacer<br/>Brave · CGEvent]
     end
 
     subgraph Core["ConsigliereCore (Foundation only, fully tested)"]
@@ -201,11 +214,12 @@ flowchart LR
         Ca[Capture parser]
         Jo[Jobs]
         Mi[CatalogMigration]
+        Tb[TypingBuffer]
     end
 
     H & S & T & E --> B
     B <--> Core
-    B --> O & N & M & C & A & P & R & Ch
+    B --> O & N & M & C & A & P & R & Ch & X
 ```
 
 Two ideas explain most of the design.
@@ -249,6 +263,8 @@ The regenerated Xcode project is committed back to `main` automatically, so open
 **Configs that migrate themselves, without resurrecting deletions.** `config.json` is written once on first launch, so built-in commands added in later updates never appeared for existing users (this was a real bug; see below). `CatalogMigration` adds each new built-in exactly once and remembers what it has offered in a separate file, so a built-in you deleted on purpose stays deleted. A broken config is never overwritten: defaults are used for that run and your file is left alone.
 
 **Private API behind a verifying wrapper.** macOS has no public way to rotate a display. System Settings uses the private `MonitorPanel` framework, so the app does too, from a small Objective-C bridge (the category trick that lets Objective-C send messages the SDK does not declare). The important part is in Swift: it never trusts "success". It reads the public `CGDisplayRotation` afterwards and escalates through three methods if the screen did not actually move.
+
+**Watching keys, narrowly.** Text replacement needs to see what is typed in Brave, which cuts against rule 5. Instead of a blanket key logger, the scope is the smallest that works: one app, the last 64 characters, memory only, reset on every click, and a diagnostic log that records the permission state and the size of the list, never the text. The exception is written into the project's rules, so it cannot quietly grow.
 
 **Secrets never touch disk.** The Claude key and the Spotify client ID and secret live in the Keychain. Diagnostic logs (`~/.consigliere/music.log`, `flip.log`) record every step of an attempt and never a key.
 
@@ -302,7 +318,7 @@ What I learned, in one line each:
 | Swift, the brain (`ConsigliereCore`, excluding generated files) | ~3,600 lines |
 | Objective-C rotation bridge | ~180 lines |
 | JavaScript reference brain + tests | ~2,700 lines |
-| Automated tests | 51 JavaScript + 65 Swift, all green on every push |
+| Automated tests | 62 JavaScript + 68 Swift |
 | Golden matcher cases | 139 |
 | Voice lines | 400+ in 56 categories |
 | Tunings | 17, plus chromatic and custom |
@@ -317,7 +333,7 @@ What I learned, in one line each:
 
 | | |
 |---|---|
-| **Confirmed on my MacBook, used daily** | opening sites, apps and folders by name; Brave profiles; the notch box and the Nocturne look; settings and custom entries; the timer; screen flip, including with an HDMI display; Spotify by name; jobs; the character and `pet`; the install script |
+| **Confirmed on my MacBook, used daily** | opening sites, apps and folders by name; Brave profiles; the notch box and the Nocturne look; settings and custom entries; the timer; screen flip, including with an HDMI display; Spotify by name; jobs; the character, his head beside the notch when a job is due, and `pet`; text replacement in Brave; the install script |
 | **Built and unit-tested, not yet individually confirmed on hardware** | hold-to-talk; the tuner's microphone path; Ask; Notes, Reminders and the diary; living bookmarks; the Focus filter; the iPhone shortcuts; Apple Music |
 | **Not built** | calendar dates like "25 September" in reminders; live web search in Ask; a Mac App Store build (it uses a private framework and is not sandboxed, by design) |
 

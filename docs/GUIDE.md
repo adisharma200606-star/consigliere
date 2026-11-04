@@ -668,7 +668,7 @@ Shortcuts from the box, if you prefer them:
 
 ## 21. The character
 
-**Status:** in use on Adi's Mac since 12 Oct 2026 (`pet`, the head beside the notch, a custom GIF) · the timing of when he comes out is brain tested
+**Status:** in use on Adi's Mac since 12 Oct 2026 (`pet`, the head beside the notch, a custom GIF) · head beside the notch confirmed again 4 Nov 2026, after the fly-out-setting fix · the timing of when he comes out is brain tested
 
 He lives in the notch: he sits beside his lines when the notch opens. **He does not come out about jobs** (Adi turned that off on 13 October 2026: it was annoying). A waiting job shows his head beside the closed notch, always, whatever the fly-out switch says (since 29 October 2026; before that a stray fly-out setting could hide the head completely). Click the head for the list. If he is ever missing while a job is due, `cat ~/.consigliere/notch.log` shows which build is running and what it decided. If `character.roam` is switched back on, he also flies out silently when a job is due, and a click opens a card with **start it · later · skip today**; while he is out, the head is not shown.
 
@@ -738,7 +738,7 @@ The first time, macOS asks whether Consigliere may control Spotify (or Music). S
 
 ## 24. Text replacement in Brave
 
-**Status:** brain tested (when to replace, what to delete, what to type) · Mac app builds, not yet tried · added 4 Nov 2026
+**Status:** brain tested (when to replace, what to delete, what to type) · works on Adi's Mac in Brave (4 Nov 2026)
 
 The shortcuts you keep in **System Settings → Keyboard → Text Replacements** (`omw` → *On my way!*) work in Safari and Apple's apps, but not in Brave: Chromium browsers handle typing in web pages themselves and skip macOS's text system. Consigliere fills the gap. Type a shortcut in Brave, then a space or punctuation, and it is replaced, the same as everywhere else.
 
