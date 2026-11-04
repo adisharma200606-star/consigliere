@@ -406,6 +406,31 @@ public struct MusicConfig: Codable, Equatable {
     }
 }
 
+/// Text replacement in apps that ignore macOS's own (see TextReplacement.swift). The list itself is the one
+/// in System Settings → Keyboard → Text Replacements; `extra` adds more, and wins when a shortcut is in both.
+public struct TextReplacementConfig: Codable, Equatable {
+    public var on: Bool
+    /// Bundle identifiers of the apps it works in. A prefix: "com.brave.Browser" also covers Brave's web apps.
+    public var apps: [String]
+    public var extra: [TextReplacement]
+
+    public init(on: Bool = true, apps: [String] = ["com.brave.Browser"], extra: [TextReplacement] = []) {
+        self.on = on
+        self.apps = apps
+        self.extra = extra
+    }
+
+    private enum CodingKeys: String, CodingKey { case on, apps, extra }
+
+    public init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        let d = TextReplacementConfig()
+        on = try c.decodeIfPresent(Bool.self, forKey: .on) ?? d.on
+        apps = try c.decodeIfPresent([String].self, forKey: .apps) ?? d.apps
+        extra = try c.decodeIfPresent([TextReplacement].self, forKey: .extra) ?? d.extra
+    }
+}
+
 public struct Config: Codable, Equatable {
     public var hotkeys: Hotkeys
     public var brave: BraveConfig
@@ -422,12 +447,14 @@ public struct Config: Codable, Equatable {
     public var jobs: JobsConfig
     public var character: CharacterConfig
     public var music: MusicConfig
+    public var textReplacement: TextReplacementConfig
     public var catalog: [CatalogEntry]
 
     public init(hotkeys: Hotkeys = Hotkeys(), brave: BraveConfig = BraveConfig(), speak: Bool = true, speechLocale: String = "en-IN",
                 theme: Theme = Theme(), tuner: TunerConfig = TunerConfig(), ask: AskConfig = AskConfig(),
                 feedback: FeedbackConfig = FeedbackConfig(), includeInstalledApps: Bool = true,
                 jobs: JobsConfig = JobsConfig(), character: CharacterConfig = CharacterConfig(), music: MusicConfig = MusicConfig(),
+                textReplacement: TextReplacementConfig = TextReplacementConfig(),
                 catalog: [CatalogEntry] = DefaultCatalog.entries) {
         self.hotkeys = hotkeys
         self.brave = brave
@@ -441,10 +468,11 @@ public struct Config: Codable, Equatable {
         self.jobs = jobs
         self.character = character
         self.music = music
+        self.textReplacement = textReplacement
         self.catalog = catalog
     }
 
-    private enum CodingKeys: String, CodingKey { case hotkeys, brave, speak, speechLocale, theme, tuner, ask, feedback, includeInstalledApps, jobs, character, music, catalog }
+    private enum CodingKeys: String, CodingKey { case hotkeys, brave, speak, speechLocale, theme, tuner, ask, feedback, includeInstalledApps, jobs, character, music, textReplacement, catalog }
 
     public init(from decoder: Decoder) throws {
         let c = try decoder.container(keyedBy: CodingKeys.self)
@@ -460,6 +488,7 @@ public struct Config: Codable, Equatable {
         jobs = try c.decodeIfPresent(JobsConfig.self, forKey: .jobs) ?? JobsConfig()
         character = try c.decodeIfPresent(CharacterConfig.self, forKey: .character) ?? CharacterConfig()
         music = try c.decodeIfPresent(MusicConfig.self, forKey: .music) ?? MusicConfig()
+        textReplacement = try c.decodeIfPresent(TextReplacementConfig.self, forKey: .textReplacement) ?? TextReplacementConfig()
         catalog = try c.decodeIfPresent([CatalogEntry].self, forKey: .catalog) ?? DefaultCatalog.entries
     }
 }

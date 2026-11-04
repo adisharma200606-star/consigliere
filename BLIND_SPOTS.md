@@ -121,3 +121,12 @@ Confirmed on 11 October and removed from the table: music by name. `play arctic 
 | E12 | `Character/CharacterSprite.swift` | `NSBitmapImageRep` gives every frame of an animated GIF through `.currentFrame`, with `.currentFrameDuration`. | If the GIF shows one still frame, split it into PNGs (`idle_0.png`…) instead. |
 | E13 | `Character/Roamer.swift` (`ClickCatcher`) | The window around him is transparent outside his body, so clicks there fall through to the app underneath; mouse-moved events arrive over his body without the window being key (`acceptsMouseMovedEvents`, an `.activeAlways` tracking area), which is what petting needs; `mouseDragged` keeps arriving while he is dragged even though the window moves under the cursor. | If clicks near him are swallowed, shrink the margin in `layout()`. If petting never makes hearts, log in `mouseMoved`. If dragging stutters or drops him, move the window from the drag delta instead of the absolute mouse position. |
 
+
+## F. Text replacement in Brave (4 November 2026): written, not yet compiled on a Mac or tried
+
+| # | Where | Assumed | If it is wrong |
+|---|---|---|---|
+| F1 | `TextReplacer` (in `HotkeyCenter.swift`) | `NSEvent.addGlobalMonitorForEvents(matching: .keyDown)` delivers Brave's keys once Accessibility is granted, without Input Monitoring as well. | If the log says "permission granted" but nothing fires, also switch Consigliere on in Privacy & Security → Input Monitoring. |
+| F2 | same | Backspaces and `keyboardSetUnicodeString` key events posted at the HID tap reach a Brave text box, 16 UTF-16 units per event, 3 ms apart. | If letters go missing, lower the chunk to 1 and raise the gap to 8 ms; if the backspaces eat too much, raise the 40 ms wait before them. |
+| F3 | `TextReplacer.readDatabase` | `/usr/bin/sqlite3 -readonly -json ~/Library/KeyboardServices/TextReplacements.db` can be read by a non-sandboxed app with no Full Disk Access, and the table is `ZTEXTREPLACEMENTENTRY` with `ZSHORTCUT`, `ZPHRASE`, `ZWASDELETED`. | The log shows "System Settings: 0". Put shortcuts under `textReplacement.extra`, or give Consigliere Full Disk Access. |
+| F4 | same | Our own synthetic keys come back through the global monitor carrying `eventSourceUserData` = the marker, so they are ignored. The `injecting` flag covers it either way. | If a phrase that contains a shortcut expands again, check the marker. |

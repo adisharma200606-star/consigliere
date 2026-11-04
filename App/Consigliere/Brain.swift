@@ -36,6 +36,7 @@ final class Brain {
     private let tutorialWindow = TutorialWindow()
     private let roamer = Roamer()
     private let jobCard = JobCard()
+    private let textReplacer = TextReplacer()
 
     // What is going on right now.
     private var decision: Decision?
@@ -189,6 +190,7 @@ final class Brain {
         ears.setLocale(config.speechLocale)
         tunerSession.options.toleranceCents = config.tuner.toleranceCents
         model.character = CharacterFrames.load(folder: config.character.folder, facesLeft: config.character.facesLeft)
+        textReplacer.apply(config.textReplacement)
 
         hotkeys.removeAll()
         let ok = [

@@ -1,0 +1,275 @@
+{
+  "list": [
+    {
+      "shortcut": "omw",
+      "phrase": "On my way!"
+    },
+    {
+      "shortcut": "brb",
+      "phrase": "be right back"
+    },
+    {
+      "shortcut": ";sig",
+      "phrase": "Adi Sharma"
+    },
+    {
+      "shortcut": "addr",
+      "phrase": "Bengaluru"
+    },
+    {
+      "shortcut": "addrw",
+      "phrase": "Christ University, Bengaluru"
+    },
+    {
+      "shortcut": "now",
+      "phrase": "right now"
+    },
+    {
+      "shortcut": "",
+      "phrase": "never"
+    },
+    {
+      "shortcut": "two words",
+      "phrase": "never"
+    },
+    {
+      "shortcut": "same",
+      "phrase": "same"
+    }
+  ],
+  "usable": [
+    "omw",
+    "brb",
+    ";sig",
+    "addr",
+    "addrw",
+    "now"
+  ],
+  "memory": 64,
+  "cases": [
+    {
+      "steps": [
+        {
+          "text": "omw "
+        }
+      ],
+      "expansions": [
+        {
+          "step": 0,
+          "deleteCount": 4,
+          "insert": "On my way! "
+        }
+      ],
+      "remembered": ""
+    },
+    {
+      "steps": [
+        {
+          "text": "brb."
+        }
+      ],
+      "expansions": [
+        {
+          "step": 0,
+          "deleteCount": 4,
+          "insert": "be right back."
+        }
+      ],
+      "remembered": ""
+    },
+    {
+      "steps": [
+        {
+          "text": "known "
+        }
+      ],
+      "expansions": [],
+      "remembered": "known "
+    },
+    {
+      "steps": [
+        {
+          "text": "see you (now) "
+        }
+      ],
+      "expansions": [
+        {
+          "step": 0,
+          "deleteCount": 4,
+          "insert": "right now)"
+        }
+      ],
+      "remembered": " "
+    },
+    {
+      "steps": [
+        {
+          "text": "OMW "
+        }
+      ],
+      "expansions": [
+        {
+          "step": 0,
+          "deleteCount": 4,
+          "insert": "On my way! "
+        }
+      ],
+      "remembered": ""
+    },
+    {
+      "steps": [
+        {
+          "text": "thanks ;sig "
+        }
+      ],
+      "expansions": [
+        {
+          "step": 0,
+          "deleteCount": 5,
+          "insert": "Adi Sharma "
+        }
+      ],
+      "remembered": ""
+    },
+    {
+      "steps": [
+        {
+          "text": "addrw "
+        }
+      ],
+      "expansions": [
+        {
+          "step": 0,
+          "deleteCount": 6,
+          "insert": "Christ University, Bengaluru "
+        }
+      ],
+      "remembered": ""
+    },
+    {
+      "steps": [
+        {
+          "text": "addr, ok"
+        }
+      ],
+      "expansions": [
+        {
+          "step": 0,
+          "deleteCount": 5,
+          "insert": "Bengaluru,"
+        }
+      ],
+      "remembered": " ok"
+    },
+    {
+      "steps": [
+        {
+          "text": "omx"
+        },
+        {
+          "key": "backspace"
+        },
+        {
+          "text": "w "
+        }
+      ],
+      "expansions": [
+        {
+          "step": 2,
+          "deleteCount": 4,
+          "insert": "On my way! "
+        }
+      ],
+      "remembered": ""
+    },
+    {
+      "steps": [
+        {
+          "text": "omw"
+        },
+        {
+          "key": "backspace"
+        },
+        {
+          "text": " "
+        }
+      ],
+      "expansions": [],
+      "remembered": "om "
+    },
+    {
+      "steps": [
+        {
+          "text": "om"
+        },
+        {
+          "key": "reset"
+        },
+        {
+          "text": "w "
+        }
+      ],
+      "expansions": [],
+      "remembered": "w "
+    },
+    {
+      "steps": [
+        {
+          "text": "omw brb "
+        }
+      ],
+      "expansions": [
+        {
+          "step": 0,
+          "deleteCount": 4,
+          "insert": "On my way! "
+        },
+        {
+          "step": 0,
+          "deleteCount": 4,
+          "insert": "be right back "
+        }
+      ],
+      "remembered": ""
+    },
+    {
+      "steps": [
+        {
+          "text": "same "
+        }
+      ],
+      "expansions": [],
+      "remembered": "same "
+    },
+    {
+      "steps": [
+        {
+          "text": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx omw!"
+        }
+      ],
+      "expansions": [
+        {
+          "step": 0,
+          "deleteCount": 4,
+          "insert": "On my way!!"
+        }
+      ],
+      "remembered": ""
+    },
+    {
+      "steps": [
+        {
+          "text": "é omw?"
+        }
+      ],
+      "expansions": [
+        {
+          "step": 0,
+          "deleteCount": 4,
+          "insert": "On my way!?"
+        }
+      ],
+      "remembered": ""
+    }
+  ]
+}

@@ -44,6 +44,7 @@ Two ideas explain most of the design:
 | `CatalogMigration.swift` | Keeps an existing `config.json` in step with new built-in commands added in later updates — see the note below. |
 | `Capture.swift` | Reading "call mom tomorrow at 5" into a title and a time. |
 | `Jobs.swift` | The day's jobs: reading "read 30 min, duolingo by 10pm", which of his things starts each job, carrying unfinished jobs to the next day, and `Jobs.nextNudge`, which decides when the character comes out, about what, and how boldly. Port of `reference-js/jobs.js`. |
+| `TextReplacement.swift` | Text replacement for Brave: `TypingBuffer` decides when typed text ends in a shortcut, what to delete and what to type; `MacTextReplacements` reads the list from System Settings. Port of `reference-js/replace.js`. |
 | `Ask.swift` | What is sent with a question, when the clipboard is included, and splitting the reply into text and a command. |
 | `Feedback.swift` | Which sound and which trackpad tap go with each event. |
 | `Config.swift` | Every setting, each with a default, so a partial or old config file always loads. |

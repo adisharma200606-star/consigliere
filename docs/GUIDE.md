@@ -38,6 +38,7 @@ When the app runs on your Mac, every Status line gets updated and anything that 
 21. [The character](#21-the-character)
 22. [The diary](#22-the-diary)
 23. [Music](#23-music)
+24. [Text replacement in Brave](#24-text-replacement-in-brave)
 
 ---
 
@@ -732,6 +733,23 @@ Settings: **settings → Jobs and music**, or `character.size`, `character.roam`
 The first time, macOS asks whether Consigliere may control Spotify (or Music). Say yes once.
 
 **If it does not play**, the notch says why, and `cat ~/.consigliere/music.log` shows every step of the last try (never the keys). "Invalid client secret" there means the secret in settings is wrong: copy it again from the dashboard (**View client secret**) and paste it into an empty box.
+
+---
+
+## 24. Text replacement in Brave
+
+**Status:** brain tested (when to replace, what to delete, what to type) · Mac app builds, not yet tried · added 4 Nov 2026
+
+The shortcuts you keep in **System Settings → Keyboard → Text Replacements** (`omw` → *On my way!*) work in Safari and Apple's apps, but not in Brave: Chromium browsers handle typing in web pages themselves and skip macOS's text system. Consigliere fills the gap. Type a shortcut in Brave, then a space or punctuation, and it is replaced, the same as everywhere else.
+
+- **The list is the one you already have.** Add, change or delete shortcuts in System Settings as usual; Consigliere reads them again within 30 seconds of switching apps. To add shortcuts only for Brave, put them under `textReplacement.extra` in the config: `[{ "shortcut": "addr", "phrase": "Bengaluru" }]`. Those win when a shortcut is in both.
+- **When it fires:** a shortcut at the start of a word, followed by a space or `. , ! ? ; : )`. The space or punctuation is kept. Case does not matter (`OMW` works). `now` never fires inside `known`.
+- **Only in Brave**, including Brave web apps. Other apps already have macOS's own. The list of apps is `textReplacement.apps`; switch it all off with `textReplacement.on: false`.
+- **Permission, once:** macOS asks to let Consigliere control the computer. Say yes, or turn it on in **System Settings → Privacy & Security → Accessibility → Consigliere**. It starts working within two seconds of the switch going on, no restart needed.
+
+**What it can see.** To notice a shortcut it has to follow the keys typed while Brave is in front. It keeps only the last few characters, in memory, and forgets them on any click, arrow key, ⌘ shortcut or app switch. Nothing typed is ever saved or sent anywhere, and macOS keeps password fields away from it entirely. `~/.consigliere/text-replacement.log` says whether it is on, whether the permission is there, and how many shortcuts it found: never what was typed.
+
+**If nothing happens**, `cat ~/.consigliere/text-replacement.log`. "waiting for the Accessibility permission" means the switch above is off. "System Settings: 0" means macOS would not let it read your list; add them under `textReplacement.extra` instead.
 
 ---
 
