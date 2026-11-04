@@ -95,6 +95,19 @@ final class Brain {
             }
         }
 
+        // One time only: switch "He may fly out of the notch" back off. A version from 24 October 2026 turned it
+        // on by default for a few hours, and a config saved then kept it on. Adi never wanted it on: he wants him
+        // sitting by the notch when a job is due. After this runs once, the switch is his again.
+        let roamResetKey = "consigliere.roamReset.2026-11"
+        if !UserDefaults.standard.bool(forKey: roamResetKey) {
+            UserDefaults.standard.set(true, forKey: roamResetKey)
+            if config.character.roam {
+                config.character.roam = false
+                try? ConfigStore.save(config)
+                NSLog("Consigliere: switched the fly-out setting back off (one time)")
+            }
+        }
+
         model = NotchModel(theme: NotchTheme(config.theme))
         controller = NotchController(model: model)
     }
@@ -1207,9 +1220,10 @@ final class Brain {
             job.status == .open && (job.snoozedUntil.map { now >= $0 } ?? true) && (job.dueWall.map { $0 <= now } ?? true)
         }
         let showHead = waiting && !roamer.isOut
-        if model.jobWaiting != showHead {
+        if model.jobWaiting != showHead || !wroteHeadLog {
             model.jobWaiting = showHead
             controller.refreshClosed()
+            writeHeadLog(showHead: showHead, now: now)
         }
 
         guard !roamer.isOut, !jobCard.isOpen, !controller.isOpen else { return }
@@ -1235,6 +1249,27 @@ final class Brain {
         // Out he flies. No sound, no voice: rule 4.
         roamer.flyOut(level: nudge.level, size: CGFloat(config.character.size), frames: model.character,
                       roamSeconds: config.jobs.roamMinutes * 60)
+    }
+
+    /// Whether his head is beside the notch, and why, written to ~/.consigliere/notch.log each time it changes
+    /// (and once after launch). If he is missing while a job is due, `cat ~/.consigliere/notch.log` shows which
+    /// build is running and what it decided, so the cause never has to be guessed again.
+    private var wroteHeadLog = false
+    private func writeHeadLog(showHead: Bool, now: Double) {
+        wroteHeadLog = true
+        let build = Bundle.main.object(forInfoDictionaryKey: "ConsigliereCommit") as? String ?? "unknown build"
+        let due = jobDay.jobs.filter { job in
+            job.status == .open && (job.snoozedUntil.map { now >= $0 } ?? true) && (job.dueWall.map { $0 <= now } ?? true)
+        }.map(\.title)
+        let line = "\(ISO8601DateFormatter().string(from: Date())) build \(build): head \(showHead ? "SHOWN" : "hidden")"
+            + " · jobs due: \(due.isEmpty ? "none" : due.joined(separator: ", "))"
+            + " · out on screen: \(roamer.isOut) · fly-out setting: \(config.character.roam)"
+            + " · notch on this screen: \(NotchController.preferredScreen.consigliereNotchFrame != nil)\n"
+        let url = ConsiglierePaths.configDirectory.appendingPathComponent("notch.log")
+        // Keep the last 200 lines so the file never grows without end.
+        let old = (try? String(contentsOf: url, encoding: .utf8)) ?? ""
+        let kept = old.split(separator: "\n", omittingEmptySubsequences: true).suffix(199).joined(separator: "\n")
+        try? ((kept.isEmpty ? "" : kept + "\n") + line).write(to: url, atomically: true, encoding: .utf8)
     }
 
     /// Someone clicked him: he stops, and his card opens beside him.

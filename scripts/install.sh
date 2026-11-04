@@ -33,6 +33,11 @@ xcodebuild -project App/Consigliere.xcodeproj -scheme Consigliere -configuration
   }
 APP="$BUILD/Build/Products/Release/Consigliere.app"
 
+# Stamp the exact version into the app, so the app can say which build is running (see ~/.consigliere/notch.log).
+COMMIT="$(git rev-parse --short HEAD 2>/dev/null || echo unknown)"
+/usr/libexec/PlistBuddy -c "Delete :ConsigliereCommit" "$APP/Contents/Info.plist" >/dev/null 2>&1 || true
+/usr/libexec/PlistBuddy -c "Add :ConsigliereCommit string $COMMIT" "$APP/Contents/Info.plist"
+
 say "3/4  Signing"
 # macOS remembers permissions (microphone, Reminders, controlling Brave) per signature. Signing with the
 # same Apple Development certificate every time keeps them. That certificate appears once you add your
@@ -60,4 +65,4 @@ sleep 0.5
 rm -rf /Applications/Consigliere.app /Applications/Brochacho.app
 cp -R "$APP" /Applications/
 open /Applications/Consigliere.app
-say "Done. Consigliere is running from /Applications."
+say "Done. Consigliere $COMMIT is running from /Applications."
