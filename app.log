@@ -1,0 +1,10 @@
+Xcode 16.4
+Build version 16F6
+✔︎ Bottle xcodegen (2.46.0)
+[34m==>[0m [1mPouring xcodegen--2.46.0.arm64_sequoia.bottle.1.tar.gz[0m
+🍺  /opt/homebrew/Cellar/xcodegen/2.46.0: 38 files, 7.5MB
+⚙️  Generating plists...
+⚙️  Generating project...
+⚙️  Writing project...
+Created project at /Users/runner/work/consigliere/consigliere/App/Consigliere.xcodeproj
+** BUILD SUCCEEDED **
