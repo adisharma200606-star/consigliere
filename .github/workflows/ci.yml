@@ -32,7 +32,7 @@ jobs:
         run: |
           set -o pipefail
           node --version | tee js.log
-          node --test reference-js/core.test.js reference-js/tuner.test.js reference-js/extras.test.js reference-js/capture.test.js reference-js/jobs.test.js reference-js/migrate.test.js reference-js/replace.test.js 2>&1 | tee -a js.log
+          node --test reference-js/core.test.js reference-js/tuner.test.js reference-js/extras.test.js reference-js/capture.test.js reference-js/jobs.test.js reference-js/migrate.test.js reference-js/replace.test.js reference-js/taps.test.js 2>&1 | tee -a js.log
 
       - name: Golden fixtures are up to date
         id: fixtures

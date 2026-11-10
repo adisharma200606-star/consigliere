@@ -13,9 +13,13 @@ public struct Hotkeys: Codable, Equatable {
     public var saveTab: String
     /// Moves a living bookmark to the page in front. Config key "mark".
     public var markPlace: String
+    /// Key gestures, which need nothing typed: double-tap Option opens the box, double-tap Control saves the
+    /// page in front, holding right Option talks (see KeyTaps.swift). The hotkeys above keep working beside them.
+    public var gestures: Bool
 
     public init(openBox: String = "opt+space", talk: String = "ctrl+opt+space", saveTab: String = "ctrl+opt+s",
-                markPlace: String = "ctrl+opt+m") {
+                markPlace: String = "ctrl+opt+m", gestures: Bool = true) {
+        self.gestures = gestures
         self.openBox = openBox
         self.talk = talk
         self.saveTab = saveTab
@@ -27,6 +31,7 @@ public struct Hotkeys: Codable, Equatable {
         case talk
         case saveTab = "save"
         case markPlace = "mark"
+        case gestures
     }
 
     public init(from decoder: Decoder) throws {
@@ -36,6 +41,7 @@ public struct Hotkeys: Codable, Equatable {
         talk = try c.decodeIfPresent(String.self, forKey: .talk) ?? d.talk
         saveTab = try c.decodeIfPresent(String.self, forKey: .saveTab) ?? d.saveTab
         markPlace = try c.decodeIfPresent(String.self, forKey: .markPlace) ?? d.markPlace
+        gestures = try c.decodeIfPresent(Bool.self, forKey: .gestures) ?? d.gestures
     }
 }
 

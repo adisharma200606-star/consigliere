@@ -56,14 +56,14 @@ final class TutorialWindow {
     static func slides(_ hotkeys: Hotkeys) -> [Slide] {
         return [
             Slide(title: "Type a name.", lines: [
-                (symbols(hotkeys.openBox), "opens the notch. Type yt, gmail, steam, any app on this Mac. Enter."),
-                ("hold " + symbols(hotkeys.talk), "and say it instead. Let go when you are done."),
+                (hotkeys.gestures ? "⌥ ⌥" : symbols(hotkeys.openBox), "tap Option twice: opens the notch. Type yt, gmail, steam, any app on this Mac. Enter."),
+                (hotkeys.gestures ? "hold right ⌥" : "hold " + symbols(hotkeys.talk), "and say it instead. Let go when you are done."),
                 ("yt berserk", "a site's name, then words, searches that site."),
                 ("what is…", "anything that reads like a question gets a short answer.")
             ]),
             Slide(title: "Keep it. Get it back.", lines: [
                 ("drag", "a link, a picture or a file onto the notch to keep it."),
-                (symbols(hotkeys.saveTab), "keeps the page you are looking at."),
+                (hotkeys.gestures ? "⌃ ⌃" : symbols(hotkeys.saveTab), "tap Control twice: keeps the page you are looking at."),
                 ("click", "the notch, or type bored, and he hands one back."),
                 (symbols(hotkeys.markPlace), "remembers where you stopped reading.")
             ]),

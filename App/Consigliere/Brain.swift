@@ -37,6 +37,7 @@ final class Brain {
     private let roamer = Roamer()
     private let jobCard = JobCard()
     private let textReplacer = TextReplacer()
+    private let gestures = KeyGestures()
 
     // What is going on right now.
     private var decision: Decision?
@@ -200,6 +201,13 @@ final class Brain {
             hotkeys.register(config.hotkeys.markPlace, onDown: { [weak self] in self?.markMyPlace() })
         ]
         if ok.contains(false) { NSLog("Consigliere: a hotkey in the config could not be understood: \(config.hotkeys)") }
+
+        // Gestures that need nothing typed: double-tap Option, double-tap Control, hold right Option.
+        gestures.onDoubleOption = { [weak self] in self?.toggleBox() }
+        gestures.onDoubleControl = { [weak self] in self?.saveFrontTab() }
+        gestures.onHoldStart = { [weak self] in self?.startTalking() }
+        gestures.onHoldEnd = { [weak self] in self?.stopTalking() }
+        gestures.apply(on: config.hotkeys.gestures)
     }
 
     private func wireModel() {

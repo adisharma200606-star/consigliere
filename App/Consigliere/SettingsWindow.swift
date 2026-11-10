@@ -384,16 +384,62 @@ private struct JobsTab: View {
 
 // MARK: Hotkeys and files
 
+/// One hotkey, set by pressing it. Nothing is typed out, so nothing can be misspelled.
+@MainActor
+private struct HotkeyField: View {
+    let title: String
+    @Binding var text: String
+    @State private var recording = false
+    @State private var monitor: Any?
+
+    var body: some View {
+        HStack {
+            Text(title)
+            Spacer()
+            Button(recording ? "press the keys…" : TutorialWindow.symbols(text)) {
+                if recording { stopRecording() } else { startRecording() }
+            }
+            .frame(minWidth: 130)
+        }
+        .onDisappear { stopRecording() }
+    }
+
+    private func startRecording() {
+        recording = true
+        // While recording, key presses in this window come here instead of being typed anywhere.
+        monitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { event in
+            if event.keyCode == 53 {            // escape: leave it as it was
+                stopRecording()
+            } else if let combo = HotkeyCenter.text(for: event) {
+                text = combo
+                stopRecording()
+            }
+            return nil
+        }
+    }
+
+    private func stopRecording() {
+        if let monitor = monitor { NSEvent.removeMonitor(monitor) }
+        monitor = nil
+        recording = false
+    }
+}
+
 private struct KeysTab: View {
     @ObservedObject var state: SettingsState
 
     var body: some View {
         Form {
-            TextField("Open the box", text: $state.config.hotkeys.openBox)
-            TextField("Hold to talk", text: $state.config.hotkeys.talk)
-            TextField("Save the page in front", text: $state.config.hotkeys.saveTab)
-            TextField("Mark my place", text: $state.config.hotkeys.markPlace)
-            Text("Write them like ctrl+opt+space. Each needs a normal key at the end; a modifier alone cannot be a hotkey on a Mac.")
+            Toggle("Tap shortcuts", isOn: $state.config.hotkeys.gestures)
+            Text("⌥ ⌥  tap Option twice: open the box\n⌃ ⌃  tap Control twice: save the page in front\nhold right ⌥  talk, let go when done")
+                .font(.system(.body, design: .monospaced)).foregroundStyle(.secondary)
+
+            Divider()
+            HotkeyField(title: "Open the box", text: $state.config.hotkeys.openBox)
+            HotkeyField(title: "Hold to talk", text: $state.config.hotkeys.talk)
+            HotkeyField(title: "Save the page in front", text: $state.config.hotkeys.saveTab)
+            HotkeyField(title: "Mark my place", text: $state.config.hotkeys.markPlace)
+            Text("These work as well as the taps. To change one, click it and press the keys you want (hold ⌃, ⌥, ⇧ or ⌘ and press a letter, a number or space). Escape cancels.")
                 .font(.caption).foregroundStyle(.secondary)
 
             Divider()

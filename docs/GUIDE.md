@@ -493,6 +493,18 @@ On a screen with no notch (an external monitor, or while the screen is flipped),
 
 **Status:** written into the app · never run · you may well change them on the Mac
 
+**Tap shortcuts (since 10 Nov 2026).** Nothing to type out, so nothing to get wrong:
+
+| Do this | It does |
+|---|---|
+| tap **Option** twice, quickly | opens the box (again to close it) |
+| tap **Control** twice, quickly | saves the page in front to the stash |
+| hold the **right Option** key | talk; let go to run it |
+
+A tap is the key pressed alone and let go. Using Option or Control normally (⌥E for an accent, ⌃C) never counts, because another key was pressed. Switch them off with **Tap shortcuts** in settings, or `hotkeys.gestures: false`.
+
+**The older hotkeys still work beside them**, and are now set by pressing them: in **settings → Hotkeys and files**, click one and press the keys you want. Before this they were typed as text like `ctrl+opt+s`, and one typo silently switched that hotkey off.
+
 | Hotkey | Does | Default | Config key |
 |---|---|---|---|
 | Open | opens the box in the notch; press again to close it | `opt+space` (⌥Space) | `hotkeys.open` |

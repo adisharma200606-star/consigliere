@@ -1,0 +1,535 @@
+{
+  "tapMax": 300,
+  "gapMax": 350,
+  "holdAfter": 350,
+  "cases": [
+    {
+      "name": "doubleOption",
+      "steps": [
+        {
+          "do": "down",
+          "key": "option",
+          "t": 0,
+          "side": "left",
+          "alone": true
+        },
+        {
+          "do": "up",
+          "key": "option",
+          "t": 80
+        },
+        {
+          "do": "down",
+          "key": "option",
+          "t": 200,
+          "side": "left",
+          "alone": true
+        },
+        {
+          "do": "up",
+          "key": "option",
+          "t": 270
+        }
+      ],
+      "events": [
+        {
+          "t": 270,
+          "event": "double:option"
+        }
+      ]
+    },
+    {
+      "name": "doubleControl",
+      "steps": [
+        {
+          "do": "down",
+          "key": "control",
+          "t": 0,
+          "side": "left",
+          "alone": true
+        },
+        {
+          "do": "up",
+          "key": "control",
+          "t": 90
+        },
+        {
+          "do": "down",
+          "key": "control",
+          "t": 250,
+          "side": "left",
+          "alone": true
+        },
+        {
+          "do": "up",
+          "key": "control",
+          "t": 330
+        }
+      ],
+      "events": [
+        {
+          "t": 330,
+          "event": "double:control"
+        }
+      ]
+    },
+    {
+      "name": "singleTap",
+      "steps": [
+        {
+          "do": "down",
+          "key": "option",
+          "t": 0,
+          "side": "left",
+          "alone": true
+        },
+        {
+          "do": "up",
+          "key": "option",
+          "t": 80
+        }
+      ],
+      "events": []
+    },
+    {
+      "name": "tooSlowBetween",
+      "steps": [
+        {
+          "do": "down",
+          "key": "option",
+          "t": 0,
+          "side": "left",
+          "alone": true
+        },
+        {
+          "do": "up",
+          "key": "option",
+          "t": 80
+        },
+        {
+          "do": "down",
+          "key": "option",
+          "t": 500,
+          "side": "left",
+          "alone": true
+        },
+        {
+          "do": "up",
+          "key": "option",
+          "t": 580
+        }
+      ],
+      "events": []
+    },
+    {
+      "name": "pressTooLong",
+      "steps": [
+        {
+          "do": "down",
+          "key": "option",
+          "t": 0,
+          "side": "left",
+          "alone": true
+        },
+        {
+          "do": "up",
+          "key": "option",
+          "t": 400
+        },
+        {
+          "do": "down",
+          "key": "option",
+          "t": 500,
+          "side": "left",
+          "alone": true
+        },
+        {
+          "do": "up",
+          "key": "option",
+          "t": 560
+        }
+      ],
+      "events": []
+    },
+    {
+      "name": "differentKeys",
+      "steps": [
+        {
+          "do": "down",
+          "key": "option",
+          "t": 0,
+          "side": "left",
+          "alone": true
+        },
+        {
+          "do": "up",
+          "key": "option",
+          "t": 80
+        },
+        {
+          "do": "down",
+          "key": "control",
+          "t": 200,
+          "side": "left",
+          "alone": true
+        },
+        {
+          "do": "up",
+          "key": "control",
+          "t": 260
+        }
+      ],
+      "events": []
+    },
+    {
+      "name": "accentTyping",
+      "steps": [
+        {
+          "do": "down",
+          "key": "option",
+          "t": 0,
+          "side": "left",
+          "alone": true
+        },
+        {
+          "do": "other",
+          "t": 50
+        },
+        {
+          "do": "up",
+          "key": "option",
+          "t": 120
+        },
+        {
+          "do": "down",
+          "key": "option",
+          "t": 200,
+          "side": "left",
+          "alone": true
+        },
+        {
+          "do": "up",
+          "key": "option",
+          "t": 260
+        }
+      ],
+      "events": []
+    },
+    {
+      "name": "keyBetweenTaps",
+      "steps": [
+        {
+          "do": "down",
+          "key": "option",
+          "t": 0,
+          "side": "left",
+          "alone": true
+        },
+        {
+          "do": "up",
+          "key": "option",
+          "t": 80
+        },
+        {
+          "do": "other",
+          "t": 120
+        },
+        {
+          "do": "down",
+          "key": "option",
+          "t": 200,
+          "side": "left",
+          "alone": true
+        },
+        {
+          "do": "up",
+          "key": "option",
+          "t": 260
+        }
+      ],
+      "events": []
+    },
+    {
+      "name": "withAnotherModifier",
+      "steps": [
+        {
+          "do": "down",
+          "key": "command",
+          "t": 0,
+          "side": "left",
+          "alone": true
+        },
+        {
+          "do": "down",
+          "key": "option",
+          "t": 20,
+          "side": "left",
+          "alone": false
+        },
+        {
+          "do": "up",
+          "key": "option",
+          "t": 60
+        },
+        {
+          "do": "up",
+          "key": "command",
+          "t": 80
+        }
+      ],
+      "events": []
+    },
+    {
+      "name": "tripleTapIsOneDouble",
+      "steps": [
+        {
+          "do": "down",
+          "key": "option",
+          "t": 0,
+          "side": "left",
+          "alone": true
+        },
+        {
+          "do": "up",
+          "key": "option",
+          "t": 60
+        },
+        {
+          "do": "down",
+          "key": "option",
+          "t": 150,
+          "side": "left",
+          "alone": true
+        },
+        {
+          "do": "up",
+          "key": "option",
+          "t": 210
+        },
+        {
+          "do": "down",
+          "key": "option",
+          "t": 300,
+          "side": "left",
+          "alone": true
+        },
+        {
+          "do": "up",
+          "key": "option",
+          "t": 360
+        }
+      ],
+      "events": [
+        {
+          "t": 210,
+          "event": "double:option"
+        }
+      ]
+    },
+    {
+      "name": "holdRightOption",
+      "steps": [
+        {
+          "do": "down",
+          "key": "option",
+          "t": 0,
+          "side": "right",
+          "alone": true
+        },
+        {
+          "do": "tick",
+          "t": 100
+        },
+        {
+          "do": "tick",
+          "t": 360
+        },
+        {
+          "do": "tick",
+          "t": 900
+        },
+        {
+          "do": "up",
+          "key": "option",
+          "t": 1500
+        }
+      ],
+      "events": [
+        {
+          "t": 360,
+          "event": "holdStart"
+        },
+        {
+          "t": 1500,
+          "event": "holdEnd"
+        }
+      ]
+    },
+    {
+      "name": "holdLeftOptionDoesNothing",
+      "steps": [
+        {
+          "do": "down",
+          "key": "option",
+          "t": 0,
+          "side": "left",
+          "alone": true
+        },
+        {
+          "do": "tick",
+          "t": 400
+        },
+        {
+          "do": "up",
+          "key": "option",
+          "t": 1500
+        }
+      ],
+      "events": []
+    },
+    {
+      "name": "holdBrokenByKey",
+      "steps": [
+        {
+          "do": "down",
+          "key": "option",
+          "t": 0,
+          "side": "right",
+          "alone": true
+        },
+        {
+          "do": "other",
+          "t": 100
+        },
+        {
+          "do": "tick",
+          "t": 400
+        },
+        {
+          "do": "up",
+          "key": "option",
+          "t": 900
+        }
+      ],
+      "events": []
+    },
+    {
+      "name": "doubleTapRightOptionStillOpens",
+      "steps": [
+        {
+          "do": "down",
+          "key": "option",
+          "t": 0,
+          "side": "right",
+          "alone": true
+        },
+        {
+          "do": "tick",
+          "t": 50
+        },
+        {
+          "do": "up",
+          "key": "option",
+          "t": 80
+        },
+        {
+          "do": "down",
+          "key": "option",
+          "t": 200,
+          "side": "right",
+          "alone": true
+        },
+        {
+          "do": "tick",
+          "t": 250
+        },
+        {
+          "do": "up",
+          "key": "option",
+          "t": 270
+        }
+      ],
+      "events": [
+        {
+          "t": 270,
+          "event": "double:option"
+        }
+      ]
+    },
+    {
+      "name": "keysDuringHoldDoNotEndIt",
+      "steps": [
+        {
+          "do": "down",
+          "key": "option",
+          "t": 0,
+          "side": "right",
+          "alone": true
+        },
+        {
+          "do": "tick",
+          "t": 360
+        },
+        {
+          "do": "other",
+          "t": 500
+        },
+        {
+          "do": "tick",
+          "t": 600
+        },
+        {
+          "do": "up",
+          "key": "option",
+          "t": 1200
+        }
+      ],
+      "events": [
+        {
+          "t": 360,
+          "event": "holdStart"
+        },
+        {
+          "t": 1200,
+          "event": "holdEnd"
+        }
+      ]
+    },
+    {
+      "name": "otherModifierUpDuringHold",
+      "steps": [
+        {
+          "do": "down",
+          "key": "option",
+          "t": 0,
+          "side": "right",
+          "alone": true
+        },
+        {
+          "do": "tick",
+          "t": 360
+        },
+        {
+          "do": "up",
+          "key": "control",
+          "t": 500
+        },
+        {
+          "do": "up",
+          "key": "option",
+          "t": 800
+        }
+      ],
+      "events": [
+        {
+          "t": 360,
+          "event": "holdStart"
+        },
+        {
+          "t": 800,
+          "event": "holdEnd"
+        }
+      ]
+    }
+  ]
+}

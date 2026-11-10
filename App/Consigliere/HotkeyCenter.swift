@@ -43,6 +43,141 @@ final class HotkeyCenter {
         }
         return KeyCombo(key: key, modifiers: modifiers)
     }
+
+    /// The config text for a key press, for the "press the keys" recorder in settings: ⌃⌥S becomes "ctrl+opt+s".
+    /// Nil when the press cannot be a hotkey (no modifier held, or a key this does not know how to write down).
+    static func text(for event: NSEvent) -> String? {
+        let flags = event.modifierFlags.intersection(.deviceIndependentFlagsMask)
+        var parts: [String] = []
+        if flags.contains(.control) { parts.append("ctrl") }
+        if flags.contains(.option) { parts.append("opt") }
+        if flags.contains(.shift) { parts.append("shift") }
+        if flags.contains(.command) { parts.append("cmd") }
+        guard !parts.isEmpty else { return nil }
+
+        let functionKeys: [UInt16: String] = [122: "f1", 120: "f2", 99: "f3", 118: "f4", 96: "f5", 97: "f6",
+                                              98: "f7", 100: "f8", 101: "f9", 109: "f10", 103: "f11", 111: "f12"]
+        var name = ""
+        if event.keyCode == 49 {
+            name = "space"
+        } else if let f = functionKeys[event.keyCode] {
+            name = f
+        } else if let typed = event.charactersIgnoringModifiers?.lowercased(), typed.count == 1,
+                  let ch = typed.first, ch.isASCII, ch.isLetter || ch.isNumber {
+            name = typed
+        }
+        guard !name.isEmpty else { return nil }
+        let text = (parts + [name]).joined(separator: "+")
+        // Only hand back something the app can really register.
+        return parse(text) == nil ? nil : text
+    }
+}
+
+// MARK: - Key gestures: double-tap and hold
+
+/// Double-tap Option, double-tap Control, hold right Option: shortcuts with nothing to type out or get wrong.
+///
+/// It listens only for modifier keys going down and up (which type nothing), plus the bare fact that some other
+/// key or mouse button was pressed, so that Option+E for an accent is never mistaken for a tap. What the other
+/// key was is never looked at. `TapDetector` in ConsigliereCore does the deciding and is tested there.
+@MainActor
+final class KeyGestures {
+    var onDoubleOption: () -> Void = {}
+    var onDoubleControl: () -> Void = {}
+    var onHoldStart: () -> Void = {}
+    var onHoldEnd: () -> Void = {}
+
+    private var detector = TapDetector()
+    private var monitors: [Any] = []
+    private var holdTimer: Timer?
+
+    func apply(on: Bool) {
+        stop()
+        guard on else { return }
+        let others: NSEvent.EventTypeMask = [.keyDown, .leftMouseDown, .rightMouseDown]
+        // Global monitors see other apps; local ones see our own windows (the box, settings). Both are needed.
+        let globalFlags = NSEvent.addGlobalMonitorForEvents(matching: .flagsChanged) { [weak self] event in
+            let keyCode = event.keyCode
+            let flags = event.modifierFlags
+            let time = event.timestamp
+            Task { @MainActor in self?.flagsChanged(keyCode: keyCode, flags: flags, time: time) }
+        }
+        let globalOthers = NSEvent.addGlobalMonitorForEvents(matching: others) { [weak self] _ in
+            Task { @MainActor in self?.detector.other() }
+        }
+        let localFlags = NSEvent.addLocalMonitorForEvents(matching: .flagsChanged) { [weak self] event in
+            let keyCode = event.keyCode
+            let flags = event.modifierFlags
+            let time = event.timestamp
+            Task { @MainActor in self?.flagsChanged(keyCode: keyCode, flags: flags, time: time) }
+            return event
+        }
+        let localOthers = NSEvent.addLocalMonitorForEvents(matching: others) { [weak self] event in
+            Task { @MainActor in self?.detector.other() }
+            return event
+        }
+        monitors = [globalFlags, globalOthers, localFlags, localOthers].compactMap { $0 }
+    }
+
+    private func stop() {
+        monitors.forEach { NSEvent.removeMonitor($0) }
+        monitors = []
+        holdTimer?.invalidate()
+        holdTimer = nil
+        if detector.holding { onHoldEnd() }
+        detector = TapDetector()
+    }
+
+    /// A modifier key went down or up. The key code says which key; the flags say whether it is now down.
+    private func flagsChanged(keyCode: UInt16, flags: NSEvent.ModifierFlags, time: TimeInterval) {
+        let key: ModifierKey
+        let side: KeySide
+        let flag: NSEvent.ModifierFlags
+        switch keyCode {
+        case 58: key = .option; side = .left; flag = .option
+        case 61: key = .option; side = .right; flag = .option
+        case 59: key = .control; side = .left; flag = .control
+        case 62: key = .control; side = .right; flag = .control
+        case 55: key = .command; side = .left; flag = .command
+        case 54: key = .command; side = .right; flag = .command
+        case 56: key = .shift; side = .left; flag = .shift
+        case 60: key = .shift; side = .right; flag = .shift
+        default:
+            // Caps lock, fn: not a tap of anything.
+            detector.other()
+            return
+        }
+        let held = flags.intersection([.option, .control, .command, .shift])
+        let now = Int(time * 1000)
+        if held.contains(flag) {
+            _ = detector.down(key, side: side, at: now, alone: held == flag)
+            if key == .option && side == .right {
+                // Look again just after the hold time: if it is still down, alone, talking starts.
+                holdTimer?.invalidate()
+                let wait = Double(TapDetector.holdAfter + 20) / 1000
+                holdTimer = Timer.scheduledTimer(withTimeInterval: wait, repeats: false) { [weak self] _ in
+                    Task { @MainActor in
+                        guard let self = self else { return }
+                        let later = Int(ProcessInfo.processInfo.systemUptime * 1000)
+                        self.handle(self.detector.tick(at: later))
+                    }
+                }
+            }
+        } else {
+            handle(detector.up(key, at: now))
+        }
+    }
+
+    private func handle(_ event: TapEvent?) {
+        guard let event = event else { return }
+        switch event {
+        case .double(.option): onDoubleOption()
+        case .double(.control): onDoubleControl()
+        case .double: break
+        case .holdStart: onHoldStart()
+        case .holdEnd: onHoldEnd()
+        }
+    }
 }
 
 // MARK: - Text replacement in Brave
