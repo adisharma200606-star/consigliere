@@ -23,7 +23,9 @@ final class DynamicNotchPanel: NSPanel {
         self.hasShadow = false
         self.backgroundColor = .clear
         self.level = .screenSaver
-        self.collectionBehavior = [.canJoinAllSpaces, .stationary]
+        // CONSIGLIERE PATCH 4: also show over full-screen apps (a full-screen video or game). Without
+        // .fullScreenAuxiliary the notch, and his head beside it, vanish whenever something goes full screen.
+        self.collectionBehavior = [.canJoinAllSpaces, .stationary, .fullScreenAuxiliary]
     }
 
     override var canBecomeKey: Bool {

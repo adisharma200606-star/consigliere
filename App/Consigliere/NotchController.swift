@@ -35,6 +35,7 @@ final class NotchController {
         }
         apply(model.theme)
         installMonitors()
+        watchScreens()
     }
 
     /// Pushes the look into the notch: the spring from the config, and the glow.
@@ -104,6 +105,57 @@ final class NotchController {
         if !isOpen { close() }
     }
 
+    /// Whether the closed notch should be showing something beside it right now (a timer, or his head).
+    private var closedShouldShow: Bool {
+        let screen = NotchController.preferredScreen
+        return (model.timerText != nil || model.jobWaiting) && screen.consigliereNotchFrame != nil
+    }
+
+    /// Makes sure what should be beside the closed notch is really on the screen.
+    ///
+    /// Why this exists: when the Mac sleeps and wakes, or a screen is plugged in or out, macOS rearranges the
+    /// screens and the notch library rebuilds its little window, sometimes on the wrong screen or not at all.
+    /// The library still believes it is showing, so asking it to show again does nothing (it skips a request for
+    /// the state it thinks it is already in). This looks at the actual windows instead, and when the notch window
+    /// is not visible on the notch screen, hides it properly and shows it again from scratch.
+    func ensureClosedShowing() {
+        guard !isOpen, closedShouldShow else { return }
+        let screen = NotchController.preferredScreen
+        let visible = NSApp.windows.contains { window in
+            // Screens are compared by display number: after a screen change macOS hands out new NSScreen objects
+            // for the same screen, and comparing the objects themselves would wrongly say "not there".
+            window.isVisible && window.alphaValue > 0.5 && window.screen?.consigliereDisplayID == screen.consigliereDisplayID
+                && String(describing: type(of: window)).contains("DynamicNotchPanel")
+        }
+        if visible { return }
+        rebuildClosed()
+    }
+
+    /// Hides the notch window completely, then shows the closed form again on the right screen.
+    private func rebuildClosed() {
+        guard !isOpen else { return }
+        Task {
+            await notch.hide()
+            guard !self.isOpen else { return }
+            self.close()
+        }
+    }
+
+    /// After a sleep, a wake or a screen change, rebuild the closed form once things have settled.
+    private func watchScreens() {
+        let rebuild: (Notification) -> Void = { [weak self] _ in
+            Task { @MainActor in
+                try? await Task.sleep(nanoseconds: 1_500_000_000)
+                self?.rebuildClosed()
+            }
+        }
+        NotificationCenter.default.addObserver(forName: NSApplication.didChangeScreenParametersNotification,
+                                               object: nil, queue: .main, using: rebuild)
+        let workspace = NSWorkspace.shared.notificationCenter
+        workspace.addObserver(forName: NSWorkspace.didWakeNotification, object: nil, queue: .main, using: rebuild)
+        workspace.addObserver(forName: NSWorkspace.screensDidWakeNotification, object: nil, queue: .main, using: rebuild)
+    }
+
     private func installMonitors() {
         // Keys pressed while our panel has the keyboard.
         keyMonitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { [weak self] event in
@@ -139,6 +191,11 @@ final class NotchController {
 }
 
 extension NSScreen {
+    /// The screen's display number, the same for as long as the screen stays connected.
+    var consigliereDisplayID: UInt32? {
+        (deviceDescription[NSDeviceDescriptionKey("NSScreenNumber")] as? NSNumber)?.uint32Value
+    }
+
     /// True for the laptop's own screen.
     var consigliereIsBuiltIn: Bool {
         guard let number = deviceDescription[NSDeviceDescriptionKey("NSScreenNumber")] as? NSNumber else { return false }

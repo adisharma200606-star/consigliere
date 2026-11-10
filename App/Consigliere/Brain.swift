@@ -1214,19 +1214,19 @@ final class Brain {
         let now = nowWall
         let held = FocusQuiet.isOn || !config.character.roam || (jobDay.quietUntil.map { now < $0 } ?? false)
 
-        // His head beside the notch says a job is waiting. That head is the reminder Adi relies on, so it shows
-        // whenever a job is waiting and he is not already out on the screen, whatever the fly-out setting says.
-        // (It used to show only while he was held in. A config saved by the 24 Oct version had the fly-out
-        // switch on, so on that Mac he was never held in and the head never appeared.)
-        let waiting = jobDay.jobs.contains { job in
-            job.status == .open && (job.snoozedUntil.map { now >= $0 } ?? true) && (job.dueWall.map { $0 <= now } ?? true)
-        }
-        let showHead = waiting && !roamer.isOut
+        // Adi's rule, word for word (10 Nov 2026): "if active jobs, keep gengar ON notch, else NO."
+        // Active means not ticked off and not skipped: a job he started, put off with "later", or that has a
+        // time later today still counts. The only time the head is not shown is while he is out playing (`pet`),
+        // because then he is already on the screen.
+        let showHead = hasActiveJobs && !roamer.isOut
         if model.jobWaiting != showHead || !wroteHeadLog {
             model.jobWaiting = showHead
             controller.refreshClosed()
             writeHeadLog(showHead: showHead, now: now)
         }
+        // Every 30 seconds, check that he is really there. macOS can take the little window away (sleep, a screen
+        // plugged in or out) while the notch library still believes it is showing; this puts it back.
+        controller.ensureClosedShowing()
 
         guard !roamer.isOut, !jobCard.isOpen, !controller.isOpen else { return }
         // Seconds since the last key press or mouse movement. Only how long, never what: no screen is read.
@@ -1253,6 +1253,10 @@ final class Brain {
                       roamSeconds: config.jobs.roamMinutes * 60)
     }
 
+    /// Jobs that are not ticked off and not skipped. Any of them means his head sits beside the notch.
+    private var activeJobs: [Job] { jobDay.jobs.filter { $0.status == .open || $0.status == .started } }
+    private var hasActiveJobs: Bool { !activeJobs.isEmpty }
+
     /// Whether his head is beside the notch, and why, written to ~/.consigliere/notch.log each time it changes
     /// (and once after launch). If he is missing while a job is due, `cat ~/.consigliere/notch.log` shows which
     /// build is running and what it decided, so the cause never has to be guessed again.
@@ -1260,9 +1264,7 @@ final class Brain {
     private func writeHeadLog(showHead: Bool, now: Int) {
         wroteHeadLog = true
         let build = Bundle.main.object(forInfoDictionaryKey: "ConsigliereCommit") as? String ?? "unknown build"
-        let due = jobDay.jobs.filter { job in
-            job.status == .open && (job.snoozedUntil.map { now >= $0 } ?? true) && (job.dueWall.map { $0 <= now } ?? true)
-        }.map(\.title)
+        let due = activeJobs.map(\.title)
         // Built in small pieces: one long expression is too much for the Swift compiler to work out quickly.
         let stamp = ISO8601DateFormatter().string(from: Date())
         let head: String = showHead ? "SHOWN" : "hidden"
@@ -1271,7 +1273,7 @@ final class Brain {
         let flyOut: Bool = config.character.roam
         let hasNotch: Bool = NotchController.preferredScreen.consigliereNotchFrame != nil
         var line = "\(stamp) build \(build): head \(head)"
-        line += " · jobs due: \(dueText)"
+        line += " · active jobs: \(dueText)"
         line += " · out on screen: \(out) · fly-out setting: \(flyOut)"
         line += " · notch on this screen: \(hasNotch)\n"
         let url = ConsiglierePaths.configDirectory.appendingPathComponent("notch.log")
