@@ -143,17 +143,24 @@ final class NotchController {
 
     /// After a sleep, a wake or a screen change, rebuild the closed form once things have settled.
     private func watchScreens() {
-        let rebuild: (Notification) -> Void = { [weak self] _ in
-            Task { @MainActor in
-                try? await Task.sleep(nanoseconds: 1_500_000_000)
-                self?.rebuildClosed()
-            }
-        }
         NotificationCenter.default.addObserver(forName: NSApplication.didChangeScreenParametersNotification,
-                                               object: nil, queue: .main, using: rebuild)
+                                               object: nil, queue: .main) { [weak self] _ in
+            Task { @MainActor in self?.rebuildSoon() }
+        }
         let workspace = NSWorkspace.shared.notificationCenter
-        workspace.addObserver(forName: NSWorkspace.didWakeNotification, object: nil, queue: .main, using: rebuild)
-        workspace.addObserver(forName: NSWorkspace.screensDidWakeNotification, object: nil, queue: .main, using: rebuild)
+        workspace.addObserver(forName: NSWorkspace.didWakeNotification, object: nil, queue: .main) { [weak self] _ in
+            Task { @MainActor in self?.rebuildSoon() }
+        }
+        workspace.addObserver(forName: NSWorkspace.screensDidWakeNotification, object: nil, queue: .main) { [weak self] _ in
+            Task { @MainActor in self?.rebuildSoon() }
+        }
+    }
+
+    private func rebuildSoon() {
+        Task {
+            try? await Task.sleep(nanoseconds: 1_500_000_000)
+            rebuildClosed()
+        }
     }
 
     private func installMonitors() {
