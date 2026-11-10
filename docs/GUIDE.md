@@ -176,6 +176,10 @@ Limit: he can open the page. He cannot press play or scroll to your line. For Ne
 
 **Status:** brain tested (accurate to about a quarter of a cent on test tones) · Swift written · Mac screen and microphone hookup build, never run
 
+**Reworked 10 Nov 2026, not yet confirmed on Adi's Mac.** It used to sit on "pluck a string" with a real instrument: its limits for "loud enough" and "clear enough" were set on computer-made notes, and a guitar through a laptop microphone is quieter and less pure. Those limits are now looser (`minRms` 0.003, `minClarity` 0.7, set in `Brain.setTuning`), and it reads about 23 times a second instead of about 10.
+
+**The screen now:** the note in the middle, **flat** on the left and **sharp** on the right (the one that applies lights up), a scale with a needle and a band for "close enough", and one plain line: `12 cents flat · tighten`, `8 cents sharp · loosen`, or `in tune`. The strings are circles: the one you are playing is ringed, the ones already in tune are filled. The thin bar at the bottom is the microphone's level. **If that bar does not move when you play, the Mac is not hearing the instrument**, and if the microphone permission is off, the screen says so.
+
 Type `tune`, `tuner` or `uke`. The notch becomes a tuner. Pluck a string.
 
 ### Reading it
@@ -237,6 +241,10 @@ Add them under `tuner.customTunings` in the config (section 16). Notes are writt
 ## 8. The timer
 
 **Status:** brain tested · in use on Adi's Mac
+
+**Picking a length without typing it (since 10 Nov 2026).** Type just `timer` and the notch shows a new timer: the length in big numbers, **−** and **+** (a minute each, or the ↑ ↓ arrows), a row of usual lengths (1, 5, 10, 15, 25, 45, 60 minutes) and **start** (or Enter). It remembers the last length you used. `timer 20` and the other typed forms still work.
+
+**While it runs**, click the time beside the notch: a ring that drains, the time left, when it ends, and **pause / resume**, **+1 min**, **+5 min**, **cancel**.
 
 Type `timer` and how long. The notch closes, and the time left shows beside it. When it ends, he tells you. (You asked him to, so rule 4 holds.)
 

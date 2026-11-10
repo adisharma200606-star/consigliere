@@ -1,29 +1,35 @@
 import ConsigliereCore
 import SwiftUI
 
-/// The tuner: a huge thin note, how far off it is, a dot on a track, and the strings of the tuning.
+/// The tuner: the note in the middle, a scale with a needle under it, plain words for what to do
+/// ("12 cents flat · tighten"), the strings of the tuning, and a thin bar showing the microphone hears you.
 struct TunerScreen: View {
     @ObservedObject var model: NotchModel
 
-    private var inTune: Bool { model.tuner.inTune }
-    private var accent: Color { inTune ? NotchTheme.ok : NotchTheme.off }
+    private var idle: Bool { model.tuner.state == .idle }
+    private var inTune: Bool { !idle && model.tuner.inTune }
+    private var flat: Bool { !idle && !inTune && model.tuner.cents < 0 }
+    private var sharp: Bool { !idle && !inTune && model.tuner.cents > 0 }
 
     /// "E2" into "E" and "2". Chromatic mode already keeps them apart.
     private var noteParts: (letter: String, octave: String) {
-        guard model.tuner.state != .idle, let label = model.tuner.label else { return ("–", "") }
+        guard !idle, let label = model.tuner.label else { return ("–", "") }
         if let octave = model.tuner.octave { return (label, String(octave)) }
         let letters = label.prefix { !$0.isNumber && $0 != "-" }
         return (String(letters), String(label.dropFirst(letters.count)))
     }
 
-    private var centsText: String {
-        let rounded = Int(model.tuner.cents.rounded())
-        if rounded == 0 { return "0" }
-        return rounded > 0 ? "+\(rounded)" : "−\(abs(rounded))"
+    /// One plain sentence: what is wrong, and which way to turn the peg.
+    private var hint: String {
+        if let problem = model.tunerProblem { return problem }
+        if idle { return model.tunerLevel > 0.12 ? "listening…" : "pluck a string" }
+        if inTune { return "in tune" }
+        let cents = Int(abs(model.tuner.cents).rounded())
+        return model.tuner.cents < 0 ? "\(cents) cents flat · tighten" : "\(cents) cents sharp · loosen"
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 14) {
+        VStack(spacing: 10) {
             HStack {
                 Button { model.onTuningStep(-1) } label: { Text("‹") }
                     .buttonStyle(RoundButtonStyle(theme: model.theme))
@@ -37,76 +43,100 @@ struct TunerScreen: View {
                     .buttonStyle(RoundButtonStyle(theme: model.theme))
             }
 
-            HStack(alignment: .bottom) {
+            HStack(alignment: .center) {
+                sideLabel("flat", lit: flat)
+                Spacer()
                 HStack(alignment: .lastTextBaseline, spacing: 4) {
                     Text(noteParts.letter)
-                        .font(model.theme.font(118, .thin))
-                        .kerning(-5)
-                        .foregroundStyle(inTune ? NotchTheme.text : Color(white: 0.9))
+                        .font(model.theme.font(88, .thin))
+                        .kerning(-3)
+                        .foregroundStyle(idle ? NotchTheme.faint : NotchTheme.text)
                     Text(noteParts.octave)
-                        .font(model.theme.mono(16))
+                        .font(model.theme.mono(15))
                         .foregroundStyle(NotchTheme.faint)
                 }
                 Spacer()
-                VStack(alignment: .trailing, spacing: 4) {
-                    if model.tuner.state == .idle {
-                        Text("pluck a string")
-                            .font(model.theme.mono(10))
-                            .kerning(0.8)
-                            .foregroundStyle(NotchTheme.faint)
-                    } else {
-                        Text(inTune ? "in tune" : centsText)
-                            .font(model.theme.font(inTune ? 30 : 40, .thin))
-                            .monospacedDigit()
-                            .foregroundStyle(inTune ? NotchTheme.text : model.theme.accent)
-                        if !inTune {
-                            Text(model.tuner.cents < 0 ? "cents · tune up" : "cents · tune down")
-                                .font(model.theme.mono(10))
-                                .kerning(0.8)
-                                .foregroundStyle(NotchTheme.secondary)
-                        }
-                    }
-                }
-                .padding(.bottom, 12)
+                sideLabel("sharp", lit: sharp)
             }
-            .frame(height: 100)
-            .padding(.horizontal, 4)
+            .frame(height: 84)
 
-            GeometryReader { proxy in
-                let clamped = max(-50, min(50, model.tuner.cents))
-                let x = proxy.size.width * CGFloat(0.5 + clamped / 100)
-                ZStack(alignment: .leading) {
-                    Rectangle().fill(Color.white.opacity(0.18)).frame(height: 1)
-                        .position(x: proxy.size.width / 2, y: proxy.size.height / 2)
-                    Rectangle().fill(NotchTheme.text).frame(width: 1, height: 15)
-                        .position(x: proxy.size.width / 2, y: proxy.size.height / 2)
-                    Rectangle()
-                        .fill(inTune ? NotchTheme.text : model.theme.accent)
-                        .frame(width: 2, height: 11)
-                        .shadow(color: inTune ? .white : model.theme.accent, radius: inTune ? 10 : 6)
-                        .opacity(model.tuner.state == .idle ? 0.25 : 1)
-                        .position(x: x, y: proxy.size.height / 2)
-                        .animation(.linear(duration: 0.09), value: model.tuner.cents)
-                }
-            }
-            .frame(height: 20)
-            .padding(.horizontal, 4)
+            gauge
+                .frame(height: 34)
 
-            HStack(spacing: 6) {
+            Text(hint)
+                .font(model.theme.mono(11))
+                .kerning(0.8)
+                .foregroundStyle(inTune ? NotchTheme.text : (idle ? NotchTheme.faint : model.theme.accent))
+                .lineLimit(1)
+                .minimumScaleFactor(0.7)
+
+            HStack(spacing: 8) {
                 ForEach(Array(model.tuningStrings.enumerated()), id: \.offset) { index, name in
-                    let active = model.tuner.state != .idle && model.tuner.stringIndex == index
+                    let active = !idle && model.tuner.stringIndex == index
                     let locked = model.lockedStrings.contains(index)
-                    VStack(spacing: 6) {
-                        Rectangle().fill(active ? model.theme.accent : Color.clear).frame(height: 1)
-                        Text(name)
-                            .font(model.theme.mono(12))
-                            .foregroundStyle(active ? NotchTheme.text : (locked ? model.theme.accent : Color(white: 0.3)))
-                    }
-                    .frame(maxWidth: .infinity)
+                    Text(name)
+                        .font(model.theme.mono(11))
+                        .foregroundStyle(active ? NotchTheme.text : (locked ? model.theme.accent : NotchTheme.faint))
+                        .frame(width: 32, height: 32)
+                        .background(Circle().fill(locked ? model.theme.accent.opacity(0.16) : Color.clear))
+                        .overlay(Circle().stroke(active ? model.theme.accent : Color.white.opacity(0.14), lineWidth: active ? 1.5 : 1))
+                        .frame(maxWidth: .infinity)
                 }
+            }
+            .padding(.top, 2)
+
+            // The microphone's level. If this never moves while you play, the Mac is not hearing the instrument.
+            GeometryReader { proxy in
+                ZStack(alignment: .leading) {
+                    Rectangle().fill(Color.white.opacity(0.10)).frame(height: 1)
+                    Rectangle()
+                        .fill(model.theme.accent.opacity(0.8))
+                        .frame(width: proxy.size.width * CGFloat(max(0, min(1, model.tunerLevel))), height: 2)
+                        .animation(.linear(duration: 0.08), value: model.tunerLevel)
+                }
+                .frame(maxHeight: .infinity)
+            }
+            .frame(height: 4)
+        }
+        .padding(.horizontal, 6)
+    }
+
+    private func sideLabel(_ text: String, lit: Bool) -> some View {
+        Text(text)
+            .font(model.theme.mono(10))
+            .kerning(1)
+            .foregroundStyle(lit ? model.theme.accent : NotchTheme.faint.opacity(0.6))
+            .frame(width: 52)
+    }
+
+    /// A scale from 50 cents flat to 50 cents sharp, a band in the middle for "close enough", and the needle.
+    private var gauge: some View {
+        GeometryReader { proxy in
+            let width = proxy.size.width
+            let mid = proxy.size.height / 2
+            let clamped = max(-50, min(50, model.tuner.cents))
+            let needleX = width * CGFloat(0.5 + clamped / 100)
+            let band = width * CGFloat(max(2, model.tunerTolerance) * 2 / 100)
+            ZStack {
+                Rectangle()
+                    .fill(Color.white.opacity(inTune ? 0.22 : 0.07))
+                    .frame(width: band, height: 26)
+                    .position(x: width / 2, y: mid)
+                ForEach(-10...10, id: \.self) { step in
+                    Rectangle()
+                        .fill(Color.white.opacity(step == 0 ? 0.9 : (step % 5 == 0 ? 0.4 : 0.18)))
+                        .frame(width: 1, height: step == 0 ? 26 : (step % 5 == 0 ? 16 : 8))
+                        .position(x: width * CGFloat(0.5 + Double(step) * 0.05), y: mid)
+                }
+                Capsule()
+                    .fill(inTune ? NotchTheme.text : model.theme.accent)
+                    .frame(width: 3, height: 32)
+                    .shadow(color: inTune ? .white : model.theme.accent, radius: inTune ? 10 : 6)
+                    .opacity(idle ? 0.2 : 1)
+                    .position(x: needleX, y: mid)
+                    .animation(.linear(duration: 0.07), value: model.tuner.cents)
             }
         }
-        .padding(.horizontal, 4)
     }
 }
 

@@ -172,16 +172,26 @@ final class NotchController {
                 self.onDismiss()
                 return nil
             case 36, 76:  // Return, and the numeric-keypad Enter. On the jobs list it adds what was typed.
-                if self.model.screen == .input || self.model.screen == .jobs {
+                // On the timer's setting face (no timer running yet), Enter starts it.
+                let settingTimer = self.model.screen == .timer && self.model.timerText == nil
+                if self.model.screen == .input || self.model.screen == .jobs || settingTimer {
                     self.onEnter()
                     return nil
                 }
                 return event
             case 125:   // down arrow
                 if self.model.screen == .input { self.model.moveSelection(1); return nil }
+                if self.model.screen == .timer && self.model.timerText == nil {
+                    self.model.onTimerSet(self.model.timerSetupSeconds - 60)
+                    return nil
+                }
                 return event
             case 126:   // up arrow
                 if self.model.screen == .input { self.model.moveSelection(-1); return nil }
+                if self.model.screen == .timer && self.model.timerText == nil {
+                    self.model.onTimerSet(self.model.timerSetupSeconds + 60)
+                    return nil
+                }
                 return event
             default:
                 return event

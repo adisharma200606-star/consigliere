@@ -72,6 +72,12 @@ final class NotchModel: ObservableObject {
     @Published var tuningName = ""
     @Published var tuningStrings: [String] = []
     @Published var lockedStrings: [Int] = []
+    /// How loud the microphone is right now, 0 to 1, so the tuner can show that it hears something.
+    @Published var tunerLevel: Double = 0
+    /// How many cents either side of the note count as in tune (for the band on the scale).
+    @Published var tunerTolerance: Double = 5
+    /// A sentence when the microphone cannot be used (no permission, no microphone).
+    @Published var tunerProblem: String? = nil
 
     // answer
     @Published var question = ""
@@ -87,6 +93,11 @@ final class NotchModel: ObservableObject {
     // timer, shown beside the closed notch and on its own screen
     @Published var timerText: String? = nil
     @Published var timerFraction: Double = 0
+    /// The length being chosen on the timer's setting face, in seconds.
+    @Published var timerSetupSeconds = 600
+    @Published var timerPaused = false
+    /// "ends 20:34", or "paused".
+    @Published var timerEnds = ""
 
     // the character: shown beside his lines, and flying around the screen when a job is due
     @Published var character = CharacterFrames.bundled
@@ -118,6 +129,9 @@ final class NotchModel: ObservableObject {
     var onTimerTap: () -> Void = {}
     var onStopTimer: () -> Void = {}
     var onAddTime: (Int) -> Void = { _ in }
+    var onTimerSet: (Int) -> Void = { _ in }
+    var onTimerStart: () -> Void = {}
+    var onTimerPause: () -> Void = {}
     var onGlanceOpen: (Int) -> Void = { _ in }
     var onGlanceTick: (Int) -> Void = { _ in }
     var onGlanceButton: (Int) -> Void = { _ in }

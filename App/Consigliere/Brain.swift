@@ -48,6 +48,15 @@ final class Brain {
     private var wasInTune = false
     private var countdown: CountdownTimer?
     private var countdownTicker: Timer?
+    /// The whole length asked for (plus any time added), which the ring is measured against.
+    private var countdownTotalMs = 0
+    /// Time left when the timer was paused; nil while it runs.
+    private var pausedLeftMs: Int?
+    private static let clockFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "HH:mm"
+        return formatter
+    }()
     private var pendingBookmarkURL: String?
     private var pendingBookmarkChoices: [CatalogEntry] = []
     private var askTask: Task<Void, Never>?
@@ -131,7 +140,13 @@ final class Brain {
         }
         controller.onEnter = { [weak self] in
             guard let self = self else { return }
-            if self.model.screen == .jobs { self.addDraftJobs() } else { self.submit(choosing: nil) }
+            if self.model.screen == .jobs {
+                self.addDraftJobs()
+            } else if self.model.screen == .timer {
+                self.startTimerFromSetup()
+            } else {
+                self.submit(choosing: nil)
+            }
         }
         startJobs()
         refreshInstalledApps()
@@ -220,6 +235,9 @@ final class Brain {
         model.onTimerTap = { [weak self] in self?.showTimer() }
         model.onStopTimer = { [weak self] in self?.stopTimer() }
         model.onAddTime = { [weak self] seconds in self?.addTime(seconds) }
+        model.onTimerSet = { [weak self] seconds in self?.setTimerSetup(seconds) }
+        model.onTimerStart = { [weak self] in self?.startTimerFromSetup() }
+        model.onTimerPause = { [weak self] in self?.pauseOrResumeTimer() }
         model.onGlanceOpen = { [weak self] index in self?.openGlanceItem(index) }
         model.onGlanceTick = { [weak self] index in self?.tickGlanceItem(index) }
         model.onGlanceButton = { [weak self] index in self?.glanceButton(index) }
@@ -607,7 +625,10 @@ final class Brain {
                               frequency: config.theme.voice.frequency, rng: { Double.random(in: 0..<1) })
         if let pick = pick, config.speak { mouth.say(pick) }
 
-        micTuner.start { [weak self] reading in self?.heard(reading) }
+        model.tunerProblem = nil
+        model.tunerLevel = 0
+        micTuner.start(onReading: { [weak self] reading, level in self?.heard(reading, level: level) },
+                       onProblem: { [weak self] problem in self?.model.tunerProblem = problem })
     }
 
     private func setTuning() {
@@ -615,6 +636,13 @@ final class Brain {
         tuning = chosen.strings.isEmpty ? nil : ResolvedTuning(chosen, a4: config.tuner.a4)
         tunerSession = TunerSession()
         tunerSession.options.toleranceCents = config.tuner.toleranceCents
+        // Looser than the defaults, which were set on computer-made notes. A real guitar through a laptop
+        // microphone is quieter and less pure: with the strict values most plucks were thrown away and the
+        // tuner sat on "pluck a string". The session still takes the median of several readings, so a looser
+        // gate does not make the needle jumpy.
+        tunerSession.options.minRms = 0.003
+        tunerSession.options.minClarity = 0.7
+        model.tunerTolerance = config.tuner.toleranceCents
         wasInTune = false
         model.tuningName = chosen.instrument.isEmpty ? chosen.name : "\(chosen.instrument.capitalized), \(chosen.name.lowercased())"
         model.tuningStrings = chosen.strings
@@ -631,8 +659,10 @@ final class Brain {
         try? ConfigStore.save(config)
     }
 
-    private func heard(_ reading: PitchReading?) {
+    private func heard(_ reading: PitchReading?, level: Double) {
         guard model.screen == .tuner else { return }
+        // Square root, so quiet playing still moves the bar: 0.01 shows as about a fifth, 0.2 as full.
+        model.tunerLevel = min(1, level.squareRoot() * 2.2)
         let shown = tunerSession.feed(reading, nowMs: SystemClock.nowMs(), tuning: tuning, a4: config.tuner.a4)
         model.tuner = shown
         model.lockedStrings = tunerSession.lockedStringIndexes
@@ -658,11 +688,8 @@ final class Brain {
         let words = (argument ?? "").trimmingCharacters(in: .whitespaces)
 
         if words.isEmpty {
-            if countdown != nil {
-                showTimer()
-            } else {
-                showLine(category: "open_tool", target: nil, text: "Say how long: timer 10, timer 90s, timer 1:30", hold: 3)
-            }
+            // Just "timer": the running one if there is one, otherwise the face where a length is picked.
+            if countdown != nil { showTimer() } else { showTimerSetup() }
             return
         }
         if CountdownTimer.isStopWord(words) {
@@ -688,17 +715,71 @@ final class Brain {
         cancelTimer()
         countdown = CountdownTimer(seconds: seconds, nowMs: SystemClock.nowMs())
         countdownJobID = job
+        countdownTotalMs = seconds * 1000
         refreshTimer()
+        startTicker()
+    }
+
+    private func startTicker() {
+        countdownTicker?.invalidate()
         countdownTicker = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: true) { [weak self] _ in
             Task { @MainActor in self?.refreshTimer() }
         }
     }
 
+    // The face where a length is picked, like the Mac's own Clock: no typing "timer 20".
+
+    private func showTimerSetup() {
+        cancelAutoClose()
+        let last = UserDefaults.standard.integer(forKey: "consigliere.lastTimerSeconds")
+        model.timerSetupSeconds = last > 0 ? last : 600
+        model.screen = .timer
+        // It takes the keyboard so Enter starts it and the arrows change it.
+        controller.open(takeKeyboard: true)
+    }
+
+    private func setTimerSetup(_ seconds: Int) {
+        model.timerSetupSeconds = max(60, min(24 * 3600, seconds))
+    }
+
+    private func startTimerFromSetup() {
+        guard countdown == nil, model.screen == .timer else { return }
+        let seconds = model.timerSetupSeconds
+        UserDefaults.standard.set(seconds, forKey: "consigliere.lastTimerSeconds")
+        beginCountdown(seconds: seconds)
+        showLine(category: "open_tool", target: "timer")
+    }
+
+    /// Pause keeps the time left and stops the clock; resume starts a fresh countdown of exactly that much.
+    private func pauseOrResumeTimer() {
+        guard let running = countdown else { return }
+        let now = SystemClock.nowMs()
+        if let left = pausedLeftMs {
+            countdown = CountdownTimer(seconds: (left + 999) / 1000, nowMs: now)
+            pausedLeftMs = nil
+            model.timerPaused = false
+            refreshTimer()
+            startTicker()
+        } else {
+            pausedLeftMs = running.status(nowMs: now).remainingMs
+            countdownTicker?.invalidate()
+            countdownTicker = nil
+            model.timerPaused = true
+            model.timerEnds = "paused"
+        }
+        closeAfter(8)
+    }
+
     private func refreshTimer() {
         guard let countdown = countdown else { return }
+        // While paused nothing moves; the screen keeps showing what was left.
+        guard pausedLeftMs == nil else { return }
         let status = countdown.status(nowMs: SystemClock.nowMs())
         model.timerText = status.text
-        model.timerFraction = status.fraction
+        // The ring is measured against the whole length asked for, so pausing or adding time never makes it jump back to full.
+        model.timerFraction = countdownTotalMs > 0 ? min(1, Double(status.remainingMs) / Double(countdownTotalMs)) : status.fraction
+        let ends = Date().addingTimeInterval(Double(status.remainingMs) / 1000)
+        model.timerEnds = "ends " + Brain.clockFormatter.string(from: ends)
         if status.done {
             let jobID = countdownJobID
             cancelTimer()
@@ -730,8 +811,16 @@ final class Brain {
 
     private func addTime(_ seconds: Int) {
         guard let timer = countdown else { return }
-        countdown = timer.adding(seconds: seconds, nowMs: SystemClock.nowMs())
-        refreshTimer()
+        countdownTotalMs += seconds * 1000
+        if let left = pausedLeftMs {
+            // Paused: the extra time goes onto what was left, and the clock stays stopped.
+            pausedLeftMs = left + seconds * 1000
+            model.timerText = CountdownTimer.format(remainingMs: left + seconds * 1000)
+            model.timerFraction = min(1, Double(left + seconds * 1000) / Double(max(1, countdownTotalMs)))
+        } else {
+            countdown = timer.adding(seconds: seconds, nowMs: SystemClock.nowMs())
+            refreshTimer()
+        }
         closeAfter(8)
         let pick = Lines.pick(bank: lineBank, state: &lineState, category: "timer_extended", target: nil,
                               frequency: config.theme.voice.frequency, rng: { Double.random(in: 0..<1) })
@@ -743,6 +832,10 @@ final class Brain {
         countdownTicker = nil
         countdown = nil
         countdownJobID = nil
+        countdownTotalMs = 0
+        pausedLeftMs = nil
+        model.timerPaused = false
+        model.timerEnds = ""
         model.timerText = nil
         model.timerFraction = 0
     }
