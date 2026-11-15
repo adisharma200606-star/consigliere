@@ -1,0 +1,433 @@
+v22.23.4
+TAP version 13
+# Subtest: reminders: reading what he meant
+ok 1 - reminders: reading what he meant
+  ---
+  duration_ms: 10.895334
+  type: 'test'
+  ...
+# Subtest: reminders: a day that is named wins over "it already passed"
+ok 2 - reminders: a day that is named wins over "it already passed"
+  ---
+  duration_ms: 0.116375
+  type: 'test'
+  ...
+# Subtest: reminders: saying it back
+ok 3 - reminders: saying it back
+  ---
+  duration_ms: 0.147958
+  type: 'test'
+  ...
+# Subtest: write capture fixtures
+ok 4 - write capture fixtures
+  ---
+  duration_ms: 1.406125
+  type: 'test'
+  ...
+# Subtest: matcher: every hand-written case
+ok 5 - matcher: every hand-written case
+  ---
+  duration_ms: 35.21325
+  type: 'test'
+  ...
+# Subtest: matcher: empty input lists the most used things
+ok 6 - matcher: empty input lists the most used things
+  ---
+  duration_ms: 0.901666
+  type: 'test'
+  ...
+# Subtest: plan: sites, apps, paths and searches
+ok 7 - plan: sites, apps, paths and searches
+  ---
+  duration_ms: 2.001875
+  type: 'test'
+  ...
+# Subtest: ask: what gets sent, and how the answer is split
+ok 8 - ask: what gets sent, and how the answer is split
+  ---
+  duration_ms: 0.654459
+  type: 'test'
+  ...
+# Subtest: stash: alternates fresh and old, never repeats an opened item
+ok 9 - stash: alternates fresh and old, never repeats an opened item
+  ---
+  duration_ms: 0.263333
+  type: 'test'
+  ...
+# Subtest: stash: rng picks inside the bucket
+ok 10 - stash: rng picks inside the bucket
+  ---
+  duration_ms: 0.0805
+  type: 'test'
+  ...
+# Subtest: stash: "another" un-opens, counts the skip, and moves on
+ok 11 - stash: "another" un-opens, counts the skip, and moves on
+  ---
+  duration_ms: 0.16825
+  type: 'test'
+  ...
+# Subtest: stash: "another" with a single item serves that item again rather than nothing
+ok 12 - stash: "another" with a single item serves that item again rather than nothing
+  ---
+  duration_ms: 0.063167
+  type: 'test'
+  ...
+# Subtest: stash: things skipped three times go to the back
+ok 13 - stash: things skipped three times go to the back
+  ---
+  duration_ms: 0.258542
+  type: 'test'
+  ...
+# Subtest: stash: saving the same thing twice refreshes it
+ok 14 - stash: saving the same thing twice refreshes it
+  ---
+  duration_ms: 0.335292
+  type: 'test'
+  ...
+# Subtest: lines: never repeats within the last five
+ok 15 - lines: never repeats within the last five
+  ---
+  duration_ms: 0.416667
+  type: 'test'
+  ...
+# Subtest: lines: target lines win 60% of the time and rng order is fixed
+ok 16 - lines: target lines win 60% of the time and rng order is fixed
+  ---
+  duration_ms: 0.084375
+  type: 'test'
+  ...
+# Subtest: lines: a pool of one still works, an unknown category gives null
+ok 17 - lines: a pool of one still works, an unknown category gives null
+  ---
+  duration_ms: 0.051583
+  type: 'test'
+  ...
+# Subtest: lines: frequency 0 never speaks but still returns the text
+ok 18 - lines: frequency 0 never speaks but still returns the text
+  ---
+  duration_ms: 0.037417
+  type: 'test'
+  ...
+# Subtest: feedback: every sound it names exists as a file
+ok 19 - feedback: every sound it names exists as a file
+  ---
+  duration_ms: 0.320416
+  type: 'test'
+  ...
+# Subtest: write golden fixtures
+ok 20 - write golden fixtures
+  ---
+  duration_ms: 20.922583
+  type: 'test'
+  ...
+# Subtest: timer: reading durations
+ok 21 - timer: reading durations
+  ---
+  duration_ms: 1.295875
+  type: 'test'
+  ...
+# Subtest: timer: counting down and formatting
+ok 22 - timer: counting down and formatting
+  ---
+  duration_ms: 0.989459
+  type: 'test'
+  ...
+# Subtest: timer: words that mean stop
+ok 23 - timer: words that mean stop
+  ---
+  duration_ms: 0.31225
+  type: 'test'
+  ...
+# Subtest: timer: adding time
+ok 24 - timer: adding time
+  ---
+  duration_ms: 0.088875
+  type: 'test'
+  ...
+# Subtest: bookmarks: only living entries move, and only when it is clear which one
+ok 25 - bookmarks: only living entries move, and only when it is clear which one
+  ---
+  duration_ms: 0.553375
+  type: 'test'
+  ...
+# Subtest: bookmarks: url parts
+ok 26 - bookmarks: url parts
+  ---
+  duration_ms: 0.102584
+  type: 'test'
+  ...
+# Subtest: iphone: reading the phone files
+ok 27 - iphone: reading the phone files
+  ---
+  duration_ms: 0.350167
+  type: 'test'
+  ...
+# Subtest: iphone: folding the phone into the stash, again and again, without duplicates
+ok 28 - iphone: folding the phone into the stash, again and again, without duplicates
+  ---
+  duration_ms: 1.188292
+  type: 'test'
+  ...
+# Subtest: write extras fixtures
+ok 29 - write extras fixtures
+  ---
+  duration_ms: 1.380375
+  type: 'test'
+  ...
+# Subtest: jobs: reading what he typed
+ok 30 - jobs: reading what he typed
+  ---
+  duration_ms: 12.30325
+  type: 'test'
+  ...
+# Subtest: jobs: clock settings and job days
+ok 31 - jobs: clock settings and job days
+  ---
+  duration_ms: 0.236042
+  type: 'test'
+  ...
+# Subtest: jobs: the same job twice is one job, and done read finds it
+ok 32 - jobs: the same job twice is one job, and done read finds it
+  ---
+  duration_ms: 0.8655
+  type: 'test'
+  ...
+# Subtest: jobs: when he comes out, and how bold he is
+ok 33 - jobs: when he comes out, and how bold he is
+  ---
+  duration_ms: 1.507
+  type: 'test'
+  ...
+# Subtest: jobs: the list opens by itself once a day
+ok 34 - jobs: the list opens by itself once a day
+  ---
+  duration_ms: 0.194833
+  type: 'test'
+  ...
+# Subtest: jobs: unticking and deleting
+ok 35 - jobs: unticking and deleting
+  ---
+  duration_ms: 0.943667
+  type: 'test'
+  ...
+# Subtest: jobs: folders
+ok 36 - jobs: folders
+  ---
+  duration_ms: 5.5385
+  type: 'test'
+  ...
+# Subtest: write jobs fixtures
+ok 37 - write jobs fixtures
+  ---
+  duration_ms: 11.7695
+  type: 'test'
+  ...
+# Subtest: migrate: a stale config gains every built-in it is missing, exactly once
+ok 38 - migrate: a stale config gains every built-in it is missing, exactly once
+  ---
+  duration_ms: 1.469583
+  type: 'test'
+  ...
+# Subtest: migrate: running it again changes nothing (idempotent)
+ok 39 - migrate: running it again changes nothing (idempotent)
+  ---
+  duration_ms: 0.1645
+  type: 'test'
+  ...
+# Subtest: migrate: deleting a built-in on purpose is respected, forever
+ok 40 - migrate: deleting a built-in on purpose is respected, forever
+  ---
+  duration_ms: 0.191375
+  type: 'test'
+  ...
+# Subtest: migrate: his own custom entries are left completely alone
+ok 41 - migrate: his own custom entries are left completely alone
+  ---
+  duration_ms: 0.130333
+  type: 'test'
+  ...
+# Subtest: migrate: a brand new built-in nobody has ever seen gets added once
+ok 42 - migrate: a brand new built-in nobody has ever seen gets added once
+  ---
+  duration_ms: 0.115542
+  type: 'test'
+  ...
+# Subtest: write migrate fixtures
+ok 43 - write migrate fixtures
+  ---
+  duration_ms: 0.523792
+  type: 'test'
+  ...
+# Subtest: replace: a shortcut then a space becomes the phrase, keeping the space
+ok 44 - replace: a shortcut then a space becomes the phrase, keeping the space
+  ---
+  duration_ms: 1.824042
+  type: 'test'
+  ...
+# Subtest: replace: punctuation also triggers, and is kept
+ok 45 - replace: punctuation also triggers, and is kept
+  ---
+  duration_ms: 0.095458
+  type: 'test'
+  ...
+# Subtest: replace: only at the start of a word
+ok 46 - replace: only at the start of a word
+  ---
+  duration_ms: 0.596459
+  type: 'test'
+  ...
+# Subtest: replace: case does not matter for the shortcut
+ok 47 - replace: case does not matter for the shortcut
+  ---
+  duration_ms: 0.121625
+  type: 'test'
+  ...
+# Subtest: replace: shortcuts that start with punctuation work
+ok 48 - replace: shortcuts that start with punctuation work
+  ---
+  duration_ms: 0.218416
+  type: 'test'
+  ...
+# Subtest: replace: the longest shortcut wins
+ok 49 - replace: the longest shortcut wins
+  ---
+  duration_ms: 0.130792
+  type: 'test'
+  ...
+# Subtest: replace: backspace is followed, so a corrected word still fires and a broken one does not
+ok 50 - replace: backspace is followed, so a corrected word still fires and a broken one does not
+  ---
+  duration_ms: 0.16375
+  type: 'test'
+  ...
+# Subtest: replace: a reset (a click, an arrow key, another app) forgets what came before
+ok 51 - replace: a reset (a click, an arrow key, another app) forgets what came before
+  ---
+  duration_ms: 0.052708
+  type: 'test'
+  ...
+# Subtest: replace: right after a replacement, another shortcut works straight away
+ok 52 - replace: right after a replacement, another shortcut works straight away
+  ---
+  duration_ms: 0.254375
+  type: 'test'
+  ...
+# Subtest: replace: unusable shortcuts are ignored, and memory stays short
+ok 53 - replace: unusable shortcuts are ignored, and memory stays short
+  ---
+  duration_ms: 0.428584
+  type: 'test'
+  ...
+# Subtest: write replace fixtures
+ok 54 - write replace fixtures
+  ---
+  duration_ms: 0.675083
+  type: 'test'
+  ...
+# Subtest: taps: tapping Option or Control twice quickly is a double-tap
+ok 55 - taps: tapping Option or Control twice quickly is a double-tap
+  ---
+  duration_ms: 1.524166
+  type: 'test'
+  ...
+# Subtest: taps: one tap, a slow second tap, a long press, or two different keys do nothing
+ok 56 - taps: one tap, a slow second tap, a long press, or two different keys do nothing
+  ---
+  duration_ms: 0.193667
+  type: 'test'
+  ...
+# Subtest: taps: using the key normally (an accent, a shortcut, with another modifier) is never a tap
+ok 57 - taps: using the key normally (an accent, a shortcut, with another modifier) is never a tap
+  ---
+  duration_ms: 0.114042
+  type: 'test'
+  ...
+# Subtest: taps: three quick taps are one double-tap, not two
+ok 58 - taps: three quick taps are one double-tap, not two
+  ---
+  duration_ms: 0.060917
+  type: 'test'
+  ...
+# Subtest: taps: holding right Option starts talking, letting go ends it
+ok 59 - taps: holding right Option starts talking, letting go ends it
+  ---
+  duration_ms: 0.160792
+  type: 'test'
+  ...
+# Subtest: taps: right Option can still be double-tapped
+ok 60 - taps: right Option can still be double-tapped
+  ---
+  duration_ms: 0.05125
+  type: 'test'
+  ...
+# Subtest: write taps fixtures
+ok 61 - write taps fixtures
+  ---
+  duration_ms: 0.539625
+  type: 'test'
+  ...
+#     worst clean error: 0.225 cents over 32 notes
+#     worst laptop-mic error: 0.172 cents
+# Subtest: notes: names, numbers and frequencies
+ok 62 - notes: names, numbers and frequencies
+  ---
+  duration_ms: 1.583916
+  type: 'test'
+  ...
+# Subtest: tunings: every preset reads cleanly
+ok 63 - tunings: every preset reads cleanly
+  ---
+  duration_ms: 0.288666
+  type: 'test'
+  ...
+# Subtest: detect: clean plucks land within 1.5 cents, for every string of every tuning
+ok 64 - detect: clean plucks land within 1.5 cents, for every string of every tuning
+  ---
+  duration_ms: 745.895625
+  type: 'test'
+  ...
+# Subtest: detect: a laptop-mic pluck (weak fundamental, hiss) still lands within 3 cents
+ok 65 - detect: a laptop-mic pluck (weak fundamental, hiss) still lands within 3 cents
+  ---
+  duration_ms: 254.009167
+  type: 'test'
+  ...
+# Subtest: detect: silence and hiss give nothing
+ok 66 - detect: silence and hiss give nothing
+  ---
+  duration_ms: 4.346708
+  type: 'test'
+  ...
+# Subtest: strings: nearest string, honest about how far off it is
+ok 67 - strings: nearest string, honest about how far off it is
+  ---
+  duration_ms: 0.297667
+  type: 'test'
+  ...
+# Subtest: session: smooths, locks after a steady moment, holds briefly, then idles
+ok 68 - session: smooths, locks after a steady moment, holds briefly, then idles
+  ---
+  duration_ms: 0.610625
+  type: 'test'
+  ...
+# Subtest: session: says so once when every string has locked, and only once
+ok 69 - session: says so once when every string has locked, and only once
+  ---
+  duration_ms: 0.227625
+  type: 'test'
+  ...
+# Subtest: write tuner fixtures
+ok 70 - write tuner fixtures
+  ---
+  duration_ms: 0.916375
+  type: 'test'
+  ...
+1..70
+# tests 70
+# suites 0
+# pass 70
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1475.491583

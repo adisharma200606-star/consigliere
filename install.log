@@ -1,0 +1,8 @@
+
+[1m2/4  Building (the first time takes a few minutes)[0m
+
+[1m3/4  Signing[0m
+/Users/runner/work/consigliere/consigliere/App/build/Build/Products/Release/Consigliere.app: replacing existing signature
+Signed ad hoc. To stop macOS asking for permissions after every update, add your Apple ID in Xcode > Settings > Accounts once.
+
+[1mBuilt and signed at /Users/runner/work/consigliere/consigliere/App/build/Build/Products/Release/Consigliere.app (not installed, SKIP_INSTALL=1)[0m
