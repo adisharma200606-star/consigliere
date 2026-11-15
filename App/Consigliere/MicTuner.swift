@@ -8,7 +8,8 @@ import ConsigliereCore
 /// let the tuner decide on a string sooner after a pluck. Every reading also carries how loud the room is, so the
 /// screen can show that the microphone is hearing something even when there is no clear note.
 final class MicTuner {
-    private let engine = AVAudioEngine()
+    /// Made fresh each time the tuner opens and thrown away when it closes, so the microphone is really let go.
+    private var engine: AVAudioEngine?
     private let queue = DispatchQueue(label: "consigliere.tuner", qos: .userInteractive)
     private var window = [Float]()
     private let windowSize = 4096
@@ -40,6 +41,7 @@ final class MicTuner {
             break
         }
 
+        let engine = Microphone.makeEngine()
         let input = engine.inputNode
         let format = input.outputFormat(forBus: 0)
         let sampleRate = format.sampleRate
@@ -51,7 +53,6 @@ final class MicTuner {
         let windowSize = self.windowSize
         let hop = self.hop
         queue.async { self.window.removeAll(keepingCapacity: true) }
-        input.removeTap(onBus: 0)
         input.installTap(onBus: 0, bufferSize: 2048, format: format) { [weak self] buffer, _ in
             guard let self = self, let channel = buffer.floatChannelData?[0] else { return }
             let samples = Array(UnsafeBufferPointer(start: channel, count: Int(buffer.frameLength)))
@@ -74,6 +75,7 @@ final class MicTuner {
         engine.prepare()
         do {
             try engine.start()
+            self.engine = engine
             isRunning = true
         } catch {
             NSLog("Consigliere: the microphone would not start for the tuner: \(error)")
@@ -84,8 +86,9 @@ final class MicTuner {
 
     func stop() {
         guard isRunning else { return }
-        engine.stop()
-        engine.inputNode.removeTap(onBus: 0)
+        engine?.inputNode.removeTap(onBus: 0)
+        engine?.stop()
+        engine = nil
         isRunning = false
     }
 }

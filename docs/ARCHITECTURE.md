@@ -70,7 +70,8 @@ Each of these is a port of a file in `reference-js/`. The port is kept honest by
 | `Mouth.swift` | The voice: an Italian system voice reading English, or a recorded clip if one exists for the line. |
 | `SoundPlayer.swift` | Plays the eight sounds and the trackpad taps. |
 | `Ears.swift` | Hold-to-talk speech recognition. |
-| `MicTuner.swift` | Microphone into the pitch detector, about twelve readings a second. |
+| `MicTuner.swift` | Microphone into the pitch detector, about twenty-three readings a second. |
+| `Microphone.swift` | Picks the microphone (the built-in one when the default is Bluetooth headphones, so music keeps its quality) and makes a fresh audio engine for each listen. |
 | `CaptureWriter.swift` | Makes the note (AppleScript, keeping its id) or the reminder (EventKit); reads upcoming reminders and ticks them off; reopens a note by id; appends to the day's diary note. |
 | `ScreenRotator.swift` | `one eighty`: picks the screen (laptop when the lid is open, else main), asks `RotationBridge` to rotate it one way at a time, checks with `CGDisplayRotation` that it really turned before trying the next way, handles mirroring, and writes `~/.consigliere/flip.log`. |
 | `AppIndex.swift` | Finds installed apps so any of them opens by name. |

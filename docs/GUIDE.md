@@ -109,6 +109,8 @@ If it is a single word he does not know, he shows `?`, says something like "Neve
 
 **Hold** the talk key, say the name, **let go**. Letting go is what tells it you have finished, which is why it is faster than a button you tap.
 
+**With Bluetooth headphones on**, it listens with the MacBook's own microphone, not the headphones'. Using the headphone microphone would drop them into muffled "call quality" sound while music plays. A wired or USB microphone you plugged in is still used as it is. (Added 15 Nov 2026, not yet confirmed by listening.)
+
 - Speech is recognised on the Mac itself. Nothing is sent anywhere.
 - You do not say "Consigliere". Just say the thing: "YouTube", "open Steam", "timer ten minutes".
 - Mishearings are handled: "you to", "get hub", "what's app", "linked in" all land correctly.
@@ -234,6 +236,7 @@ Add them under `tuner.customTunings` in the config (section 16). Notes are writt
 
 - **Drop B and Drop A** put the lowest strings around 55 to 62 Hz. Laptop microphones are weak down there. Those strings will read, but slower and jumpier than the rest.
 - While the tuner is open, macOS shows its orange microphone dot. That is normal. The microphone turns off when the tuner closes.
+- With Bluetooth headphones on, the tuner listens through the MacBook's microphone, so your music keeps its full quality (and the guitar is heard better than through a headset microphone).
 - A slack new string far below pitch shows as "way flat" on the nearest string. It never pretends to be in tune.
 
 ---
@@ -622,6 +625,7 @@ This section will grow once the app has actually run. What can already be predic
 |---|---|---|
 | A site opens in the wrong Brave profile | the profile folder names in the config are wrong | find the real names (DAY_ONE.md) and set `brave.personalProfileDir` / `workProfileDir` |
 | Hold-to-talk does nothing | microphone or speech permission was refused | System Settings → Privacy & Security → Microphone, and Speech Recognition |
+| Music in Bluetooth headphones turns muffled while Consigliere listens | it is using the headphone microphone (it should pick the MacBook's) | see BLIND_SPOTS B17a; meanwhile set System Settings → Sound → Input to MacBook Pro Microphone |
 | Save hotkey does nothing | macOS blocked Consigliere from asking Brave for its tab | System Settings → Privacy & Security → Automation → allow Consigliere to control Brave |
 | The voice is not Italian | no Italian voice installed | System Settings → Accessibility → Spoken Content → System Voice → Manage Voices → Italian |
 | Settings seem ignored after you edited the file | a typo broke the file, so defaults are in use | fix the typo. Your file was not touched. |

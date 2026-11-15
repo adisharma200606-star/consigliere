@@ -8,7 +8,8 @@ import Speech
 @MainActor
 final class Ears {
     private var recognizer: SFSpeechRecognizer?
-    private let engine = AVAudioEngine()
+    /// Made fresh for each listen and thrown away after, so the microphone is really let go (see `Microphone`).
+    private var engine: AVAudioEngine?
     private var request: SFSpeechAudioBufferRecognitionRequest?
     private var task: SFSpeechRecognitionTask?
     private var latest = ""
@@ -39,9 +40,9 @@ final class Ears {
         self.request = request
         latest = ""
 
+        let engine = Microphone.makeEngine()
         let input = engine.inputNode
         let format = input.outputFormat(forBus: 0)
-        input.removeTap(onBus: 0)
         input.installTap(onBus: 0, bufferSize: 1024, format: format) { buffer, _ in
             request.append(buffer)
         }
@@ -54,6 +55,7 @@ final class Ears {
             input.removeTap(onBus: 0)
             return
         }
+        self.engine = engine
         isListening = true
 
         task = recognizer.recognitionTask(with: request) { [weak self] result, error in
@@ -79,8 +81,9 @@ final class Ears {
         }
         isListening = false
         finish = completion
-        engine.stop()
-        engine.inputNode.removeTap(onBus: 0)
+        engine?.inputNode.removeTap(onBus: 0)
+        engine?.stop()
+        engine = nil
         request?.endAudio()
 
         // The recogniser usually sends a final result almost at once. If it does not, use what we have.
