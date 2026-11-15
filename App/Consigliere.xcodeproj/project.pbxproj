@@ -24,6 +24,7 @@
 		527CFF1A48F4E83968EC7009 /* JobCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 223A2E817352F1CA77FB0207 /* JobCard.swift */; };
 		5537ADBECEC700C2FE1CB2F0 /* Ears.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3855D626E40F90E271974F1 /* Ears.swift */; };
 		56EEEB54868DC0E386EB30CA /* TabGrabber.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E980A8D08A0236E0CFB31A5 /* TabGrabber.swift */; };
+		56F8401454D7E1F1B27CAB07 /* Microphone.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2ABD1296F7F0D0B8DADDF1D6 /* Microphone.swift */; };
 		56FE76408ECBCB4CB559684D /* TunerScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF3BBC7F0300EAA463CA943C /* TunerScreen.swift */; };
 		5D4DA6FCE2ECC2DDC2E6DBB2 /* HotKey in Frameworks */ = {isa = PBXBuildFile; productRef = C7FEF53BEB12F4386C417B29 /* HotKey */; };
 		5FA30CE25AB02434733694ED /* GlanceScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEB8B6A96FF7E6F8F53432A5 /* GlanceScreen.swift */; };
@@ -71,6 +72,7 @@
 		20CFC682283177A7AE2AE8C9 /* nope.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = nope.wav; sourceTree = "<group>"; };
 		223A2E817352F1CA77FB0207 /* JobCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JobCard.swift; sourceTree = "<group>"; };
 		29B42FED41D5583D84FE851C /* JobsScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JobsScreen.swift; sourceTree = "<group>"; };
+		2ABD1296F7F0D0B8DADDF1D6 /* Microphone.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Microphone.swift; sourceTree = "<group>"; };
 		2AEF5EB8B2D697833D4E356B /* CharacterSprite.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CharacterSprite.swift; sourceTree = "<group>"; };
 		2F8CB5A93EA9E318A21B5FB2 /* lines.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = lines.json; sourceTree = "<group>"; };
 		2F9730B8DFDE3E8F83D40867 /* Roamer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Roamer.swift; sourceTree = "<group>"; };
@@ -146,6 +148,7 @@
 				3F841EC9E6BFBBF4895A9CDD /* FocusFilter.swift */,
 				D19DF932DD4CB8B7C5295E3F /* HotkeyCenter.swift */,
 				EB47F0B2C3162F2E3827F16E /* Info.plist */,
+				2ABD1296F7F0D0B8DADDF1D6 /* Microphone.swift */,
 				79BDB7A9608365D9A1237DE2 /* MicTuner.swift */,
 				C79C49E1115136ED0299B529 /* Mouth.swift */,
 				8686968FE1281DD169410705 /* MusicPlayer.swift */,
@@ -387,6 +390,7 @@
 				C7EE24604BFDFD6D52FF27C4 /* JobsScreen.swift in Sources */,
 				325751A66BBD86BC94C351EC /* LineScreen.swift in Sources */,
 				32B2807372C86E679714A6F2 /* MicTuner.swift in Sources */,
+				56F8401454D7E1F1B27CAB07 /* Microphone.swift in Sources */,
 				F38B584DFB2715B24DBEED25 /* Mouth.swift in Sources */,
 				8ED0EB02D1614C5FE9B27036 /* MusicPlayer.swift in Sources */,
 				8D7B01EA58C62E62EED79E0C /* NotchController.swift in Sources */,
