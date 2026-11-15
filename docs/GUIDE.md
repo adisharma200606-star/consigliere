@@ -667,6 +667,7 @@ The day's to-do list, the family-business way: they are **jobs**. The thing that
 - **Tick** a box and the job is done, with a small pixel explosion and a sound. Tick it again if you did it by mistake.
 - **start** (on jobs that know what to open) opens it and starts the timer for the job's length.
 - **Right-click** a job to delete it.
+- **More than five jobs?** The list shows five at a time and scrolls (trackpad or mouse wheel) for the rest; the add line always stays in view. A job you add scrolls into view. (Added 15 Nov 2026, not yet confirmed on Adi's Mac.)
 - **Escape**, or a click anywhere else, closes the list.
 
 **Every day from 10:00** the list opens by itself, the first time you are at the Mac after that (not while a Focus mode with his filter is on, and not after `quiet`), so the day starts with a look at what is on the books. It opens without taking the keyboard, so nothing you are typing lands in it; click the line at the bottom to add. Untouched, it closes after a minute. Change the time with `jobs.openListAt` (empty: never).

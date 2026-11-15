@@ -7,6 +7,10 @@ struct JobsScreen: View {
     @ObservedObject var model: NotchModel
     @FocusState private var focused: Bool
 
+    /// How many jobs show before the list scrolls. Five keeps the whole panel well inside the notch window,
+    /// even on a 13-inch screen.
+    static let visibleRows = 5
+
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
             HStack(alignment: .center, spacing: 10) {
@@ -41,8 +45,23 @@ struct JobsScreen: View {
                         .padding(.horizontal, 12)
                         .frame(height: 44)
                 }
-                ForEach(model.jobRows) { row in
-                    JobRowView(model: model, row: row)
+                // The notch window is only half the screen tall, so a long day would push the add box off the
+                // bottom. The list shows up to `visibleRows` jobs and scrolls for the rest; the header and the
+                // add box always stay in view.
+                ScrollViewReader { scroller in
+                    ScrollView(.vertical) {
+                        VStack(spacing: 0) {
+                            ForEach(model.jobRows) { row in
+                                JobRowView(model: model, row: row).id(row.id)
+                            }
+                        }
+                    }
+                    .frame(height: CGFloat(min(model.jobRows.count, Self.visibleRows)) * JobRowView.height)
+                    // A job just added goes to the bottom: bring it into view so you see it land.
+                    .onChange(of: model.jobRows.count) { [oldCount = model.jobRows.count] newCount in
+                        guard newCount > oldCount, let last = model.jobRows.last else { return }
+                        withAnimation(model.theme.spring) { scroller.scrollTo(last.id, anchor: .bottom) }
+                    }
                 }
             }
 
@@ -77,6 +96,8 @@ struct JobsScreen: View {
 private struct JobRowView: View {
     @ObservedObject var model: NotchModel
     let row: NotchModel.JobRow
+
+    static let height: CGFloat = 46
 
     var body: some View {
         HStack(alignment: .center, spacing: 12) {
@@ -113,7 +134,7 @@ private struct JobRowView: View {
             }
         }
         .padding(.horizontal, 8)
-        .frame(height: 46)
+        .frame(height: Self.height)
         .overlay(alignment: .bottom) { Rectangle().fill(NotchTheme.hairline).frame(height: 1) }
         .contentShape(Rectangle())
         .contextMenu {
