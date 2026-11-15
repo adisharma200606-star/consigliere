@@ -30,6 +30,7 @@ struct InputScreen: View {
                         .kerning(1.2)
                         .foregroundStyle(NotchTheme.faint)
                 }
+                SettingsGear(model: model)
             }
             .padding(.horizontal, 4)
 
@@ -113,5 +114,26 @@ struct ListeningDots: View {
         }
         .padding(.bottom, 6)
         .onAppear { on = true }
+    }
+}
+
+/// A small gear that opens the settings window with one ordinary click. Right-clicking the notch also works,
+/// but not reliably: while his head shows beside the notch, the notch library's window catches it first.
+struct SettingsGear: View {
+    @ObservedObject var model: NotchModel
+    @State private var hovering = false
+
+    var body: some View {
+        Button { model.onSettings() } label: {
+            Image(systemName: "gearshape")
+                .font(.system(size: 12, weight: .regular))
+                .foregroundStyle(hovering ? model.theme.accent : NotchTheme.faint)
+                // A bigger target than the drawing, so it is easy to hit.
+                .frame(width: 26, height: 26)
+                .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .onHover { hovering = $0 }
+        .help("Settings (⌘,)")
     }
 }

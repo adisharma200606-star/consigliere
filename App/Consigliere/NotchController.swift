@@ -21,6 +21,8 @@ final class NotchController {
     /// a real case existed where Return stopped reaching that callback (remote input via iPhone Mirroring)
     /// while every other key kept working fine through this monitor.
     var onEnter: () -> Void = {}
+    /// Command-comma, the Mac's usual key for settings, while the notch is open.
+    var onSettings: () -> Void = {}
 
     init(model: NotchModel) {
         self.model = model
@@ -167,6 +169,10 @@ final class NotchController {
         // Keys pressed while our panel has the keyboard.
         keyMonitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { [weak self] event in
             guard let self = self, self.isOpen else { return event }
+            if event.modifierFlags.contains(.command) && event.charactersIgnoringModifiers == "," {
+                self.onSettings()
+                return nil
+            }
             switch event.keyCode {
             case 53:    // Escape
                 self.onDismiss()

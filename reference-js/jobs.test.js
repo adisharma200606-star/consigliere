@@ -187,6 +187,56 @@ test('jobs: unticking and deleting', () => {
   assert.strictEqual(jobs.ledger(day), 'Jobs, 2026-10-11\nStill owed: read (30 min), gym, stretch');
 });
 
+const GROUPS = ['work', 'General', 'side project'];
+
+// [text, expected drafts as [title, group, starter]]
+const GROUP_CASES = [
+  ['work: email the landlord', [['email the landlord', 'work', null]]],
+  ['WORK:read 30 min, general: call dad', [['read', 'work', 'books'], ['call dad', 'General', null]]],
+  ['side project: duolingo by 10pm', [['duolingo', 'side project', 'duolingo']]],
+  ['call dad at 6:30', [['call dad', null, null]]],                  // a time is not a folder
+  ['gym: legs', [['gym: legs', null, null]]],                        // no folder called gym: left as typed
+  ['work:', []]
+];
+
+test('jobs: folders', () => {
+  for (const [text, expected] of GROUP_CASES) {
+    const got = jobs.parseJobs(text, NOW, CATALOG, {}, GROUPS).map(d => [d.title, d.group, d.starter]);
+    assert.deepStrictEqual(got, expected, JSON.stringify(text));
+  }
+  assert.strictEqual(jobs.parseJobs('work: email', NOW, CATALOG, {})[0].group, null, 'no folders set up: nothing is read as one');
+
+  const day = foldersDay();
+  assert.deepStrictEqual(jobs.sections(day, GROUPS, at(13, 0)), [
+    { group: 'work', ids: ['j1', 'j3'], left: 1, due: 1 },
+    { group: 'General', ids: ['j2'], left: 1, due: 0 },
+    { group: null, ids: ['j4', 'j5'], left: 2, due: 0 }
+  ]);
+  assert.deepStrictEqual(jobs.sections(day, [], at(13, 0)), [{ group: null, ids: ['j1', 'j2', 'j3', 'j4', 'j5'], left: 4, due: 1 }]);
+  assert.deepStrictEqual(jobs.sections(jobs.newDay('2026-10-11'), GROUPS, NOW), []);
+
+  // A suggestion fills only what is empty; what he typed wins.
+  jobs.fillIn(day, 'j1', { starter: 'gmail', group: 'General' });
+  assert.deepStrictEqual([day.jobs[0].starter, day.jobs[0].group], ['gmail', 'work']);
+  jobs.fillIn(day, 'j4', { starter: null, group: 'General' });
+  assert.strictEqual(day.jobs[3].group, 'General');
+  assert.strictEqual(jobs.fillIn(day, 'j99', { starter: 'x', group: 'y' }), null);
+
+  jobs.setGroup(day, 'j4', null);
+  assert.strictEqual(day.jobs[3].group, null);
+  assert.strictEqual(jobs.rollover(day, '2026-10-12').jobs.find(j => j.title === 'call dad').group, 'General', 'a carried job keeps its folder');
+});
+
+/** Five jobs in three folders: work (one due by noon, one done), general, and two in no folder (one in a folder
+ *  that is not in the settings any more). */
+function foldersDay() {
+  const day = jobs.newDay('2026-10-11');
+  jobs.addJobs(day, jobs.parseJobs('work: email the landlord by 12, general: call dad, work: standup notes, stretch, old: x', NOW, CATALOG, {}, GROUPS), NOW);
+  day.jobs[4].group = 'old';
+  jobs.finish(day, 'j3', NOW);
+  return day;
+}
+
 test('write jobs fixtures', () => {
   const dir = path.join(__dirname, '..', 'fixtures');
   const { day, results } = play(STEPS);
@@ -202,6 +252,11 @@ test('write jobs fixtures', () => {
     described: day.jobs.map(jobs.describeJob),
     rolled: next,
     rolledLedger: jobs.ledger(jobs.rollover(JSON.parse(JSON.stringify(next)), '2026-10-13')),
+    groups: GROUPS,
+    groupParses: GROUP_CASES.map(([text]) => ({ text, drafts: jobs.parseJobs(text, NOW, CATALOG, {}, GROUPS) })),
+    foldersDay: foldersDay(),
+    sections: jobs.sections(foldersDay(), GROUPS, at(13, 0)),
+    sectionsAt: at(13, 0),
     opens: OPEN_CASES.map(([h, m, d, quiet, idle, opened]) => {
       const day = jobs.newDay('2026-10-11');
       if (opened) jobs.listOpened(day);

@@ -118,15 +118,28 @@
     return null;
   }
 
+  /** The folder named in front of a job, "work: email the landlord", as the folder is spelled in the settings.
+   *  Only a folder that exists counts, so "call at 6:30" and "note: buy milk" are left as they are. */
+  function takeGroup(piece, groups) {
+    var colon = piece.indexOf(':');
+    if (colon <= 0 || !groups || !groups.length) return { group: null, rest: piece };
+    var named = core.normalize(piece.slice(0, colon));
+    var hit = groups.filter(function (g) { return core.normalize(g) === named && named !== ''; })[0];
+    return hit ? { group: hit, rest: piece.slice(colon + 1) } : { group: null, rest: piece };
+  }
+
   /**
    * "read 30 min, swift course, duolingo by 10pm" -> three drafts.
    * Commas, semicolons and new lines separate jobs. "and" does not, so "call mom and dad" stays one job.
-   * Each draft: { title, minutes, dueWall, starter }.
+   * "work: email the landlord" puts it in the work folder, when there is a folder called work.
+   * Each draft: { title, minutes, dueWall, starter, group }.
    */
-  function parseJobs(text, nowWall, catalog, bindings) {
+  function parseJobs(text, nowWall, catalog, bindings, groups) {
     var pieces = String(text || '').split(/[,;\n]+/);
     var drafts = [];
-    pieces.forEach(function (piece) {
+    pieces.forEach(function (raw) {
+      var g = takeGroup(raw, groups);
+      var piece = g.rest;
       var tokens = piece.trim().split(/\s+/).filter(Boolean);
       if (!tokens.length) return;
       tokens = dropLeadingPhrase(tokens);
@@ -135,7 +148,7 @@
       var r = capture.parseReminder(d.rest.join(' '), nowWall);
       var title = r.title.trim();
       if (!title) return;
-      drafts.push({ title: title, minutes: d.minutes, dueWall: r.dueWall, starter: bindStarter(title, catalog, bindings) });
+      drafts.push({ title: title, minutes: d.minutes, dueWall: r.dueWall, starter: bindStarter(title, catalog, bindings), group: g.group });
     });
     return drafts;
   }
@@ -148,7 +161,7 @@
   }
 
   function newJob(id, draft, now) {
-    return { id: id, title: draft.title, starter: draft.starter, minutes: draft.minutes, dueWall: draft.dueWall,
+    return { id: id, title: draft.title, starter: draft.starter, group: draft.group || null, minutes: draft.minutes, dueWall: draft.dueWall,
       status: 'open', addedAt: now, startedAt: null, doneAt: null, snoozedUntil: null, lastShownAt: null,
       ignored: 0, owedDays: 0 };
   }
@@ -164,6 +177,7 @@
         if (draft.minutes !== null) same.minutes = draft.minutes;
         if (draft.dueWall !== null) same.dueWall = draft.dueWall;
         if (draft.starter !== null) same.starter = draft.starter;
+        if (draft.group) same.group = draft.group;
         added.push(same);
         return;
       }
@@ -229,6 +243,44 @@
     j.status = 'open'; j.doneAt = null; j.startedAt = null; touch(j);
     return j;
   }
+  /** Moves a job to another folder; null takes it out of every folder. */
+  function setGroup(day, id, group) { var j = job(day, id); if (!j) return null; j.group = group || null; return j; }
+
+  /**
+   * A suggestion (from Claude, in the app) fills only what is still empty. What he typed or picked himself
+   * always wins, and a suggestion that comes back late never changes a job he already sorted.
+   */
+  function fillIn(day, id, suggestion) {
+    var j = job(day, id); if (!j) return null;
+    if (j.starter === null && suggestion.starter) j.starter = suggestion.starter;
+    if (j.group === null && suggestion.group) j.group = suggestion.group;
+    return j;
+  }
+
+  /**
+   * The list in folders: one section per folder that has jobs, in the order of the settings, then "other" for
+   * jobs in no folder (or in a folder since removed from the settings). With no folders set up, one section
+   * with every job, and the list looks as it always did. Each: { group, ids, left, due }.
+   */
+  function sections(day, groups, now) {
+    groups = groups || [];
+    var make = function (group, list) {
+      return { group: group, ids: list.map(function (j) { return j.id; }),
+        left: list.filter(function (j) { return j.status === 'open' || j.status === 'started'; }).length,
+        due: list.filter(function (j) { return j.status === 'open' && j.dueWall !== null && j.dueWall <= now; }).length };
+    };
+    if (!groups.length) return day.jobs.length ? [make(null, day.jobs)] : [];
+    var known = function (g) { return g !== null && groups.some(function (x) { return core.normalize(x) === core.normalize(g); }); };
+    var out = [];
+    groups.forEach(function (g) {
+      var list = day.jobs.filter(function (j) { return j.group !== null && core.normalize(j.group) === core.normalize(g); });
+      if (list.length) out.push(make(g, list));
+    });
+    var loose = day.jobs.filter(function (j) { return !known(j.group); });
+    if (loose.length) out.push(make(null, loose));
+    return out;
+  }
+
   /** Gone from the list, not done and not skipped: it never goes into the ledger. */
   function remove(day, id) {
     var before = day.jobs.length;
@@ -362,7 +414,7 @@
     clockMinutes: clockMinutes, dayKey: dayKey, takeDuration: takeDuration, bindStarter: bindStarter, parseJobs: parseJobs,
     newDay: newDay, addJobs: addJobs, rollover: rollover, findJob: findJob,
     start: start, finish: finish, skip: skip, later: later, sleepLater: sleepLater, closeBooks: closeBooks,
-    reopen: reopen, remove: remove, shouldOpenList: shouldOpenList, listOpened: listOpened,
+    reopen: reopen, remove: remove, setGroup: setGroup, fillIn: fillIn, sections: sections, takeGroup: takeGroup, shouldOpenList: shouldOpenList, listOpened: listOpened,
     nextNudge: nextNudge, appeared: appeared, ignored: ignored, describeJob: describeJob, ledger: ledger
   };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;

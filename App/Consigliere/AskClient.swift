@@ -2,7 +2,7 @@ import ConsigliereCore
 import Foundation
 import Security
 
-/// Sends one question to the Claude API and brings back the answer.
+/// Talks to the Claude API: one question for Ask, or a few jobs to sort for smart jobs.
 ///
 /// The key lives in the Mac's Keychain, never in a file. Spending is counted per month against
 /// `ask.monthlyBudgetUSD`, using the token counts the API reports with every reply.
@@ -18,11 +18,28 @@ enum AskClient {
     // MARK: asking
 
     static func ask(question: String, clip: String?, config: AskConfig) async throws -> Ask.Answer {
+        let prompt = Ask.build(question: question, clip: clip)
+        let body = try Ask.requestBody(prompt: prompt, model: config.model, maxTokens: config.maxTokens, effort: config.effort)
+        return Ask.shape(try await send(body, config: config))
+    }
+
+    /// Smart jobs: what opens each job and which folder it goes in. Same key, same monthly budget as Ask.
+    /// Only the job titles, the names of things to open, and the folder names are sent (see `Smart`).
+    static func sortJobs(_ jobs: [Job], catalog: [CatalogEntry], groups: [String], config: AskConfig) async throws -> [Smart.Suggestion] {
+        guard !jobs.isEmpty else { return [] }
+        let prompt = Smart.prompt(for: jobs, catalog: catalog, groups: groups)
+        let body = try Smart.requestBody(prompt: prompt, model: config.model, effort: config.effort)
+        let text = try await send(body, config: config)
+        return Smart.readReply(text, askedIDs: jobs.map { $0.id }, catalog: catalog, groups: groups)
+    }
+
+    /// One request to the Claude API: checks the key and the budget first, counts what it cost after, and
+    /// hands back the text of the reply (thinking, if any, is skipped: it comes back empty anyway).
+    private static func send(_ body: Data, config: AskConfig) async throws -> String {
         guard let key = Keychain.read(), !key.isEmpty else { throw Problem.noKey }
         let spent = Spending.thisMonth()
         if spent >= config.monthlyBudgetUSD { throw Problem.overBudget(spent: spent, budget: config.monthlyBudgetUSD) }
 
-        let prompt = Ask.build(question: question, clip: clip)
         guard let url = URL(string: "https://api.anthropic.com/v1/messages") else { throw Problem.network("bad address") }
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
@@ -30,7 +47,7 @@ enum AskClient {
         request.setValue(key, forHTTPHeaderField: "x-api-key")
         request.setValue("2023-06-01", forHTTPHeaderField: "anthropic-version")
         request.setValue("application/json", forHTTPHeaderField: "content-type")
-        request.httpBody = try Ask.requestBody(prompt: prompt, model: config.model, maxTokens: config.maxTokens)
+        request.httpBody = body
 
         let data: Data
         let response: URLResponse
@@ -47,9 +64,9 @@ enum AskClient {
         }
 
         let reply = try JSONDecoder().decode(Reply.self, from: data)
+        // Thinking tokens are counted in output_tokens, so the budget sees them too.
         Spending.add(config.cost(inputTokens: reply.usage.input_tokens, outputTokens: reply.usage.output_tokens))
-        let text = reply.content.compactMap { $0.type == "text" ? $0.text : nil }.joined(separator: "\n")
-        return Ask.shape(text)
+        return reply.content.compactMap { $0.type == "text" ? $0.text : nil }.joined(separator: "\n")
     }
 
     /// What to show in the notch when asking did not work.

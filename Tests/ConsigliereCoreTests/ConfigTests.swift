@@ -55,6 +55,39 @@ final class ConfigTests: XCTestCase {
         XCTAssertEqual(JobsConfig().settings, JobSettings(), "the config's defaults and the brain's agree")
     }
 
+    func testFoldersAndSmartJobs() throws {
+        let json = #"{ "jobs": { "groups": [" Work ", "", "work", "side project"], "smart": false } }"#
+        let config = try JSONDecoder().decode(Config.self, from: Data(json.utf8))
+        XCTAssertEqual(config.jobs.groups, ["Work", "side project"], "trimmed, blanks dropped, each once")
+        XCTAssertFalse(config.jobs.smart)
+        let plain = try JSONDecoder().decode(Config.self, from: Data("{}".utf8))
+        XCTAssertEqual(plain.jobs.groups, ["work", "general"])
+        XCTAssertTrue(plain.jobs.smart)
+        XCTAssertTrue(plain.menuBarIcon, "the menu bar icon is on unless turned off")
+        XCTAssertFalse(try JSONDecoder().decode(Config.self, from: Data(#"{ "menuBarIcon": false }"#.utf8)).menuBarIcon)
+    }
+
+    func testAnOldDefaultAskModelMovesToTheNewOne() throws {
+        // What every config written before November 2026 holds: the old defaults, never chosen by hand.
+        let old = #"{ "ask": { "model": "claude-haiku-4-5", "maxTokens": 300, "monthlyBudgetUSD": 3, "inputUSDPerMillionTokens": 1, "outputUSDPerMillionTokens": 5 } }"#
+        let moved = try JSONDecoder().decode(Config.self, from: Data(old.utf8)).ask
+        XCTAssertEqual(moved.model, "claude-haiku-5-5")
+        XCTAssertEqual(moved.inputUSDPerMillionTokens, 0.10)
+        XCTAssertEqual(moved.outputUSDPerMillionTokens, 0.50)
+        XCTAssertEqual(moved.maxTokens, 1024)
+        XCTAssertEqual(moved.effort, "low")
+        XCTAssertEqual(moved.monthlyBudgetUSD, 3, "his budget is his")
+
+        // Chosen by hand (different prices): left alone, and no effort setting, which that model would refuse.
+        let chosen = #"{ "ask": { "model": "claude-haiku-4-5", "inputUSDPerMillionTokens": 0.8, "outputUSDPerMillionTokens": 4 } }"#
+        let kept = try JSONDecoder().decode(Config.self, from: Data(chosen.utf8)).ask
+        XCTAssertEqual(kept.model, "claude-haiku-4-5")
+        XCTAssertEqual(kept.effort, "")
+        XCTAssertEqual(AskConfig().model, "claude-haiku-5-5")
+        XCTAssertTrue(AskConfig.takesEffort("claude-sonnet-5-5"))
+        XCTAssertFalse(AskConfig.takesEffort("claude-haiku-4-5"))
+    }
+
     func testABrokenConfigIsLeftAloneAndDefaultsAreUsed() throws {
         let url = try temporaryDirectory().appendingPathComponent("config.json")
         let broken = Data("{ \"hotkeys\": oops".utf8)

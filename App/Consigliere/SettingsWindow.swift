@@ -338,6 +338,11 @@ private struct AskTab: View {
             Text("From console.anthropic.com. It is kept in this Mac's Keychain, never in a file.")
                 .font(.caption).foregroundStyle(.secondary)
             TextField("Model", text: $state.config.ask.model)
+            TextField("Effort (low, medium, high; empty for models before 4.6)", text: $state.config.ask.effort)
+            Text("Change the two prices below if you change the model.")
+                .font(.caption).foregroundStyle(.secondary)
+            TextField("Price per million tokens read, US dollars", value: $state.config.ask.inputUSDPerMillionTokens, format: .number)
+            TextField("Price per million tokens written, US dollars", value: $state.config.ask.outputUSDPerMillionTokens, format: .number)
             TextField("Monthly budget in US dollars", value: $state.config.ask.monthlyBudgetUSD, format: .number)
             Text(String(format: "Spent this month: $%.4f", AskClient.Spending.thisMonth()))
                 .foregroundStyle(.secondary)
@@ -349,9 +354,25 @@ private struct AskTab: View {
 
 private struct JobsTab: View {
     @ObservedObject var state: SettingsState
+    /// The folders as typed. Kept separately so a comma or space being typed is not tidied away mid-word;
+    /// the cleaned list goes into the config as you type.
+    @State private var foldersText: String = ""
 
     var body: some View {
         Form {
+            TextField("Folders on the list, separated by commas (empty: one plain list)", text: $foldersText)
+                .onAppear { foldersText = state.config.jobs.groups.joined(separator: ", ") }
+                .onChange(of: foldersText) { text in
+                    state.config.jobs.groups = JobsConfig.cleanGroups(text.split(separator: ",").map(String.init))
+                }
+            Text("Type \"work: email the landlord\" to put a job in a folder. Right-click a job to move it.")
+                .font(.caption).foregroundStyle(.secondary)
+            Toggle("Claude picks what opens a new job, and its folder", isOn: $state.config.jobs.smart)
+            Text("Only when the plain rules cannot tell. Sends the job's title, the names of your apps and sites, and the folder names; nothing else. Uses the key and the monthly budget under Ask.")
+                .font(.caption).foregroundStyle(.secondary)
+
+            Divider()
+
             TextField("He comes out from (HH:MM)", text: $state.config.jobs.dayStart)
             TextField("Bedtime (HH:MM; before 04:00 means after midnight)", text: $state.config.jobs.bedtime)
             TextField("Minutes between visits", value: $state.config.jobs.cooldownMinutes, format: .number)
@@ -443,6 +464,7 @@ private struct KeysTab: View {
                 .font(.caption).foregroundStyle(.secondary)
 
             Divider()
+            Toggle("Icon in the menu bar (Settings, Mute, Quit)", isOn: $state.config.menuBarIcon)
             TextField("Brave personal profile folder", text: $state.config.brave.personalProfileDir)
             TextField("Brave work profile folder", text: $state.config.brave.workProfileDir)
             TextField("Language for talking (en-IN, en-US, en-GB)", text: $state.config.speechLocale)

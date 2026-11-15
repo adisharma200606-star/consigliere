@@ -63,6 +63,16 @@ final class JobsTests: XCTestCase {
         let rolled: JobDay
         let rolledLedger: String
         let opens: [OpenFixture]
+        let groups: [String]
+        let groupParses: [GroupParseFixture]
+        let foldersDay: JobDay
+        let sections: [JobSection]
+        let sectionsAt: Int
+    }
+
+    private struct GroupParseFixture: Decodable {
+        let text: String
+        let drafts: [JobDraft]
     }
 
     private func load() throws -> FileFixture {
@@ -75,6 +85,37 @@ final class JobsTests: XCTestCase {
         for p in file.parses {
             XCTAssertEqual(Jobs.parse(p.text, nowWall: file.now, catalog: file.catalog, bindings: p.bindings), p.drafts, "\"\(p.text)\"")
         }
+    }
+
+    func testFoldersAgreeWithTheReference() throws {
+        let file = try load()
+        XCTAssertGreaterThanOrEqual(file.groupParses.count, 6)
+        for p in file.groupParses {
+            XCTAssertEqual(Jobs.parse(p.text, nowWall: file.now, catalog: file.catalog, groups: file.groups), p.drafts, "\"\(p.text)\"")
+        }
+        XCTAssertNil(Jobs.parse("work: email", nowWall: file.now, catalog: file.catalog).first?.group,
+                     "no folders set up: nothing is read as one")
+
+        // The same five jobs the reference builds, in three folders.
+        var day = JobDay(day: "2026-10-11")
+        day.add(Jobs.parse("work: email the landlord by 12, general: call dad, work: standup notes, stretch, old: x",
+                           nowWall: file.now, catalog: file.catalog, groups: file.groups), now: file.now)
+        day.jobs[4].group = "old"
+        day.finish("j3", now: file.now)
+        XCTAssertEqual(day, file.foldersDay)
+        XCTAssertEqual(Jobs.sections(day, groups: file.groups, now: file.sectionsAt), file.sections)
+        XCTAssertEqual(Jobs.sections(day, groups: [], now: file.sectionsAt).map { $0.ids.count }, [5])
+        XCTAssertEqual(Jobs.sections(JobDay(day: "2026-10-11"), groups: file.groups, now: file.now), [])
+
+        // A suggestion fills only what is empty; what he typed wins.
+        day.fillIn("j1", starter: "gmail", group: "General")
+        XCTAssertEqual(day.jobs[0].starter, "gmail")
+        XCTAssertEqual(day.jobs[0].group, "work")
+        day.setGroup("j4", to: nil)
+        XCTAssertNil(day.jobs[3].group)
+        day.setGroup("j2", to: "work")
+        XCTAssertEqual(Jobs.rollover(day, to: "2026-10-12").jobs.first { $0.title == "call dad" }?.group, "work",
+                       "a carried job keeps its folder")
     }
 
     func testDayKeys() throws {

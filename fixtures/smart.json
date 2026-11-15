@@ -1,0 +1,590 @@
+{
+  "rules": "You sort the jobs on one person's to-do list for an app on his Mac. For each job, pick from \"Things to open\" the one thing he would open to do that job, or null when nothing clearly fits (a phone call, a chore away from the computer, a job too vague to tell). Then pick from \"Folders\" the folder the job belongs in, or null when none fits. Write every name exactly as it appears in the lists. Never invent one.",
+  "schema": {
+    "type": "object",
+    "properties": {
+      "jobs": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "opens": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "folder": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": [
+            "id",
+            "opens",
+            "folder"
+          ],
+          "additionalProperties": false
+        }
+      }
+    },
+    "required": [
+      "jobs"
+    ],
+    "additionalProperties": false
+  },
+  "groups": [
+    "work",
+    "general"
+  ],
+  "catalog": [
+    {
+      "name": "youtube",
+      "display": "YouTube",
+      "aliases": [
+        "yt"
+      ],
+      "kind": "site",
+      "target": "https://www.youtube.com",
+      "profile": "personal",
+      "searchTemplate": "https://www.youtube.com/results?search_query={q}"
+    },
+    {
+      "name": "youtube music",
+      "display": "YouTube Music",
+      "aliases": [
+        "ytm"
+      ],
+      "kind": "site",
+      "target": "https://music.youtube.com",
+      "profile": "personal"
+    },
+    {
+      "name": "gmail",
+      "display": "Gmail",
+      "aliases": [
+        "mail"
+      ],
+      "kind": "site",
+      "target": "https://mail.google.com",
+      "profile": "personal"
+    },
+    {
+      "name": "google",
+      "display": "Google",
+      "aliases": [
+        "g"
+      ],
+      "kind": "site",
+      "target": "https://www.google.com",
+      "profile": "personal",
+      "searchTemplate": "https://www.google.com/search?q={q}"
+    },
+    {
+      "name": "github",
+      "display": "GitHub",
+      "aliases": [
+        "gh"
+      ],
+      "kind": "site",
+      "target": "https://github.com",
+      "profile": "personal",
+      "searchTemplate": "https://github.com/search?q={q}"
+    },
+    {
+      "name": "linkedin",
+      "display": "LinkedIn",
+      "aliases": [
+        "li"
+      ],
+      "kind": "site",
+      "target": "https://www.linkedin.com/feed/",
+      "profile": "personal"
+    },
+    {
+      "name": "claude",
+      "display": "Claude",
+      "aliases": [],
+      "kind": "site",
+      "target": "https://claude.ai",
+      "profile": "personal"
+    },
+    {
+      "name": "whatsapp",
+      "display": "WhatsApp",
+      "aliases": [
+        "wa"
+      ],
+      "kind": "app",
+      "target": "net.whatsapp.WhatsApp"
+    },
+    {
+      "name": "spotify",
+      "display": "Spotify",
+      "aliases": [],
+      "kind": "app",
+      "target": "com.spotify.client"
+    },
+    {
+      "name": "steam",
+      "display": "Steam",
+      "aliases": [],
+      "kind": "app",
+      "target": "com.valvesoftware.steam"
+    },
+    {
+      "name": "vs code",
+      "display": "VS Code",
+      "aliases": [
+        "code",
+        "visual studio code"
+      ],
+      "kind": "app",
+      "target": "com.microsoft.VSCode"
+    },
+    {
+      "name": "downloads",
+      "display": "Downloads",
+      "aliases": [
+        "dl"
+      ],
+      "kind": "path",
+      "target": "~/Downloads"
+    },
+    {
+      "name": "desktop",
+      "display": "Desktop",
+      "aliases": [],
+      "kind": "path",
+      "target": "~/Desktop"
+    },
+    {
+      "name": "tuner",
+      "display": "Tuner",
+      "aliases": [
+        "tune",
+        "guitar tuner",
+        "ukulele tuner",
+        "uke"
+      ],
+      "kind": "tool",
+      "target": "tuner"
+    },
+    {
+      "name": "timer",
+      "display": "Timer",
+      "aliases": [
+        "countdown"
+      ],
+      "kind": "tool",
+      "target": "timer",
+      "takesWords": true
+    },
+    {
+      "name": "note",
+      "display": "New note",
+      "aliases": [
+        "notes",
+        "new note"
+      ],
+      "kind": "tool",
+      "target": "note",
+      "takesWords": true
+    },
+    {
+      "name": "reminder",
+      "display": "Reminder",
+      "aliases": [
+        "remind",
+        "remind me",
+        "reminders",
+        "todo",
+        "task"
+      ],
+      "kind": "tool",
+      "target": "reminder",
+      "takesWords": true
+    },
+    {
+      "name": "settings",
+      "display": "Settings",
+      "aliases": [
+        "preferences",
+        "consigliere"
+      ],
+      "kind": "tool",
+      "target": "settings"
+    },
+    {
+      "name": "bored",
+      "display": "Something I saved",
+      "aliases": [
+        "im bored",
+        "i am bored",
+        "surprise me"
+      ],
+      "kind": "tool",
+      "target": "pull"
+    },
+    {
+      "name": "flip",
+      "display": "Flip the screen",
+      "aliases": [
+        "one eighty",
+        "180",
+        "rotate",
+        "flip screen",
+        "upside down"
+      ],
+      "kind": "tool",
+      "target": "flip"
+    },
+    {
+      "name": "help",
+      "display": "How it works",
+      "aliases": [
+        "tutorial",
+        "guide"
+      ],
+      "kind": "tool",
+      "target": "help"
+    },
+    {
+      "name": "books",
+      "display": "Books",
+      "aliases": [
+        "read",
+        "reading",
+        "apple books"
+      ],
+      "kind": "app",
+      "target": "com.apple.iBooksX"
+    },
+    {
+      "name": "duolingo",
+      "display": "Duolingo",
+      "aliases": [
+        "duo"
+      ],
+      "kind": "site",
+      "target": "https://www.duolingo.com/learn",
+      "profile": "personal"
+    },
+    {
+      "name": "jobs",
+      "display": "Today's jobs",
+      "aliases": [
+        "job",
+        "today",
+        "todo list",
+        "my jobs"
+      ],
+      "kind": "tool",
+      "target": "jobs",
+      "takesWords": true
+    },
+    {
+      "name": "done",
+      "display": "Job done",
+      "aliases": [
+        "finished"
+      ],
+      "kind": "tool",
+      "target": "done",
+      "takesWords": true
+    },
+    {
+      "name": "diary",
+      "display": "Diary",
+      "aliases": [
+        "dear diary",
+        "journal"
+      ],
+      "kind": "tool",
+      "target": "diary",
+      "takesWords": true
+    },
+    {
+      "name": "quiet",
+      "display": "Quiet for today",
+      "aliases": [
+        "hush",
+        "be quiet",
+        "leave me alone"
+      ],
+      "kind": "tool",
+      "target": "quiet"
+    },
+    {
+      "name": "music",
+      "display": "Play music",
+      "aliases": [],
+      "kind": "tool",
+      "target": "music",
+      "takesWords": true
+    },
+    {
+      "name": "pause",
+      "display": "Pause or resume",
+      "aliases": [
+        "resume",
+        "pause music"
+      ],
+      "kind": "tool",
+      "target": "playpause"
+    },
+    {
+      "name": "next song",
+      "display": "Next song",
+      "aliases": [
+        "next",
+        "skip",
+        "skip song"
+      ],
+      "kind": "tool",
+      "target": "next"
+    },
+    {
+      "name": "louder",
+      "display": "Louder",
+      "aliases": [
+        "volume up",
+        "turn it up"
+      ],
+      "kind": "tool",
+      "target": "louder"
+    },
+    {
+      "name": "quieter",
+      "display": "Quieter",
+      "aliases": [
+        "volume down",
+        "turn it down",
+        "softer"
+      ],
+      "kind": "tool",
+      "target": "quieter"
+    },
+    {
+      "name": "volume",
+      "display": "Volume",
+      "aliases": [],
+      "kind": "tool",
+      "target": "volume",
+      "takesWords": true
+    },
+    {
+      "name": "pet",
+      "display": "Your dragon",
+      "aliases": [
+        "dragonite",
+        "come here",
+        "here boy",
+        "buddy"
+      ],
+      "kind": "tool",
+      "target": "pet"
+    },
+    {
+      "name": "go home",
+      "display": "Send him home",
+      "aliases": [
+        "go back",
+        "go away",
+        "back off",
+        "scram",
+        "bye"
+      ],
+      "kind": "tool",
+      "target": "home"
+    },
+    {
+      "name": "gmail",
+      "aliases": [],
+      "kind": "site",
+      "target": "https://mail.google.com",
+      "profile": "personal"
+    },
+    {
+      "name": "GMAIL",
+      "aliases": [],
+      "kind": "site",
+      "target": "https://mail.google.com",
+      "profile": "work"
+    }
+  ],
+  "day": {
+    "day": "2026-11-15",
+    "jobs": [
+      {
+        "id": "j1",
+        "title": "read",
+        "starter": "books",
+        "group": "work",
+        "minutes": 30,
+        "dueWall": null,
+        "status": "open",
+        "addedAt": 1794736800000,
+        "startedAt": null,
+        "doneAt": null,
+        "snoozedUntil": null,
+        "lastShownAt": null,
+        "ignored": 0,
+        "owedDays": 0
+      },
+      {
+        "id": "j2",
+        "title": "email the landlord",
+        "starter": null,
+        "group": null,
+        "minutes": null,
+        "dueWall": null,
+        "status": "open",
+        "addedAt": 1794736800000,
+        "startedAt": null,
+        "doneAt": null,
+        "snoozedUntil": null,
+        "lastShownAt": null,
+        "ignored": 0,
+        "owedDays": 0
+      },
+      {
+        "id": "j3",
+        "title": "call dad",
+        "starter": null,
+        "group": null,
+        "minutes": null,
+        "dueWall": null,
+        "status": "open",
+        "addedAt": 1794736800000,
+        "startedAt": null,
+        "doneAt": null,
+        "snoozedUntil": null,
+        "lastShownAt": null,
+        "ignored": 0,
+        "owedDays": 0
+      },
+      {
+        "id": "j4",
+        "title": "practice guitar",
+        "starter": null,
+        "group": "general",
+        "minutes": null,
+        "dueWall": null,
+        "status": "open",
+        "addedAt": 1794736800000,
+        "startedAt": null,
+        "doneAt": null,
+        "snoozedUntil": null,
+        "lastShownAt": null,
+        "ignored": 0,
+        "owedDays": 0
+      }
+    ],
+    "nextID": 5,
+    "lastAppearance": null,
+    "sleepSnoozedUntil": null,
+    "sleepIgnored": 0,
+    "closed": false,
+    "quietUntil": null,
+    "diaryNoteID": null,
+    "listOpened": false
+  },
+  "askedIDs": [
+    "j2",
+    "j3",
+    "j4"
+  ],
+  "noGroupsAskedIDs": [
+    "j2",
+    "j3",
+    "j4"
+  ],
+  "candidates": [
+    "youtube",
+    "youtube music",
+    "gmail",
+    "google",
+    "github",
+    "linkedin",
+    "claude",
+    "whatsapp",
+    "spotify",
+    "steam",
+    "vs code",
+    "downloads",
+    "desktop",
+    "books",
+    "duolingo"
+  ],
+  "prompt": {
+    "system": "You sort the jobs on one person's to-do list for an app on his Mac. For each job, pick from \"Things to open\" the one thing he would open to do that job, or null when nothing clearly fits (a phone call, a chore away from the computer, a job too vague to tell). Then pick from \"Folders\" the folder the job belongs in, or null when none fits. Write every name exactly as it appears in the lists. Never invent one.",
+    "user": "Things to open:\nyoutube, youtube music, gmail, google, github, linkedin, claude, whatsapp, spotify, steam, vs code, downloads, desktop, books, duolingo\n\nFolders:\nwork, general\n\nJobs:\nj2: email the landlord\nj3: call dad\nj4: practice guitar"
+  },
+  "noGroupsPrompt": {
+    "system": "You sort the jobs on one person's to-do list for an app on his Mac. For each job, pick from \"Things to open\" the one thing he would open to do that job, or null when nothing clearly fits (a phone call, a chore away from the computer, a job too vague to tell). Then pick from \"Folders\" the folder the job belongs in, or null when none fits. Write every name exactly as it appears in the lists. Never invent one.",
+    "user": "Things to open:\nyoutube, youtube music, gmail, google, github, linkedin, claude, whatsapp, spotify, steam, vs code, downloads, desktop, books, duolingo\n\nFolders:\n(none, so folder is always null)\n\nJobs:\nj2: email the landlord\nj3: call dad\nj4: practice guitar"
+  },
+  "replies": [
+    {
+      "text": "{\"jobs\":[{\"id\":\"j2\",\"opens\":\"Gmail\",\"folder\":\"work\"},{\"id\":\"j3\",\"opens\":null,\"folder\":\"general\"}]}",
+      "suggestions": [
+        {
+          "id": "j2",
+          "starter": "gmail",
+          "group": "work"
+        },
+        {
+          "id": "j3",
+          "starter": null,
+          "group": "general"
+        }
+      ]
+    },
+    {
+      "text": "{\"jobs\":[{\"id\":\"j2\",\"opens\":\"Outlook\",\"folder\":\"errands\"},{\"id\":\"j1\",\"opens\":\"youtube\",\"folder\":\"work\"},{\"id\":\"j3\",\"opens\":\"spotify\",\"folder\":null},{\"id\":\"j3\",\"opens\":\"gmail\",\"folder\":\"work\"}]}",
+      "suggestions": [
+        {
+          "id": "j3",
+          "starter": "spotify",
+          "group": null
+        }
+      ]
+    },
+    {
+      "text": "{\"jobs\":[{\"id\":\"j4\",\"opens\":\"timer\",\"folder\":\"general\"}]}",
+      "suggestions": [
+        {
+          "id": "j4",
+          "starter": null,
+          "group": "general"
+        }
+      ]
+    },
+    {
+      "text": "not json at all",
+      "suggestions": []
+    },
+    {
+      "text": "{\"answer\":\"j2 is gmail\"}",
+      "suggestions": []
+    },
+    {
+      "text": "{\"jobs\":[{\"id\":5,\"opens\":\"gmail\"}]}",
+      "suggestions": []
+    }
+  ]
+}

@@ -68,17 +68,25 @@ public enum Ask {
         let content: String
     }
 
+    private struct OutputConfig: Encodable {
+        let effort: String
+    }
+
     private struct Body: Encodable {
         let model: String
         let max_tokens: Int
         let system: String
         let messages: [Message]
+        /// Left out when nil, for older models that refuse an effort setting.
+        let output_config: OutputConfig?
     }
 
     /// The JSON body for one question. Headers, the address and the key are the app's business.
-    public static func requestBody(prompt: Prompt, model: String, maxTokens: Int) throws -> Data {
+    /// `effort` "low" keeps the model's thinking (paid for like writing) short; empty leaves it out.
+    public static func requestBody(prompt: Prompt, model: String, maxTokens: Int, effort: String = "") throws -> Data {
         let body = Body(model: model, max_tokens: maxTokens, system: prompt.system,
-                        messages: [Message(role: "user", content: prompt.user)])
+                        messages: [Message(role: "user", content: prompt.user)],
+                        output_config: effort.isEmpty ? nil : OutputConfig(effort: effort))
         return try JSONEncoder().encode(body)
     }
 }

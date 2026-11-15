@@ -277,18 +277,24 @@ public struct AskConfig: Codable, Equatable {
     /// budget. Change these if you change `model`.
     public var inputUSDPerMillionTokens: Double
     public var outputUSDPerMillionTokens: Double
+    /// How hard the model thinks before answering: "low", "medium" or "high". Thinking is paid for like
+    /// writing, so low keeps short answers cheap. Empty leaves it out, for older models that do not take it.
+    public var effort: String
 
-    public init(model: String = "claude-haiku-4-5", maxTokens: Int = 300, monthlyBudgetUSD: Double = 2,
-                inputUSDPerMillionTokens: Double = 1, outputUSDPerMillionTokens: Double = 5) {
+    /// Claude Haiku 5.5: $0.10 per million tokens read and $0.50 per million written (November 2026).
+    /// `maxTokens` leaves room for a short thought before the three sentences.
+    public init(model: String = "claude-haiku-5-5", maxTokens: Int = 1024, monthlyBudgetUSD: Double = 2,
+                inputUSDPerMillionTokens: Double = 0.10, outputUSDPerMillionTokens: Double = 0.50, effort: String = "low") {
         self.model = model
         self.maxTokens = maxTokens
         self.monthlyBudgetUSD = monthlyBudgetUSD
         self.inputUSDPerMillionTokens = inputUSDPerMillionTokens
         self.outputUSDPerMillionTokens = outputUSDPerMillionTokens
+        self.effort = effort
     }
 
     private enum CodingKeys: String, CodingKey {
-        case model, maxTokens, monthlyBudgetUSD, inputUSDPerMillionTokens, outputUSDPerMillionTokens
+        case model, maxTokens, monthlyBudgetUSD, inputUSDPerMillionTokens, outputUSDPerMillionTokens, effort
     }
 
     /// What one reply cost, from the token counts the API reports.
@@ -304,6 +310,24 @@ public struct AskConfig: Codable, Equatable {
         monthlyBudgetUSD = try c.decodeIfPresent(Double.self, forKey: .monthlyBudgetUSD) ?? d.monthlyBudgetUSD
         inputUSDPerMillionTokens = try c.decodeIfPresent(Double.self, forKey: .inputUSDPerMillionTokens) ?? d.inputUSDPerMillionTokens
         outputUSDPerMillionTokens = try c.decodeIfPresent(Double.self, forKey: .outputUSDPerMillionTokens) ?? d.outputUSDPerMillionTokens
+        let savedEffort = try c.decodeIfPresent(String.self, forKey: .effort)
+
+        // A config saved with the old defaults (Haiku 4.5 at $1 and $5, 300 tokens) was never a choice, just what
+        // the app wrote. Move it to the new defaults: ten times cheaper and newer. A model chosen by hand stays.
+        if model == "claude-haiku-4-5" && inputUSDPerMillionTokens == 1 && outputUSDPerMillionTokens == 5 && savedEffort == nil {
+            model = d.model
+            inputUSDPerMillionTokens = d.inputUSDPerMillionTokens
+            outputUSDPerMillionTokens = d.outputUSDPerMillionTokens
+            if maxTokens == 300 { maxTokens = d.maxTokens }
+        }
+        // Models before the 4.6 family refuse an effort setting, so a hand-chosen older one gets none.
+        effort = savedEffort ?? (AskConfig.takesEffort(model) ? d.effort : "")
+    }
+
+    /// Haiku 4.5, Sonnet 4.5 and older answer an effort setting with an error.
+    public static func takesEffort(_ model: String) -> Bool {
+        let older = ["claude-haiku-4", "claude-sonnet-4-5", "claude-opus-4-1", "claude-opus-4-0", "claude-3", "claude-sonnet-4-0", "claude-opus-4-5"]
+        return !older.contains { model.hasPrefix($0) }
     }
 }
 
@@ -325,9 +349,16 @@ public struct JobsConfig: Codable, Equatable {
     public var openListAt: String
     /// Words he has learned start a particular thing: "read" to "books". Filled in when you pick one.
     public var bindings: [String: String]
+    /// The folders on the list, in order. Type "work: email the landlord" to put a job in one, or let Claude
+    /// sort it. Empty: no folders, one plain list.
+    public var groups: [String]
+    /// Ask Claude what opens a job and which folder it goes in, when the plain rules cannot tell. Needs the
+    /// Claude key (settings, Ask); uses the same monthly budget as Ask.
+    public var smart: Bool
 
     public init(dayStart: String = "09:00", bedtime: String = "00:30", cooldownMinutes: Int = 45, laterMinutes: Int = 30,
-                maxLevel: Int = 3, roamMinutes: Double = 3, openListAt: String = "10:00", bindings: [String: String] = [:]) {
+                maxLevel: Int = 3, roamMinutes: Double = 3, openListAt: String = "10:00", bindings: [String: String] = [:],
+                groups: [String] = ["work", "general"], smart: Bool = true) {
         self.dayStart = dayStart
         self.bedtime = bedtime
         self.cooldownMinutes = cooldownMinutes
@@ -336,9 +367,11 @@ public struct JobsConfig: Codable, Equatable {
         self.roamMinutes = roamMinutes
         self.openListAt = openListAt
         self.bindings = bindings
+        self.groups = groups
+        self.smart = smart
     }
 
-    private enum CodingKeys: String, CodingKey { case dayStart, bedtime, cooldownMinutes, laterMinutes, maxLevel, roamMinutes, openListAt, bindings }
+    private enum CodingKeys: String, CodingKey { case dayStart, bedtime, cooldownMinutes, laterMinutes, maxLevel, roamMinutes, openListAt, bindings, groups, smart }
 
     public init(from decoder: Decoder) throws {
         let c = try decoder.container(keyedBy: CodingKeys.self)
@@ -351,6 +384,22 @@ public struct JobsConfig: Codable, Equatable {
         roamMinutes = try c.decodeIfPresent(Double.self, forKey: .roamMinutes) ?? d.roamMinutes
         openListAt = try c.decodeIfPresent(String.self, forKey: .openListAt) ?? d.openListAt
         bindings = try c.decodeIfPresent([String: String].self, forKey: .bindings) ?? d.bindings
+        groups = JobsConfig.cleanGroups(try c.decodeIfPresent([String].self, forKey: .groups) ?? d.groups)
+        smart = try c.decodeIfPresent(Bool.self, forKey: .smart) ?? d.smart
+    }
+
+    /// Folder names trimmed, blanks dropped, each name once (ignoring case). "Work, , work , gym" is work, gym.
+    public static func cleanGroups(_ names: [String]) -> [String] {
+        var seen = Set<String>()
+        var out = [String]()
+        for name in names {
+            let trimmed = name.trimmingCharacters(in: .whitespacesAndNewlines)
+            let key = TextTools.normalize(trimmed)
+            if key.isEmpty || seen.contains(key) { continue }
+            seen.insert(key)
+            out.append(trimmed)
+        }
+        return out
     }
 
     /// The numbers the brain works with. A time it cannot read falls back to the default.
@@ -454,13 +503,16 @@ public struct Config: Codable, Equatable {
     public var character: CharacterConfig
     public var music: MusicConfig
     public var textReplacement: TextReplacementConfig
+    /// A small icon in the menu bar with Settings, Mute and Quit: the menu that is always there to click,
+    /// unlike a right-click on the notch, which the notch's own window can swallow.
+    public var menuBarIcon: Bool
     public var catalog: [CatalogEntry]
 
     public init(hotkeys: Hotkeys = Hotkeys(), brave: BraveConfig = BraveConfig(), speak: Bool = true, speechLocale: String = "en-IN",
                 theme: Theme = Theme(), tuner: TunerConfig = TunerConfig(), ask: AskConfig = AskConfig(),
                 feedback: FeedbackConfig = FeedbackConfig(), includeInstalledApps: Bool = true,
                 jobs: JobsConfig = JobsConfig(), character: CharacterConfig = CharacterConfig(), music: MusicConfig = MusicConfig(),
-                textReplacement: TextReplacementConfig = TextReplacementConfig(),
+                textReplacement: TextReplacementConfig = TextReplacementConfig(), menuBarIcon: Bool = true,
                 catalog: [CatalogEntry] = DefaultCatalog.entries) {
         self.hotkeys = hotkeys
         self.brave = brave
@@ -475,10 +527,11 @@ public struct Config: Codable, Equatable {
         self.character = character
         self.music = music
         self.textReplacement = textReplacement
+        self.menuBarIcon = menuBarIcon
         self.catalog = catalog
     }
 
-    private enum CodingKeys: String, CodingKey { case hotkeys, brave, speak, speechLocale, theme, tuner, ask, feedback, includeInstalledApps, jobs, character, music, textReplacement, catalog }
+    private enum CodingKeys: String, CodingKey { case hotkeys, brave, speak, speechLocale, theme, tuner, ask, feedback, includeInstalledApps, jobs, character, music, textReplacement, menuBarIcon, catalog }
 
     public init(from decoder: Decoder) throws {
         let c = try decoder.container(keyedBy: CodingKeys.self)
@@ -495,6 +548,7 @@ public struct Config: Codable, Equatable {
         character = try c.decodeIfPresent(CharacterConfig.self, forKey: .character) ?? CharacterConfig()
         music = try c.decodeIfPresent(MusicConfig.self, forKey: .music) ?? MusicConfig()
         textReplacement = try c.decodeIfPresent(TextReplacementConfig.self, forKey: .textReplacement) ?? TextReplacementConfig()
+        menuBarIcon = try c.decodeIfPresent(Bool.self, forKey: .menuBarIcon) ?? true
         catalog = try c.decodeIfPresent([CatalogEntry].self, forKey: .catalog) ?? DefaultCatalog.entries
     }
 }

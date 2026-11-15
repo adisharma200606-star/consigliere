@@ -379,19 +379,22 @@
           "title": "read",
           "minutes": 30,
           "dueWall": null,
-          "starter": "books"
+          "starter": "books",
+          "group": null
         },
         {
           "title": "swift course",
           "minutes": null,
           "dueWall": null,
-          "starter": "swift course"
+          "starter": "swift course",
+          "group": null
         },
         {
           "title": "duolingo",
           "minutes": null,
           "dueWall": 1791756000000,
-          "starter": "duolingo"
+          "starter": "duolingo",
+          "group": null
         }
       ]
     },
@@ -403,7 +406,8 @@
           "title": "call dad",
           "minutes": null,
           "dueWall": 1791741600000,
-          "starter": null
+          "starter": null,
+          "group": null
         }
       ]
     },
@@ -415,7 +419,8 @@
           "title": "finish the swift course",
           "minutes": 60,
           "dueWall": null,
-          "starter": "swift course"
+          "starter": "swift course",
+          "group": null
         }
       ]
     },
@@ -427,7 +432,8 @@
           "title": "read",
           "minutes": null,
           "dueWall": 1791714000000,
-          "starter": "books"
+          "starter": "books",
+          "group": null
         }
       ]
     },
@@ -439,7 +445,8 @@
           "title": "read",
           "minutes": 90,
           "dueWall": null,
-          "starter": "books"
+          "starter": "books",
+          "group": null
         }
       ]
     },
@@ -451,7 +458,8 @@
           "title": "practice guitar",
           "minutes": 30,
           "dueWall": null,
-          "starter": null
+          "starter": null,
+          "group": null
         }
       ]
     },
@@ -463,7 +471,8 @@
           "title": "call mom and dad",
           "minutes": null,
           "dueWall": null,
-          "starter": null
+          "starter": null,
+          "group": null
         }
       ]
     },
@@ -477,7 +486,8 @@
           "title": "gym",
           "minutes": 45,
           "dueWall": null,
-          "starter": "youtube"
+          "starter": "youtube",
+          "group": null
         }
       ]
     },
@@ -489,7 +499,8 @@
           "title": "timer stuff",
           "minutes": null,
           "dueWall": null,
-          "starter": null
+          "starter": null,
+          "group": null
         }
       ]
     },
@@ -501,13 +512,15 @@
           "title": "read a chapter",
           "minutes": null,
           "dueWall": null,
-          "starter": "books"
+          "starter": "books",
+          "group": null
         },
         {
           "title": "duolingo",
           "minutes": null,
           "dueWall": null,
-          "starter": "duolingo"
+          "starter": "duolingo",
+          "group": null
         }
       ]
     },
@@ -781,6 +794,7 @@
         "id": "j1",
         "title": "read",
         "starter": "books",
+        "group": null,
         "minutes": 30,
         "dueWall": null,
         "status": "done",
@@ -796,6 +810,7 @@
         "id": "j2",
         "title": "swift course",
         "starter": "swift course",
+        "group": null,
         "minutes": null,
         "dueWall": null,
         "status": "open",
@@ -811,6 +826,7 @@
         "id": "j3",
         "title": "duolingo",
         "starter": "duolingo",
+        "group": null,
         "minutes": null,
         "dueWall": 1791756000000,
         "status": "skipped",
@@ -845,6 +861,7 @@
         "id": "j1",
         "title": "swift course",
         "starter": "swift course",
+        "group": null,
         "minutes": null,
         "dueWall": null,
         "status": "open",
@@ -867,6 +884,206 @@
     "listOpened": false
   },
   "rolledLedger": "Jobs, 2026-10-13\nStill owed: swift course (3 days now)",
+  "groups": [
+    "work",
+    "General",
+    "side project"
+  ],
+  "groupParses": [
+    {
+      "text": "work: email the landlord",
+      "drafts": [
+        {
+          "title": "email the landlord",
+          "minutes": null,
+          "dueWall": null,
+          "starter": null,
+          "group": "work"
+        }
+      ]
+    },
+    {
+      "text": "WORK:read 30 min, general: call dad",
+      "drafts": [
+        {
+          "title": "read",
+          "minutes": 30,
+          "dueWall": null,
+          "starter": "books",
+          "group": "work"
+        },
+        {
+          "title": "call dad",
+          "minutes": null,
+          "dueWall": null,
+          "starter": null,
+          "group": "General"
+        }
+      ]
+    },
+    {
+      "text": "side project: duolingo by 10pm",
+      "drafts": [
+        {
+          "title": "duolingo",
+          "minutes": null,
+          "dueWall": 1791756000000,
+          "starter": "duolingo",
+          "group": "side project"
+        }
+      ]
+    },
+    {
+      "text": "call dad at 6:30",
+      "drafts": [
+        {
+          "title": "call dad",
+          "minutes": null,
+          "dueWall": 1791786600000,
+          "starter": null,
+          "group": null
+        }
+      ]
+    },
+    {
+      "text": "gym: legs",
+      "drafts": [
+        {
+          "title": "gym: legs",
+          "minutes": null,
+          "dueWall": null,
+          "starter": null,
+          "group": null
+        }
+      ]
+    },
+    {
+      "text": "work:",
+      "drafts": []
+    }
+  ],
+  "foldersDay": {
+    "day": "2026-10-11",
+    "jobs": [
+      {
+        "id": "j1",
+        "title": "email the landlord",
+        "starter": null,
+        "group": "work",
+        "minutes": null,
+        "dueWall": 1791720000000,
+        "status": "open",
+        "addedAt": 1791712800000,
+        "startedAt": null,
+        "doneAt": null,
+        "snoozedUntil": null,
+        "lastShownAt": null,
+        "ignored": 0,
+        "owedDays": 0
+      },
+      {
+        "id": "j2",
+        "title": "call dad",
+        "starter": null,
+        "group": "General",
+        "minutes": null,
+        "dueWall": null,
+        "status": "open",
+        "addedAt": 1791712800000,
+        "startedAt": null,
+        "doneAt": null,
+        "snoozedUntil": null,
+        "lastShownAt": null,
+        "ignored": 0,
+        "owedDays": 0
+      },
+      {
+        "id": "j3",
+        "title": "standup notes",
+        "starter": null,
+        "group": "work",
+        "minutes": null,
+        "dueWall": null,
+        "status": "done",
+        "addedAt": 1791712800000,
+        "startedAt": null,
+        "doneAt": 1791712800000,
+        "snoozedUntil": null,
+        "lastShownAt": null,
+        "ignored": 0,
+        "owedDays": 0
+      },
+      {
+        "id": "j4",
+        "title": "stretch",
+        "starter": null,
+        "group": null,
+        "minutes": null,
+        "dueWall": null,
+        "status": "open",
+        "addedAt": 1791712800000,
+        "startedAt": null,
+        "doneAt": null,
+        "snoozedUntil": null,
+        "lastShownAt": null,
+        "ignored": 0,
+        "owedDays": 0
+      },
+      {
+        "id": "j5",
+        "title": "old: x",
+        "starter": null,
+        "group": "old",
+        "minutes": null,
+        "dueWall": null,
+        "status": "open",
+        "addedAt": 1791712800000,
+        "startedAt": null,
+        "doneAt": null,
+        "snoozedUntil": null,
+        "lastShownAt": null,
+        "ignored": 0,
+        "owedDays": 0
+      }
+    ],
+    "nextID": 6,
+    "lastAppearance": null,
+    "sleepSnoozedUntil": null,
+    "sleepIgnored": 0,
+    "closed": false,
+    "quietUntil": null,
+    "diaryNoteID": null,
+    "listOpened": false
+  },
+  "sections": [
+    {
+      "group": "work",
+      "ids": [
+        "j1",
+        "j3"
+      ],
+      "left": 1,
+      "due": 1
+    },
+    {
+      "group": "General",
+      "ids": [
+        "j2"
+      ],
+      "left": 1,
+      "due": 0
+    },
+    {
+      "group": null,
+      "ids": [
+        "j4",
+        "j5"
+      ],
+      "left": 2,
+      "due": 0
+    }
+  ],
+  "sectionsAt": 1791723600000,
   "opens": [
     {
       "wall": 1791712740000,

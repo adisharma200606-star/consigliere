@@ -25,6 +25,22 @@ final class NotchModel: ObservableObject {
         let done: Bool
         /// It has a starter, so "start" opens something.
         let canStart: Bool
+        /// The folder it is in, for "Move to" in its menu.
+        let group: String?
+    }
+
+    /// One folder on the checklist, with its jobs. `title` nil: jobs in no folder, or the whole list when no
+    /// folders are set up; that section has no header and cannot be folded.
+    struct JobFolder: Identifiable, Equatable {
+        /// The folder's name in lower case, or "" for no folder. Used to remember which ones are folded.
+        let id: String
+        let title: String?
+        /// "2 left · 1 due", or "all done".
+        let summary: String
+        /// Something in it is due now: the header lights up, so a folded folder still shows it.
+        let hasDue: Bool
+        let collapsed: Bool
+        let rows: [JobRow]
     }
 
     /// A tick that just happened, so that row's pixel explosion plays once.
@@ -107,7 +123,11 @@ final class NotchModel: ObservableObject {
     @Published var inputHint: String? = nil
 
     // jobs
-    @Published var jobRows: [JobRow] = []
+    @Published var jobFolders: [JobFolder] = []
+    /// The folder names from the settings, for "Move to".
+    @Published var jobGroups: [String] = []
+    /// The job just typed in, so the list can scroll to it.
+    @Published var newestJobID: String?
     @Published var jobDraft = ""
     @Published var jobsDate = ""
     @Published var jobsCount = ""
@@ -139,8 +159,14 @@ final class NotchModel: ObservableObject {
     var onJobToggle: (String) -> Void = { _ in }
     var onJobStart: (String) -> Void = { _ in }
     var onJobDelete: (String) -> Void = { _ in }
+    /// A folder header was clicked: fold it, or unfold it.
+    var onFolderToggle: (String) -> Void = { _ in }
+    /// "Move to" in a job's menu; nil takes it out of every folder.
+    var onJobMove: (String, String?) -> Void = { _, _ in }
     var onJobDraftChange: () -> Void = {}
     var onCharacterTap: () -> Void = {}
+    /// The gear in the open notch: the settings window.
+    var onSettings: () -> Void = {}
 
     init(theme: NotchTheme) {
         self.theme = theme

@@ -267,7 +267,7 @@ Type `timer` and how long. The notch closes, and the time left shows beside it. 
 
 - **Click the time** beside the notch, or type `timer` on its own. The timer screen opens: the time left in big numbers, a bar draining in the glow colours, and three buttons: **Stop**, **+1 min**, **+5 min**.
 - `timer stop`, `stop timer`, `cancel the timer`: stops it straight away.
-- Right-click the notch → **Cancel the timer** also works.
+- The menu bar gear (or right-click the notch) → **Cancel the timer** also works.
 - Adding time to a timer that has just finished starts it again from now.
 
 Shortest is one second, longest is 24 hours. There is one timer at a time. If he cannot read what you typed ("timer soon"), he says so and starts nothing.
@@ -372,13 +372,17 @@ Before you press Enter, the row under the box says **Ask: …**, so you always k
 
 Looking things up live is possible later (Claude's API has a web search tool). It costs more per question and takes several seconds, so it is not in the first version.
 
-**Cost and limits.** Each question is a fraction of a cent on the small fast model. Settings, under `ask` in the config:
+**Cost and limits.** The model is Claude Haiku 5.5: $0.10 per million tokens read and $0.50 per million written (November 2026). A question and its three-sentence answer is roughly 200 tokens in and 300 out, so about $0.0002. A thousand questions cost about 20 cents. Settings, under `ask` in the config (or settings → *Ask*):
 
-- `model` — which Claude model answers.
-- `maxTokens` — the longest reply allowed.
-- `monthlyBudgetUSD` — a ceiling per month, default 2. When it is reached he says so and stops asking until next month.
+- `model` — which Claude model answers. Configs that still held the old default (Haiku 4.5, ten times dearer) move to Haiku 5.5 by themselves.
+- `effort` — how hard it thinks first, default `low`. Thinking is paid for like writing, so low keeps short answers cheap.
+- `maxTokens` — the longest reply allowed, thinking included.
+- `inputUSDPerMillionTokens`, `outputUSDPerMillionTokens` — the prices, only used to keep count. Change them if you change the model.
+- `monthlyBudgetUSD` — a ceiling per month, default 2, shared with smart jobs (section 20). When it is reached he says so and stops asking until next month. Settings → *Ask* shows what this month has cost so far.
 
-The API key is stored in the Mac's Keychain, never in the config file. Questions are sent to Anthropic and nowhere else. Nothing is ever sent unless you press Enter on an **Ask** row.
+The API key is stored in the Mac's Keychain, never in the config file. Questions are sent to Anthropic and nowhere else. A question is only sent when you press Enter on an **Ask** row. The one other thing ever sent is a new job's title for smart jobs (section 20), which you can turn off.
+
+**Connecting your key.** Make a key at console.anthropic.com → *API keys* (credits you bought there pay for it). Click the gear (or type `settings`), open *Ask*, paste it into *Claude API key*, and close the window. It goes into the Keychain. Ask `capital of italy` to check it works.
 
 **In the phone prototype** the same feature runs through your Claude account instead of an API key, so the first question asks your permission, and it may be a little slower than the Mac will be.
 
@@ -410,7 +414,7 @@ The text line **always** shows. Whether it is also *spoken* is a dial:
 
 - `theme.voice.frequency` — 0 is never, 1 is every time. Default 0.6. The variety and this dial are what keep him funny after the hundredth time.
 - `speak` — the master switch.
-- **Mute** — right-click the notch. For class and the office.
+- **Mute** — the gear icon in the menu bar, or right-click the notch. For class and the office.
 
 ---
 
@@ -443,7 +447,7 @@ Settings, under `feedback` in the config: `sounds` (on or off), `volume` (0 to 1
 
 **Status:** brain tested · settings window in use on Adi's Mac
 
-Everything he can open is an **entry**. You add entries in the settings window, so you never have to touch a file. Open it by typing `settings` in the notch, or by right-clicking the notch.
+Everything he can open is an **entry**. You add entries in the settings window, so you never have to touch a file. Open it with one click on the **gear** (top right of the open notch, or the gear icon in the menu bar), with **⌘,** while the notch is open, or by typing `settings`.
 
 An entry has:
 
@@ -529,7 +533,7 @@ Change them by typing `settings` in the notch → **Hotkeys and files**. They ta
 
 Inside the open notch: **Enter** runs the highlighted row, **↑ ↓** move the highlight, **Escape** closes, and so does a click anywhere else.
 
-**Right-click the notch** for a small menu: Settings, Mute him, Cancel the timer (when one is running), Quit.
+**The menu: Settings, Mute him, Cancel the timer (when one is running), Quit.** Click the **gear icon in the menu bar** (always works), or right-click or control-click the notch. Right-clicking the notch can miss while his head shows beside it, because the notch's own window catches the click first; the menu bar icon has no such problem. Hide the icon in settings → *Hotkeys and files* (*Icon in the menu bar*), or `menuBarIcon: false` in the config.
 
 **The tutorial.** Three slides that cover everything: they show once the first time Consigliere starts, and after that whenever you type `help`, or press the **?** at the bottom of the settings window. The hotkeys on the slides are whatever yours are set to.
 
@@ -555,7 +559,7 @@ Inside the open notch: **Enter** runs the highlighted row, **↑ ↓** move the 
     "voice":  { "voiceName": "", "rate": 0.95, "pitch": 0.9, "frequency": 0.6 }
   },
   "tuner": { "a4": 440, "toleranceCents": 5, "lastTuningID": "guitar-standard", "customTunings": [] },
-  "ask":   { "model": "claude-haiku-4-5", "maxTokens": 300, "monthlyBudgetUSD": 2 },
+  "ask":   { "model": "claude-haiku-5-5", "effort": "low", "maxTokens": 1024, "monthlyBudgetUSD": 2 },
   "feedback": { "sounds": true, "volume": 0.5, "haptics": true },
   "includeInstalledApps": true,
   "jobs": { "dayStart": "09:00", "bedtime": "00:30", "cooldownMinutes": 45, "laterMinutes": 30, "maxLevel": 3, "roamMinutes": 3, "openListAt": "10:00", "bindings": {} },
@@ -666,7 +670,7 @@ The day's to-do list, the family-business way: they are **jobs**. The thing that
 - **Add** by typing in the line at the bottom and pressing Enter. Commas add several at once (`read 30 min, gym, duolingo by 10pm`). The line stays ready for more.
 - **Tick** a box and the job is done, with a small pixel explosion and a sound. Tick it again if you did it by mistake.
 - **start** (on jobs that know what to open) opens it and starts the timer for the job's length.
-- **Right-click** a job to delete it.
+- Click **⋯** at the end of a job (or right-click it) to delete it, mark it done or move it.
 - **More than five jobs?** The list shows five at a time and scrolls (trackpad or mouse wheel) for the rest; the add line always stays in view. A job you add scrolls into view. (Added 15 Nov 2026, not yet confirmed on Adi's Mac.)
 - **Escape**, or a click anywhere else, closes the list.
 
@@ -686,6 +690,22 @@ Shortcuts from the box, if you prefer them:
 - Saying the same job again (`read 45 min`) updates it instead of adding a second one.
 
 **What starts a job.** He looks for one of your things in the job's words: `read` opens Books, `duolingo` opens Duolingo, `finish the swift course` opens your entry called `swift course` (make it a living bookmark, section 6, and it opens where you stopped). If nothing fits, **start it** opens the box and asks *what opens "practice guitar"?*: whatever you open next becomes that job's starter, and the first word is remembered (`practice` → that thing) for every later job. These learned words live under `jobs.bindings` in the config.
+
+**Folders.** The list is sorted into folders, `work` and `general` to start with. Name your own in settings → *Jobs and music* → *Folders* (commas between them), or under `jobs.groups` in the config. No code needed. Leave it empty for one plain list.
+
+- Click a folder's header to fold or unfold it. Folded folders stay folded the next time the list opens. A folded folder with something due shows a small square and *1 due*, so nothing hides.
+- Type `work: email the landlord` to put a job straight into *work*. Only a folder that exists counts, so `call at 6:30` stays as it is.
+- **⋯** (or right-click) → **Move to** changes a job's folder.
+- Jobs in no folder sit under **other** at the bottom.
+
+**Smart jobs (Claude).** When the plain rules cannot tell what opens a new job, or which folder it belongs in, he asks Claude: `email the landlord` gets Gmail and *work*, `practice guitar` gets *general* and nothing to open. The job appears at once; the answer fills in about a second later, and only fills what is still empty. Anything you typed or picked yourself always wins. Claude can only pick names that exist, so it can never invent an app.
+
+- It needs the Claude API key (settings → *Ask*). Without one, everything works as before.
+- What is sent: the new job's title, the *names* of your apps and saved things, and your folder names. Never addresses, notes or anything else. Jobs the plain rules already placed (`read` → Books) are never sent.
+- It uses Ask's monthly budget. At Claude Haiku 5.5 prices ($0.10 per million tokens read, $0.50 per million written), one request costs about $0.0002. Twenty jobs a day comes to well under 10 cents a month.
+- Turn it off in settings (*Claude picks what opens a new job*), or `jobs.smart: false`.
+
+**Status (added 15 Nov 2026):** brain tested (folders, what is sent, how replies are checked) · Mac app builds · not yet confirmed on Adi's Mac, and never yet run against the real API.
 
 **Owed.** A job you did not finish moves to tomorrow, owed one more day. Nothing is lost, and nothing counts a streak; it just says *owed 3 days*, and he lets you know about it.
 

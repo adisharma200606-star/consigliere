@@ -28,7 +28,7 @@ struct NotchRootView: View {
         .foregroundStyle(NotchTheme.text)
         .animation(model.theme.spring, value: model.screen)
         .animation(model.theme.spring, value: model.rows)
-        .animation(model.theme.spring, value: model.jobRows)
+        .animation(model.theme.spring, value: model.jobFolders)
     }
 }
 

@@ -13,7 +13,9 @@ enum DroppedThing {
 /// DynamicNotchKit removes its window completely while the notch is closed, so without this there would be
 /// nothing to click and nothing to drop onto. It does three jobs:
 ///   click        hand back something from the stash
-///   right-click  a small menu: settings, mute, quit
+///   right-click  a small menu: settings, mute, quit (also control-click; and the same menu is in the menu
+///                bar, because while his head shows beside the notch, the notch library's window sits on top
+///                of this one and catches the right-click first)
 ///   drop         save what was dropped
 /// On a screen with no notch it is not shown at all, because it would sit over the middle of the menu bar.
 @MainActor
@@ -86,10 +88,19 @@ private final class SensorView: NSView {
     override func acceptsFirstMouse(for event: NSEvent?) -> Bool { true }
 
     override func mouseDown(with event: NSEvent) {
+        // Control-click is the Mac's other way to right-click; it used to pull something out of the stash instead.
+        if event.modifierFlags.contains(.control) {
+            showMenu(event)
+            return
+        }
         sensor?.clicked()
     }
 
     override func rightMouseDown(with event: NSEvent) {
+        showMenu(event)
+    }
+
+    private func showMenu(_ event: NSEvent) {
         guard let menu = sensor?.menu() else { return }
         NSMenu.popUpContextMenu(menu, with: event, for: self)
     }

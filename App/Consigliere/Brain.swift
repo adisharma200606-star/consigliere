@@ -134,6 +134,7 @@ final class Brain {
         sensor.onDrop = { [weak self] things in self?.handleDrop(things) }
         sensor.menuProvider = { [weak self] in self?.contextMenu() }
         sensor.start()
+        controller.onSettings = { [weak self] in self?.openSettings() }
         controller.onDismiss = { [weak self] in
             self?.sounds.play(.close)
             self?.close()
@@ -207,6 +208,7 @@ final class Brain {
         tunerSession.options.toleranceCents = config.tuner.toleranceCents
         model.character = CharacterFrames.load(folder: config.character.folder, facesLeft: config.character.facesLeft)
         textReplacer.apply(config.textReplacement)
+        showMenuBarIcon(config.menuBarIcon)
 
         hotkeys.removeAll()
         let ok = [
@@ -245,6 +247,9 @@ final class Brain {
         model.onJobToggle = { [weak self] id in self?.toggleJob(id) }
         model.onJobStart = { [weak self] id in self?.startJob(id) }
         model.onJobDelete = { [weak self] id in self?.deleteJob(id) }
+        model.onSettings = { [weak self] in self?.openSettings() }
+        model.onFolderToggle = { [weak self] id in self?.toggleFolder(id) }
+        model.onJobMove = { [weak self] id, group in self?.moveJob(id, to: group) }
         model.onJobDraftChange = { [weak self] in self?.cancelAutoClose() }
         model.onCharacterTap = { [weak self] in self?.pet() }
     }
@@ -1089,14 +1094,15 @@ final class Brain {
             showJobs()
             return
         }
-        let drafts = Jobs.parse(words, nowWall: nowWall, catalog: searchable, bindings: config.jobs.bindings)
+        let drafts = Jobs.parse(words, nowWall: nowWall, catalog: searchable, bindings: config.jobs.bindings, groups: config.jobs.groups)
         guard !drafts.isEmpty else {
             sounds.play(.unknown)
             showLine(category: "unknown", target: nil, text: "I could not find a job in that.", hold: 2.6)
             return
         }
-        jobDay.add(drafts, now: nowWall)
+        let ids = jobDay.add(drafts, now: nowWall)
         saveJobs()
+        sortWithClaude(ids)
         sounds.play(.captured)
         // Say back what was understood, so a misread never goes unnoticed: "read · duolingo by 22:00".
         let said = drafts.map { draft in draft.title + (draft.dueWall.map { " by \(Jobs.clockText($0))" } ?? "") }
@@ -1125,10 +1131,22 @@ final class Brain {
         model.jobsDate = Brain.jobsDateFormat.string(from: Date())
         let done = jobDay.jobs.filter { $0.status == .done }.count
         model.jobsCount = jobDay.jobs.isEmpty ? "" : "\(done) of \(jobDay.jobs.count) done"
-        model.jobRows = jobDay.jobs.map { job in
-            let canStart = job.starter.map { name in searchable.contains { $0.name == name } } ?? false
-            return NotchModel.JobRow(id: job.id, title: job.title, detail: describe(job), done: job.status == .done,
-                                     canStart: canStart)
+        model.jobGroups = config.jobs.groups
+        let folded = collapsedFolders
+        let sections = Jobs.sections(jobDay, groups: config.jobs.groups, now: nowWall)
+        model.jobFolders = sections.map { section in
+            let rows = section.ids.compactMap { jobDay.job($0) }.map { job -> NotchModel.JobRow in
+                let canStart = job.starter.map { name in searchable.contains { $0.name == name } } ?? false
+                return NotchModel.JobRow(id: job.id, title: job.title, detail: describe(job), done: job.status == .done,
+                                         canStart: canStart, group: job.group)
+            }
+            // With no folders set up there is one section and no header: the plain list, as before.
+            let title = config.jobs.groups.isEmpty ? nil : (section.group ?? "other")
+            let id = section.group?.lowercased() ?? ""
+            var summary = section.left == 0 ? "all done" : "\(section.left) left"
+            if section.due > 0 { summary += " · \(section.due) due" }
+            return NotchModel.JobFolder(id: id, title: title, summary: summary, hasDue: section.due > 0,
+                                        collapsed: title != nil && folded.contains(id), rows: rows)
         }
     }
 
@@ -1138,15 +1156,83 @@ final class Brain {
         cancelAutoClose()
         let text = model.jobDraft.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !text.isEmpty else { return }
-        let drafts = Jobs.parse(text, nowWall: nowWall, catalog: searchable, bindings: config.jobs.bindings)
+        let drafts = Jobs.parse(text, nowWall: nowWall, catalog: searchable, bindings: config.jobs.bindings, groups: config.jobs.groups)
         guard !drafts.isEmpty else {
             sounds.play(.unknown)
             return
         }
-        jobDay.add(drafts, now: nowWall)
+        let ids = jobDay.add(drafts, now: nowWall)
         saveJobs()
+        sortWithClaude(ids)
         sounds.play(.captured)
         model.jobDraft = ""
+        refreshJobRows()
+        model.newestJobID = ids.last
+    }
+
+    // MARK: - Smart jobs
+
+    /// Jobs being asked about right now, so a quick second Enter does not ask (and pay) twice.
+    private var sortingJobIDs = Set<String>()
+
+    /// Asks Claude what opens each new job and which folder it goes in, for the ones the plain rules could
+    /// not place. The job is already on the list (rule 1: nothing waits for the internet); the answer fills
+    /// in a second or so later, and only fills what is still empty. Silent either way: he never speaks first,
+    /// and a failure (no key, no internet, budget used up) just leaves the job as it was.
+    private func sortWithClaude(_ ids: [String]) {
+        guard config.jobs.smart else { return }
+        let groups = config.jobs.groups
+        let asking = Smart.needingHelp(jobDay, ids: ids, groups: groups).filter { !sortingJobIDs.contains($0.id) }
+        guard !asking.isEmpty, let key = AskClient.Keychain.read(), !key.isEmpty else { return }
+        asking.forEach { sortingJobIDs.insert($0.id) }
+        let catalog = searchable
+        let askConfig = config.ask
+        let day = jobDay.day
+        Task { @MainActor [weak self] in
+            let result: Result<[Smart.Suggestion], Error>
+            do {
+                result = .success(try await AskClient.sortJobs(asking, catalog: catalog, groups: groups, config: askConfig))
+            } catch {
+                result = .failure(error)
+            }
+            guard let self = self else { return }
+            asking.forEach { self.sortingJobIDs.remove($0.id) }
+            switch result {
+            case .failure(let error):
+                NSLog("Consigliere: smart jobs did not work: \(AskClient.explain(error))")
+            case .success(let suggestions):
+                // A new day started while waiting: these ids now belong to other jobs, so leave them.
+                guard self.jobDay.day == day, !suggestions.isEmpty else { return }
+                for suggestion in suggestions {
+                    self.jobDay.fillIn(suggestion.id, starter: suggestion.starter, group: suggestion.group)
+                }
+                self.saveJobs()
+                self.refreshJobRows()
+            }
+        }
+    }
+
+    // MARK: - Folders
+
+    /// Folders he folded, by lower-case name ("" is the no-folder section). Remembered between openings and
+    /// restarts; a per-Mac convenience, so it lives in the app's preferences rather than the config.
+    private var collapsedFolders: Set<String> {
+        get { Set(UserDefaults.standard.stringArray(forKey: "jobs.collapsedFolders") ?? []) }
+        set { UserDefaults.standard.set(Array(newValue).sorted(), forKey: "jobs.collapsedFolders") }
+    }
+
+    private func toggleFolder(_ id: String) {
+        cancelAutoClose()
+        var folded = collapsedFolders
+        if folded.contains(id) { folded.remove(id) } else { folded.insert(id) }
+        collapsedFolders = folded
+        refreshJobRows()
+    }
+
+    private func moveJob(_ id: String, to group: String?) {
+        cancelAutoClose()
+        jobDay.setGroup(id, to: group)
+        saveJobs()
         refreshJobRows()
     }
 
@@ -1612,12 +1698,36 @@ final class Brain {
 
     // MARK: - The right-click menu, and a test line for the settings window
 
+    /// The settings window, from the gear, Command-comma, the menu bar icon or the right-click menu.
+    /// The notch closes first, so the window is not hidden behind it and gets the keyboard.
+    private func openSettings() {
+        if controller.isOpen { close() }
+        settingsWindow.show(brain: self)
+    }
+
+    private var statusItem: NSStatusItem?
+    private let statusMenu = StatusMenu()
+
+    /// The menu bar icon: the same menu as a right-click on the notch, but always there to click.
+    private func showMenuBarIcon(_ on: Bool) {
+        guard on else {
+            if let item = statusItem { NSStatusBar.system.removeStatusItem(item) }
+            statusItem = nil
+            return
+        }
+        guard statusItem == nil else { return }
+        let item = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
+        item.button?.image = NSImage(systemSymbolName: "gearshape", accessibilityDescription: "Consigliere")
+        item.button?.toolTip = "Consigliere"
+        // Built fresh each time it opens, so "Mute him" and "Cancel the timer" are up to date.
+        statusMenu.build = { [weak self] in self?.contextMenu() }
+        item.menu = statusMenu.menu
+        statusItem = item
+    }
+
     private func contextMenu() -> NSMenu {
         let menu = NSMenu()
-        menu.addItem(MenuAction("Settings…") { [weak self] in
-            guard let self = self else { return }
-            self.settingsWindow.show(brain: self)
-        })
+        menu.addItem(MenuAction("Settings…") { [weak self] in self?.openSettings() })
         menu.addItem(MenuAction(mouth.isMuted ? "Let him talk" : "Mute him") { [weak self] in
             guard let self = self else { return }
             self.mouth.isMuted.toggle()
@@ -1654,5 +1764,26 @@ final class MenuAction: NSMenuItem {
 
     @objc private func fire() {
         run()
+    }
+}
+
+/// The menu bar icon's menu. macOS asks for its items just before it opens; they are copied from a freshly
+/// built menu each time, so they always match the moment (muted or not, a timer running or not).
+final class StatusMenu: NSObject, NSMenuDelegate {
+    let menu = NSMenu()
+    var build: () -> NSMenu? = { nil }
+
+    override init() {
+        super.init()
+        menu.delegate = self
+    }
+
+    func menuNeedsUpdate(_ menu: NSMenu) {
+        menu.removeAllItems()
+        guard let fresh = build() else { return }
+        for item in fresh.items {
+            fresh.removeItem(item)
+            menu.addItem(item)
+        }
     }
 }

@@ -43,7 +43,8 @@ Two ideas explain most of the design:
 | `CaptureLog.swift` | The short list of notes and reminders made from the notch, for the glance; and `InstalledApps`, which turns the apps found on disk into things the box can open. |
 | `CatalogMigration.swift` | Keeps an existing `config.json` in step with new built-in commands added in later updates — see the note below. |
 | `Capture.swift` | Reading "call mom tomorrow at 5" into a title and a time. |
-| `Jobs.swift` | The day's jobs: reading "read 30 min, duolingo by 10pm", which of his things starts each job, carrying unfinished jobs to the next day, and `Jobs.nextNudge`, which decides when the character comes out, about what, and how boldly. Port of `reference-js/jobs.js`. |
+| `Jobs.swift` | The day's jobs: reading "read 30 min, duolingo by 10pm", which of his things starts each job, carrying unfinished jobs to the next day, and `Jobs.nextNudge`, which decides when the character comes out, about what, and how boldly. Port of `reference-js/jobs.js`. Also folders: `work: …` when typing, `Jobs.sections` for the list, `fillIn` for suggestions that may only fill what is empty. |
+| `Smart.swift` | Smart jobs without the internet: which new jobs need Claude's help, the words sent, the request body (structured JSON output), and checking the reply so only real names come through. Port of `reference-js/smart.js`. The call itself is `AskClient.sortJobs`. |
 | `TextReplacement.swift` | Text replacement for Brave: `TypingBuffer` decides when typed text ends in a shortcut, what to delete and what to type; `MacTextReplacements` reads the list from System Settings. Port of `reference-js/replace.js`. |
 | `Ask.swift` | What is sent with a question, when the clipboard is included, and splitting the reply into text and a command. |
 | `Feedback.swift` | Which sound and which trackpad tap go with each event. |
@@ -76,7 +77,7 @@ Each of these is a port of a file in `reference-js/`. The port is kept honest by
 | `ScreenRotator.swift` | `one eighty`: picks the screen (laptop when the lid is open, else main), asks `RotationBridge` to rotate it one way at a time, checks with `CGDisplayRotation` that it really turned before trying the next way, handles mirroring, and writes `~/.consigliere/flip.log`. |
 | `AppIndex.swift` | Finds installed apps so any of them opens by name. |
 | `TutorialWindow.swift` | The three slides. |
-| `AskClient.swift` | One HTTPS call to the Claude API. Key in the Keychain (which also holds the Spotify keys). Monthly spending ledger. |
+| `AskClient.swift` | HTTPS calls to the Claude API: `ask` for Ask, `sortJobs` for smart jobs, both through one `send` that checks the key and the budget first and counts the cost after. Key in the Keychain (which also holds the Spotify keys). Monthly spending ledger, shared by both. |
 | `Character/CharacterSprite.swift` | The character's frames (from `~/.consigliere/character/`, else the bundled dragon) and the animated view. |
 | `Character/Roamer.swift` | The small window he flies around the screen in. The window *is* him, so every other click goes through. Paths per boldness level, flying out from and back into the notch. |
 | `Character/JobCard.swift` | The card beside him when he is clicked: the job, a line, two or three buttons. |

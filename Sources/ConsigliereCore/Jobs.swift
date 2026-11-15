@@ -18,6 +18,8 @@ public struct Job: Codable, Equatable, Sendable {
     public var title: String
     /// The catalog entry that "start it" opens. Nil when nothing fits; starting then just marks it begun.
     public var starter: String?
+    /// The folder it sits in on the list ("work"), as spelled in the settings. Nil: no folder.
+    public var group: String?
     /// How long it takes, from "read 30 min". Starting it runs a timer this long.
     public var minutes: Int?
     /// When it is due, from "by 10pm". Nil means "some time today".
@@ -34,12 +36,13 @@ public struct Job: Codable, Equatable, Sendable {
     /// How many days it has been carried over unfinished.
     public var owedDays: Int
 
-    public init(id: String, title: String, starter: String? = nil, minutes: Int? = nil, dueWall: Int? = nil,
+    public init(id: String, title: String, starter: String? = nil, group: String? = nil, minutes: Int? = nil, dueWall: Int? = nil,
                 status: JobStatus = .open, addedAt: Int, startedAt: Int? = nil, doneAt: Int? = nil,
                 snoozedUntil: Int? = nil, lastShownAt: Int? = nil, ignored: Int = 0, owedDays: Int = 0) {
         self.id = id
         self.title = title
         self.starter = starter
+        self.group = group
         self.minutes = minutes
         self.dueWall = dueWall
         self.status = status
@@ -53,7 +56,7 @@ public struct Job: Codable, Equatable, Sendable {
     }
 
     private enum CodingKeys: String, CodingKey {
-        case id, title, starter, minutes, dueWall, status, addedAt, startedAt, doneAt, snoozedUntil, lastShownAt, ignored, owedDays
+        case id, title, starter, group, minutes, dueWall, status, addedAt, startedAt, doneAt, snoozedUntil, lastShownAt, ignored, owedDays
     }
 
     // Hand-written so an older or hand-edited jobs.json still loads.
@@ -62,6 +65,7 @@ public struct Job: Codable, Equatable, Sendable {
         id = try c.decode(String.self, forKey: .id)
         title = try c.decode(String.self, forKey: .title)
         starter = try c.decodeIfPresent(String.self, forKey: .starter)
+        group = try c.decodeIfPresent(String.self, forKey: .group)
         minutes = try c.decodeIfPresent(Int.self, forKey: .minutes)
         dueWall = try c.decodeIfPresent(Int.self, forKey: .dueWall)
         status = try c.decodeIfPresent(JobStatus.self, forKey: .status) ?? .open
@@ -84,12 +88,15 @@ public struct JobDraft: Codable, Equatable, Sendable {
     public var minutes: Int?
     public var dueWall: Int?
     public var starter: String?
+    /// From "work: email the landlord", when there is a folder called work.
+    public var group: String?
 
-    public init(title: String, minutes: Int? = nil, dueWall: Int? = nil, starter: String? = nil) {
+    public init(title: String, minutes: Int? = nil, dueWall: Int? = nil, starter: String? = nil, group: String? = nil) {
         self.title = title
         self.minutes = minutes
         self.dueWall = dueWall
         self.starter = starter
+        self.group = group
     }
 }
 
@@ -155,6 +162,22 @@ public struct Nudge: Codable, Equatable, Sendable {
 }
 
 /// One job day, 04:00 to 04:00. Saved as ~/.consigliere/jobs.json.
+/// One folder on the list: which jobs, how many are left, how many are due now.
+public struct JobSection: Codable, Equatable, Sendable {
+    /// The folder's name as spelled in the settings. Nil: jobs in no folder (or the whole list, with no folders).
+    public let group: String?
+    public let ids: [String]
+    public let left: Int
+    public let due: Int
+
+    public init(group: String?, ids: [String], left: Int, due: Int) {
+        self.group = group
+        self.ids = ids
+        self.left = left
+        self.due = due
+    }
+}
+
 public struct JobDay: Codable, Equatable, Sendable {
     /// "2026-10-11"
     public var day: String
@@ -224,10 +247,11 @@ public struct JobDay: Codable, Equatable, Sendable {
                 if let minutes = draft.minutes { jobs[index].minutes = minutes }
                 if let due = draft.dueWall { jobs[index].dueWall = due }
                 if let starter = draft.starter { jobs[index].starter = starter }
+                if let group = draft.group { jobs[index].group = group }
                 ids.append(jobs[index].id)
                 continue
             }
-            let job = Job(id: "j\(nextID)", title: draft.title, starter: draft.starter, minutes: draft.minutes,
+            let job = Job(id: "j\(nextID)", title: draft.title, starter: draft.starter, group: draft.group, minutes: draft.minutes,
                           dueWall: draft.dueWall, addedAt: now)
             nextID += 1
             jobs.append(job)
@@ -289,6 +313,21 @@ public struct JobDay: Codable, Equatable, Sendable {
 
     /// Gone from the list, not done and not skipped: it never goes into the ledger. True if it was there.
     @discardableResult
+    /// Moves a job to another folder; nil takes it out of every folder.
+    public mutating func setGroup(_ id: String, to group: String?) {
+        // Not through `change`: sorting a job is not attending to it, so his counters stay as they are.
+        guard let index = jobs.firstIndex(where: { $0.id == id }) else { return }
+        jobs[index].group = group
+    }
+
+    /// A suggestion (from Claude, in the app) fills only what is still empty. What he typed or picked himself
+    /// always wins, and a suggestion that comes back late never changes a job he already sorted.
+    public mutating func fillIn(_ id: String, starter: String?, group: String?) {
+        guard let index = jobs.firstIndex(where: { $0.id == id }) else { return }
+        if jobs[index].starter == nil, let starter = starter { jobs[index].starter = starter }
+        if jobs[index].group == nil, let group = group { jobs[index].group = group }
+    }
+
     public mutating func remove(_ id: String) -> Bool {
         let before = jobs.count
         jobs.removeAll { $0.id == id }
@@ -467,9 +506,12 @@ public enum Jobs {
 
     /// "read 30 min, swift course, duolingo by 10pm" to three drafts.
     /// Commas, semicolons and new lines separate jobs. "and" does not, so "call mom and dad" stays one job.
-    public static func parse(_ text: String, nowWall: Int, catalog: [CatalogEntry], bindings: [String: String] = [:]) -> [JobDraft] {
+    /// "work: email the landlord" puts it in the work folder, when there is a folder called work.
+    public static func parse(_ text: String, nowWall: Int, catalog: [CatalogEntry], bindings: [String: String] = [:],
+                             groups: [String] = []) -> [JobDraft] {
         var drafts = [JobDraft]()
-        for piece in text.split(whereSeparator: { $0 == "," || $0 == ";" || $0 == "\n" }) {
+        for raw in text.split(whereSeparator: { $0 == "," || $0 == ";" || $0 == "\n" }) {
+            let (group, piece) = takeGroup(String(raw), groups: groups)
             var tokens = piece.split(whereSeparator: { $0.isWhitespace }).map(String.init)
             if tokens.isEmpty { continue }
             tokens = dropLeadingPhrase(tokens)
@@ -479,9 +521,41 @@ public enum Jobs {
             let title = read.title.trimmingCharacters(in: .whitespacesAndNewlines)
             if title.isEmpty { continue }
             drafts.append(JobDraft(title: title, minutes: duration.minutes, dueWall: read.dueWall,
-                                   starter: bindStarter(title, catalog: catalog, bindings: bindings)))
+                                   starter: bindStarter(title, catalog: catalog, bindings: bindings), group: group))
         }
         return drafts
+    }
+
+    /// The folder named in front of a job, as the folder is spelled in the settings. Only a folder that exists
+    /// counts, so "call at 6:30" and "note: buy milk" are left as they are.
+    static func takeGroup(_ piece: String, groups: [String]) -> (group: String?, rest: String) {
+        guard !groups.isEmpty, let colon = piece.firstIndex(of: ":"), colon > piece.startIndex else { return (nil, piece) }
+        let named = TextTools.normalize(String(piece[..<colon]))
+        guard !named.isEmpty, let hit = groups.first(where: { TextTools.normalize($0) == named }) else { return (nil, piece) }
+        return (hit, String(piece[piece.index(after: colon)...]))
+    }
+
+    // MARK: folders
+
+    /// The list in folders: one section per folder that has jobs, in the order of the settings, then one with
+    /// no folder (`group` nil) for the rest, including jobs in a folder since removed from the settings. With no
+    /// folders set up, one section with every job, and the list looks as it always did.
+    public static func sections(_ day: JobDay, groups: [String], now: Int) -> [JobSection] {
+        func make(_ group: String?, _ list: [Job]) -> JobSection {
+            return JobSection(group: group, ids: list.map { $0.id }, left: list.filter { $0.isLive }.count,
+                              due: list.filter { $0.status == .open && ($0.dueWall.map { $0 <= now } ?? false) }.count)
+        }
+        if groups.isEmpty { return day.jobs.isEmpty ? [] : [make(nil, day.jobs)] }
+        let known = Set(groups.map(TextTools.normalize))
+        var out = [JobSection]()
+        for group in groups {
+            let key = TextTools.normalize(group)
+            let list = day.jobs.filter { job in job.group.map { TextTools.normalize($0) == key } ?? false }
+            if !list.isEmpty { out.append(make(group, list)) }
+        }
+        let loose = day.jobs.filter { job in !(job.group.map { known.contains(TextTools.normalize($0)) } ?? false) }
+        if !loose.isEmpty { out.append(make(nil, loose)) }
+        return out
     }
 
     // MARK: days
@@ -493,7 +567,7 @@ public enum Jobs {
         guard let day = day else { return fresh }
         for job in day.jobs where job.isLive {
             // A time from yesterday is no longer a time; the job becomes one for whenever.
-            let carried = Job(id: "j\(fresh.nextID)", title: job.title, starter: job.starter, minutes: job.minutes,
+            let carried = Job(id: "j\(fresh.nextID)", title: job.title, starter: job.starter, group: job.group, minutes: job.minutes,
                               dueWall: nil, addedAt: job.addedAt, owedDays: job.owedDays + 1)
             fresh.nextID += 1
             fresh.jobs.append(carried)

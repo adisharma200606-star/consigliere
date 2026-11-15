@@ -2,14 +2,22 @@ import SwiftUI
 
 /// Today's jobs, as a checklist you work in directly: type at the bottom and press Enter to add (commas for
 /// several), click a box to tick one off (a small pixel explosion), "start" to open what the job needs,
-/// right-click to delete. Escape or a click elsewhere closes it.
+/// right-click to delete or move to another folder. Jobs sit in folders ("work", "general") whose headers fold
+/// and unfold with a click. Escape or a click elsewhere closes it.
 struct JobsScreen: View {
     @ObservedObject var model: NotchModel
     @FocusState private var focused: Bool
 
-    /// How many jobs show before the list scrolls. Five keeps the whole panel well inside the notch window,
-    /// even on a 13-inch screen.
-    static let visibleRows = 5
+    /// How tall the list may get before it scrolls: five jobs' worth. That keeps the whole panel well inside the
+    /// notch window, even on a 13-inch screen.
+    static let maxListHeight = 5 * JobRowView.height
+
+    /// The height of everything showing: folder headers, plus the jobs in unfolded folders.
+    private var contentHeight: CGFloat {
+        model.jobFolders.reduce(0) { total, folder in
+            total + (folder.title == nil ? 0 : FolderHeader.height) + (folder.collapsed ? 0 : CGFloat(folder.rows.count) * JobRowView.height)
+        }
+    }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
@@ -32,12 +40,13 @@ struct JobsScreen: View {
                 Text(model.jobsCount.liner)
                     .font(model.theme.mono(10))
                     .foregroundStyle(model.theme.accent)
+                SettingsGear(model: model)
             }
             .padding(.horizontal, 8)
 
             VStack(spacing: 0) {
                 Rectangle().fill(NotchTheme.hairline).frame(height: 1)
-                if model.jobRows.isEmpty {
+                if model.jobFolders.isEmpty {
                     Text("nothing on the books yet. type below.")
                         .font(model.theme.font(model.theme.textSize * 0.85, .light))
                         .foregroundStyle(NotchTheme.secondary)
@@ -46,21 +55,28 @@ struct JobsScreen: View {
                         .frame(height: 44)
                 }
                 // The notch window is only half the screen tall, so a long day would push the add box off the
-                // bottom. The list shows up to `visibleRows` jobs and scrolls for the rest; the header and the
-                // add box always stay in view.
+                // bottom. The list grows to five jobs' worth and scrolls for the rest; the header and the add box
+                // always stay in view.
                 ScrollViewReader { scroller in
                     ScrollView(.vertical) {
                         VStack(spacing: 0) {
-                            ForEach(model.jobRows) { row in
-                                JobRowView(model: model, row: row).id(row.id)
+                            ForEach(model.jobFolders) { folder in
+                                if folder.title != nil {
+                                    FolderHeader(model: model, folder: folder)
+                                }
+                                if !folder.collapsed {
+                                    ForEach(folder.rows) { row in
+                                        JobRowView(model: model, row: row).id(row.id)
+                                    }
+                                }
                             }
                         }
                     }
-                    .frame(height: CGFloat(min(model.jobRows.count, Self.visibleRows)) * JobRowView.height)
-                    // A job just added goes to the bottom: bring it into view so you see it land.
-                    .onChange(of: model.jobRows.count) { [oldCount = model.jobRows.count] newCount in
-                        guard newCount > oldCount, let last = model.jobRows.last else { return }
-                        withAnimation(model.theme.spring) { scroller.scrollTo(last.id, anchor: .bottom) }
+                    .frame(height: min(contentHeight, Self.maxListHeight))
+                    // A job just typed in: bring it into view so you see it land (if its folder is open).
+                    .onChange(of: model.newestJobID) { id in
+                        guard let id = id else { return }
+                        withAnimation(model.theme.spring) { scroller.scrollTo(id, anchor: .bottom) }
                     }
                 }
             }
@@ -81,7 +97,7 @@ struct JobsScreen: View {
             }
             .padding(.horizontal, 12)
 
-            Text("enter adds · commas for several · right-click to delete · esc closes")
+            Text("enter adds · work: puts it in a folder · ⋯ for more · esc closes")
                 .font(model.theme.mono(9))
                 .kerning(0.4)
                 .foregroundStyle(NotchTheme.faint)
@@ -132,16 +148,78 @@ private struct JobRowView: View {
                 Button("start") { model.onJobStart(row.id) }
                     .buttonStyle(PillButtonStyle(theme: model.theme))
             }
+            // The same menu as a right-click, for one ordinary click: right-clicks in the notch do not always arrive.
+            Menu { actions } label: {
+                Text("⋯")
+                    .font(model.theme.mono(14, medium: true))
+                    .foregroundStyle(NotchTheme.faint)
+            }
+            .menuStyle(.borderlessButton)
+            .menuIndicator(.hidden)
+            .fixedSize()
+            .frame(width: 24, height: 26)
+            .contentShape(Rectangle())
+            .help("Done, move, delete")
         }
         .padding(.horizontal, 8)
         .frame(height: Self.height)
         .overlay(alignment: .bottom) { Rectangle().fill(NotchTheme.hairline).frame(height: 1) }
         .contentShape(Rectangle())
-        .contextMenu {
-            if !row.done { Button("Start") { model.onJobStart(row.id) } }
-            Button(row.done ? "Not done after all" : "Done") { model.onJobToggle(row.id) }
-            Button("Delete") { model.onJobDelete(row.id) }
+        .contextMenu { actions }
+    }
+
+    /// What can be done to a job: in its "⋯" button and in its right-click menu.
+    @ViewBuilder private var actions: some View {
+        if !row.done { Button("Start") { model.onJobStart(row.id) } }
+        Button(row.done ? "Not done after all" : "Done") { model.onJobToggle(row.id) }
+        if !model.jobGroups.isEmpty {
+            Menu("Move to") {
+                ForEach(model.jobGroups, id: \.self) { group in
+                    Button(group) { model.onJobMove(row.id, group) }
+                        .disabled(group == row.group)
+                }
+                Divider()
+                Button("No folder") { model.onJobMove(row.id, nil) }
+                    .disabled(row.group == nil)
+            }
         }
+        Button("Delete") { model.onJobDelete(row.id) }
+    }
+}
+
+/// A folder's header: a pixel arrow, the name, and what is left in it. Click to fold or unfold.
+private struct FolderHeader: View {
+    @ObservedObject var model: NotchModel
+    let folder: NotchModel.JobFolder
+
+    static let height: CGFloat = 30
+
+    var body: some View {
+        Button { model.onFolderToggle(folder.id) } label: {
+            HStack(spacing: 8) {
+                Text(folder.collapsed ? "▸" : "▾")
+                    .font(model.theme.mono(11, medium: true))
+                    .foregroundStyle(model.theme.accent)
+                    .frame(width: 12)
+                Text((folder.title ?? "").lowercased().liner)
+                    .font(model.theme.mono(10, medium: true))
+                    .kerning(1)
+                    .foregroundStyle(NotchTheme.text)
+                Spacer()
+                if folder.hasDue {
+                    // Something in here is due, so even a folded folder says so.
+                    Rectangle().fill(model.theme.accent).frame(width: 5, height: 5)
+                }
+                Text(folder.summary.liner)
+                    .font(model.theme.mono(9))
+                    .foregroundStyle(folder.hasDue ? model.theme.accent : NotchTheme.secondary)
+            }
+            .padding(.horizontal, 12)
+            .frame(height: Self.height)
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .overlay(alignment: .bottom) { Rectangle().fill(NotchTheme.hairline).frame(height: 1) }
     }
 }
 
